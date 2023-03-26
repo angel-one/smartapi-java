@@ -8,7 +8,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 - [Java library documentation](https://smartapi.angelbroking.com/docs/connect)
 
 ## Usage
-- [Download SmartAPI jar file](https://github.com/angelbroking-github/smartapi-java/blob/main/dist) and include it in your build path.
+- [Download SmartAPI jar file](https://github.com/angel-one/smartapi-java/tree/main/dist) and include it in your build path.
 
 - Include com.angelbroking.smartapi into build path from maven. Use version 1.0.0
 
