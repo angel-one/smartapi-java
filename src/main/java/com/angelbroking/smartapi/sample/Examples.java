@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,21 +24,26 @@ import com.angelbroking.smartapi.ticker.OnConnect;
 import com.angelbroking.smartapi.ticker.OnTicks;
 import com.angelbroking.smartapi.ticker.SmartAPITicker;
 import com.angelbroking.smartapi.utils.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unused")
 public class Examples {
 
+	private static final Logger logger = LoggerFactory.getLogger(SmartAPIRequestHandler.class);
+
 	public void getProfile(SmartConnect smartConnect) throws IOException, SmartAPIException {
 		User profile = smartConnect.getProfile();
+		logger.info(profile.toString());
 	}
 
 	/** CONSTANT Details */
 
 	/* VARIETY */
 	/*
-	 * VARIETY_NORMAL: Normal Order (Regular) 
+	 * VARIETY_NORMAL: Normal Order (Regular)
 	 * VARIETY_AMO: After Market Order
-	 * VARIETY_STOPLOSS: Stop loss order 
+	 * VARIETY_STOPLOSS: Stop loss order
 	 * VARIETY_ROBO: ROBO (Bracket) Order
 	 */
 	/* TRANSACTION TYPE */
@@ -47,7 +53,7 @@ public class Examples {
 
 	/* ORDER TYPE */
 	/*
-	 * ORDER_TYPE_MARKET: Market Order(MKT) 
+	 * ORDER_TYPE_MARKET: Market Order(MKT)
 	 * ORDER_TYPE_LIMIT: Limit Order(L)
 	 * ORDER_TYPE_STOPLOSS_LIMIT: Stop Loss Limit Order(SL)
 	 * ORDER_TYPE_STOPLOSS_MARKET: Stop Loss Market Order(SL-M)
@@ -55,27 +61,27 @@ public class Examples {
 
 	/* PRODUCT TYPE */
 	/*
-	 * PRODUCT_DELIVERY: Cash & Carry for equity (CNC) 
+	 * PRODUCT_DELIVERY: Cash & Carry for equity (CNC)
 	 * PRODUCT_CARRYFORWARD: Normal
-	 * for futures and options (NRML) 
+	 * for futures and options (NRML)
 	 * PRODUCT_MARGIN: Margin Delivery
-	 * PRODUCT_INTRADAY: Margin Intraday Squareoff (MIS) 
+	 * PRODUCT_INTRADAY: Margin Intraday Squareoff (MIS)
 	 * PRODUCT_BO: Bracket Order
 	 * (Only for ROBO)
 	 */
 
 	/* DURATION */
 	/*
-	 * DURATION_DAY: Valid for a day 
+	 * DURATION_DAY: Valid for a day
 	 * DURATION_IOC: Immediate or Cancel
 	 */
 
 	/* EXCHANGE */
 	/*
-	 * EXCHANGE_BSE: BSE Equity 
-	 * EXCHANGE_NSE: NSE Equity 
-	 * EXCHANGE_NFO: NSE Future and Options 
-	 * EXCHANGE_CDS: NSE Currency 
+	 * EXCHANGE_BSE: BSE Equity
+	 * EXCHANGE_NSE: NSE Equity
+	 * EXCHANGE_NFO: NSE Future and Options
+	 * EXCHANGE_CDS: NSE Currency
 	 * EXCHANGE_NCDEX: NCDEX Commodity
 	 * EXCHANGE_MCX: MCX Commodity
 	 */
@@ -97,7 +103,7 @@ public class Examples {
 		orderParams.triggerprice = "209";
 
 		Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
-		System.out.print(order);
+		logger.info(String.valueOf(order));
 	}
 
 	/** Modify order. */
@@ -129,9 +135,9 @@ public class Examples {
 	/** Get order details */
 	public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		JSONObject orders = smartConnect.getOrderHistory(smartConnect.getUserId());
-		System.out.print(orders);
+		logger.info(String.valueOf(orders));
 //		for (int i = 0; i < orders.size(); i++) {
-//			System.out.println(orders.get(i).orderId + " " + orders.get(i).status);
+//			logger.info(orders.get(i).orderId + " " + orders.get(i).status);
 //		}
 	}
 
@@ -271,106 +277,6 @@ public class Examples {
 		requestObejct.put("todate", "2021-03-09 09:20");
 
 		String response = smartConnect.candleData(requestObejct);
-	}
-
-	public void tickerUsage(String clientId, String feedToken, String strWatchListScript, String task)
-			throws SmartAPIException {
-
-		SmartAPITicker tickerProvider = new SmartAPITicker(clientId, feedToken, strWatchListScript, task);
-
-		tickerProvider.setOnConnectedListener(new OnConnect() {
-			@Override
-			public void onConnected() {
-				System.out.println("subscribe() called!");
-				tickerProvider.subscribe();
-			}
-		});
-
-		tickerProvider.setOnTickerArrivalListener(new OnTicks() {
-			@Override
-			public void onTicks(JSONArray ticks) {
-				System.out.println("ticker data: " + ticks.toString());
-			}
-		});
-
-		/**
-		 * connects to Smart API ticker server for getting live quotes
-		 */
-		tickerProvider.connect();
-
-		/**
-		 * You can check, if websocket connection is open or not using the following
-		 * method.
-		 */
-		boolean isConnected = tickerProvider.isConnectionOpen();
-		System.out.println(isConnected);
-
-		// After using SmartAPI ticker, close websocket connection.
-		// tickerProvider.disconnect();
-
-	}
-
-	public void smartWebSocketUsage(String clientId, String jwtToken, String apiKey, String actionType, String feedType)
-			throws SmartAPIException {
-
-		SmartWebsocket smartWebsocket = new SmartWebsocket(clientId, jwtToken, apiKey, actionType, feedType);
-
-		smartWebsocket.setOnConnectedListener(new SmartWSOnConnect() {
-
-			@Override
-			public void onConnected() {
-
-				smartWebsocket.runscript();
-			}
-		});
-
-		smartWebsocket.setOnDisconnectedListener(new SmartWSOnDisconnect() {
-			@Override
-			public void onDisconnected() {
-				System.out.println("onDisconnected");
-			}
-		});
-
-		/** Set error listener to listen to errors. */
-		smartWebsocket.setOnErrorListener(new SmartWSOnError() {
-			@Override
-			public void onError(Exception exception) {
-				System.out.println("onError: " + exception.getMessage());
-			}
-
-			@Override
-			public void onError(SmartAPIException smartAPIException) {
-				System.out.println("onError: " + smartAPIException.getMessage());
-			}
-
-			@Override
-			public void onError(String error) {
-				System.out.println("onError: " + error);
-			}
-		});
-
-		smartWebsocket.setOnTickerArrivalListener(new SmartWSOnTicks() {
-			@Override
-			public void onTicks(JSONArray ticks) {
-				System.out.println("ticker data: " + ticks.toString());
-			}
-		});
-
-		/**
-		 * connects to Smart API ticker server for getting live quotes
-		 */
-		smartWebsocket.connect();
-
-		/**
-		 * You can check, if websocket connection is open or not using the following
-		 * method.
-		 */
-		boolean isConnected = smartWebsocket.isConnectionOpen();
-		System.out.println(isConnected);
-
-		// After using SmartAPI ticker, close websocket connection.
-		// smartWebsocket.disconnect();
-
 	}
 
 	/** Logout user. */

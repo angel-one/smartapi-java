@@ -3,20 +3,17 @@ package com.angelbroking.smartapi;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.angelbroking.smartapi.utils.Constants;
+
 /**
  * Generates end-points for all smart api calls.
- *
+ * <p>
  * Here all the routes are translated into a Java Map.
- *
  */
 
 public class Routes {
 
 	public Map<String, String> routes;
-	private static String _rootUrl = "https://apiconnect.angelbroking.com";
-	private static String _loginUrl = "https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword";
-	private static String _wsuri = "wss://wsfeeds.angelbroking.com/NestHtml5Mobile/socket/stream";
-	private static String _swsuri = "wss://smartapisocket.angelbroking.com/websocket";
 
 	// Initialize all routes,
 	@SuppressWarnings("serial")
@@ -49,18 +46,22 @@ public class Routes {
 	}
 
 	public String get(String key) {
-		return _rootUrl + routes.get(key);
+		return Constants.ROOT_URL + routes.get(key);
 	}
 
 	public String getLoginUrl() {
-		return _loginUrl;
+		return Constants.LOGIN_URL;
 	}
 
 	public String getWsuri() {
-		return _wsuri;
+		return Constants.WSURI;
 	}
 
 	public String getSWsuri() {
-		return _swsuri;
+		return Constants.SWSURI;
+	}
+
+	public String getSmartStreamWSURI() {
+		return Constants.SMARTSTREAM_WSURI;
 	}
 }
