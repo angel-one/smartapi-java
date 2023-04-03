@@ -15,14 +15,6 @@ import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.User;
-import com.angelbroking.smartapi.smartTicker.SmartWSOnConnect;
-import com.angelbroking.smartapi.smartTicker.SmartWSOnDisconnect;
-import com.angelbroking.smartapi.smartTicker.SmartWSOnError;
-import com.angelbroking.smartapi.smartTicker.SmartWSOnTicks;
-import com.angelbroking.smartapi.smartTicker.SmartWebsocket;
-import com.angelbroking.smartapi.ticker.OnConnect;
-import com.angelbroking.smartapi.ticker.OnTicks;
-import com.angelbroking.smartapi.ticker.SmartAPITicker;
 import com.angelbroking.smartapi.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,15 +84,15 @@ public class Examples {
 		OrderParams orderParams = new OrderParams();
 		orderParams.variety = Constants.VARIETY_STOPLOSS;
 		orderParams.quantity = 323;
-		orderParams.symboltoken = "1660";
+		orderParams.symbolToken = "1660";
 		orderParams.exchange = Constants.EXCHANGE_NSE;
-		orderParams.ordertype = Constants.ORDER_TYPE_STOPLOSS_LIMIT;
-		orderParams.tradingsymbol = "ITC-EQ";
-		orderParams.producttype = Constants.PRODUCT_INTRADAY;
+		orderParams.orderType = Constants.ORDER_TYPE_STOPLOSS_LIMIT;
+		orderParams.tradingSymbol = "ITC-EQ";
+		orderParams.productType = Constants.PRODUCT_INTRADAY;
 		orderParams.duration = Constants.DURATION_DAY;
-		orderParams.transactiontype = Constants.TRANSACTION_TYPE_BUY;
+		orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
 		orderParams.price = 122.2;
-		orderParams.triggerprice = "209";
+		orderParams.triggerPrice = "209";
 
 		Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
 		logger.info(String.valueOf(order));
@@ -112,10 +104,10 @@ public class Examples {
 
 		OrderParams orderParams = new OrderParams();
 		orderParams.quantity = 1;
-		orderParams.ordertype = Constants.ORDER_TYPE_LIMIT;
-		orderParams.tradingsymbol = "ASHOKLEY";
-		orderParams.symboltoken = "3045";
-		orderParams.producttype = Constants.PRODUCT_DELIVERY;
+		orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
+		orderParams.tradingSymbol = "ASHOKLEY";
+		orderParams.symbolToken = "3045";
+		orderParams.productType = Constants.PRODUCT_DELIVERY;
 		orderParams.exchange = Constants.EXCHANGE_NSE;
 		orderParams.duration = Constants.DURATION_DAY;
 		orderParams.price = 122.2;
@@ -197,16 +189,16 @@ public class Examples {
 	public void createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		GttParams gttParams = new GttParams();
 
-		gttParams.tradingsymbol = "SBIN-EQ";
-		gttParams.symboltoken = "3045";
+		gttParams.tradingSymbol = "SBIN-EQ";
+		gttParams.symbolToken = "3045";
 		gttParams.exchange = "NSE";
-		gttParams.producttype = "MARGIN";
-		gttParams.transactiontype = "BUY";
+		gttParams.productType = "MARGIN";
+		gttParams.transactionType = "BUY";
 		gttParams.price = 100000.01;
 		gttParams.qty = 10;
-		gttParams.disclosedqty = 10;
-		gttParams.triggerprice = 20000.1;
-		gttParams.timeperiod = 300;
+		gttParams.disclosedQty = 10;
+		gttParams.triggerPrice = 20000.1;
+		gttParams.timePeriod = 300;
 
 		Gtt gtt = smartConnect.gttCreateRule(gttParams);
 	}
@@ -215,16 +207,16 @@ public class Examples {
 	public void modifyRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		GttParams gttParams = new GttParams();
 
-		gttParams.tradingsymbol = "SBIN-EQ";
-		gttParams.symboltoken = "3045";
+		gttParams.tradingSymbol = "SBIN-EQ";
+		gttParams.symbolToken = "3045";
 		gttParams.exchange = "NSE";
-		gttParams.producttype = "MARGIN";
-		gttParams.transactiontype = "BUY";
+		gttParams.productType = "MARGIN";
+		gttParams.transactionType = "BUY";
 		gttParams.price = 100000.1;
 		gttParams.qty = 10;
-		gttParams.disclosedqty = 10;
-		gttParams.triggerprice = 20000.1;
-		gttParams.timeperiod = 300;
+		gttParams.disclosedQty = 10;
+		gttParams.triggerPrice = 20000.1;
+		gttParams.timePeriod = 300;
 
 		Integer id = 1000051;
 

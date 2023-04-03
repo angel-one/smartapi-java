@@ -54,5 +54,30 @@ public class Constants {
     public static final String SMARTSTREAM_WSURI  = "ws://smartapisocket.angelone.in/smart-stream";
     public static final String SWSURI  = "wss://smartapisocket.angelbroking.com/websocket";
 
+    /** User Model Constants */
+    public static final String USER_DATA  = "data";
+    public static final String USER_PRODUCTS  = "products";
+    public static final String USER_EXCHANGES  = "exchanges";
+
+
+    /** Smart WebSocket Constants */
+    public static final String ACTION_TYPE  = "actiontype";
+    public static final String FEEED_TYPE  = "feedtype";
+    public static final String JWT_TOKEN  = "jwttoken";
+    public static final String CLIENT_CODE  = "clientcode";
+    public static final String API_KEY  = "apikey";
+
+    /** SmartAPITicker Constants */
+    public static final String SmartAPITicker_task  = "task";
+    public static final String SmartAPITicker_channel  = "channel";
+    public static final String SmartAPITicker_token  = "token";
+    public static final String SmartAPITicker_user  = "user";
+    public static final String SmartAPITicker_acctid  = "acctid";
+
+
+
+
+
+
 
 }

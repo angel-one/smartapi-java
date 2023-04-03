@@ -8,6 +8,5 @@ public interface SmartWSOnError {
 
 	public void onError(SmartAPIException smartAPIException);
 
-	void onError(String error);
 }
  

@@ -1,5 +1,15 @@
 package com.angelbroking.smartapi.ticker;
 
+import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.utils.Constants;
+import com.angelbroking.smartapi.utils.NaiveSSLContext;
+import com.neovisionaries.ws.client.*;
+import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,61 +24,47 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterOutputStream;
 
-import javax.net.ssl.SSLContext;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.angelbroking.smartapi.Routes;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.utils.NaiveSSLContext;
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
-
 public class SmartAPITicker {
 
-	private Routes routes = new Routes();
-	private final String wsuri = routes.getWsuri();;
-	private OnTicks onTickerArrivalListener;
-	private OnConnect onConnectedListener;
-	private OnError onErrorListener;
-	private WebSocket ws;
-	private String clientId;
-	private String feedToken;
-	private String script;
-	private String task;
-	private SSLContext context;
+    private final String clientId;
+    private final String feedToken;
+	private final String script;
+    private final String task;
+    private final Routes routes = new Routes();
+    private final String wsuri = routes.getWsuri();
+    private OnTicks onTickerArrivalListener;
+    private OnConnect onConnectedListener;
+    private OnError onErrorListener;
+    private WebSocket ws;
+    private SSLContext context;
 
-	/**
-	 * Initialize SmartAPITicker.
-	 */
-	public SmartAPITicker(String clientId, String feedToken, String script, String task) {
+    /**
+     * Initialize SmartAPITicker.
+     */
+    public SmartAPITicker(String clientId, String feedToken, String script, String task) {
 
-		this.clientId = clientId;
-		this.feedToken = feedToken;
-		this.script = script;
-		this.task = task;
+        this.clientId = clientId;
+        this.feedToken = feedToken;
+        this.script = script;
+        this.task = task;
 
-		try {
+        try {
 
-			context = NaiveSSLContext.getInstance("TLS");
-			ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(wsuri);
+            context = NaiveSSLContext.getInstance("TLS");
+            ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(wsuri);
 
-		} catch (IOException e) {
-			if (onErrorListener != null) {
-				onErrorListener.onError(e);
-			}
-			return;
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
+        } catch (IOException e) {
+            if (onErrorListener != null) {
+                onErrorListener.onError(e);
+            }
+            return;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
-		ws.addListener(getWebsocketAdapter());
+        ws.addListener(getWebsocketAdapter());
 
-	}
+    }
 
 //	/**
 //	 * Set error listener.
@@ -80,23 +76,25 @@ public class SmartAPITicker {
 //		onErrorListener = listener;
 //	}
 
-	/**
-	 * Set listener for listening to ticks.
-	 * 
-	 * @param onTickerArrivalListener is listener which listens for each tick.
-	 */
-	public void setOnTickerArrivalListener(OnTicks onTickerArrivalListener) {
-		this.onTickerArrivalListener = onTickerArrivalListener;
-	}
+    public static byte[] decompress(byte[] compressedTxt) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try (OutputStream ios = new InflaterOutputStream(os)) {
+            ios.write(compressedTxt);
+        } finally {
+            os.close();
+        }
 
-	/**
-	 * Set listener for on connection established.
-	 * 
-	 * @param listener is used to listen to onConnected event.
-	 */
-	public void setOnConnectedListener(OnConnect listener) {
-		onConnectedListener = listener;
-	}
+        return os.toByteArray();
+    }
+
+    /**
+     * Set listener for listening to ticks.
+     *
+     * @param onTickerArrivalListener is listener which listens for each tick.
+     */
+    public void setOnTickerArrivalListener(OnTicks onTickerArrivalListener) {
+        this.onTickerArrivalListener = onTickerArrivalListener;
+    }
 
 //	/**
 //	 * Set listener for on connection is disconnected.
@@ -107,189 +105,160 @@ public class SmartAPITicker {
 //		onDisconnectedListener = listener;
 //	}
 
-	/** Returns a WebSocketAdapter to listen to ticker related events. */
-	public WebSocketAdapter getWebsocketAdapter() {
-		return new WebSocketAdapter() {
+    /**
+     * Set listener for on connection established.
+     *
+     * @param listener is used to listen to onConnected event.
+     */
+    public void setOnConnectedListener(OnConnect listener) {
+        onConnectedListener = listener;
+    }
 
-			@Override
-			public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
-				// Send a text frame.
-				JSONObject wsCNJSONRequest = new JSONObject();
-				wsCNJSONRequest.put("task", "cn");
-				wsCNJSONRequest.put("channel", "");
-				wsCNJSONRequest.put("token", feedToken);
-				wsCNJSONRequest.put("user", clientId);
-				wsCNJSONRequest.put("acctid", clientId);
-				ws.sendText(wsCNJSONRequest.toString());
-				onConnectedListener.onConnected();
+    /**
+     * Returns a WebSocketAdapter to listen to ticker related events.
+     */
+    public WebSocketAdapter getWebsocketAdapter() {
+        return new WebSocketAdapter() {
 
-				Runnable runnable = new Runnable() {
-					public void run() {
-						JSONObject wsMWJSONRequest = new JSONObject();
-						wsMWJSONRequest.put("task", "hb");
-						wsMWJSONRequest.put("channel", "");
-						wsMWJSONRequest.put("token", feedToken);
-						wsMWJSONRequest.put("user", clientId);
-						wsMWJSONRequest.put("acctid", clientId);
-						ws.sendText(wsMWJSONRequest.toString());
-					}
-				};
+            @Override
+            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
+                // Send a text frame.
 
-				ScheduledExecutorService service = Executors
+                ws.sendText(createWsCNJSONRequest().toString());
+                onConnectedListener.onConnected();
 
-						.newSingleThreadScheduledExecutor();
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        ws.sendText(createWsMWJSONRequest().toString());
+                    }
+                };
 
-				service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
+                ScheduledExecutorService service = Executors
+                        .newSingleThreadScheduledExecutor();
 
-			}
+                service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
 
-			@Override
-			public void onTextMessage(WebSocket websocket, String message) throws IOException, DataFormatException {
-				byte[] decoded = Base64.getDecoder().decode(message);
-				byte[] result = decompress(decoded);
-				String str = new String(result, StandardCharsets.UTF_8);
+            }
 
-				JSONArray tickerData = new JSONArray(str);
+            private JSONObject createWsCNJSONRequest() {
+                JSONObject wsCNJSONRequest = new JSONObject();
+                wsCNJSONRequest.put(Constants.SmartAPITicker_task, "cn");
+                wsCNJSONRequest.put(Constants.SmartAPITicker_channel, "");
+                wsCNJSONRequest.put(Constants.SmartAPITicker_channel, feedToken);
+                wsCNJSONRequest.put(Constants.SmartAPITicker_user, clientId);
+                wsCNJSONRequest.put(Constants.SmartAPITicker_acctid, clientId);
+                return wsCNJSONRequest;
+            }
 
-				if (onTickerArrivalListener != null) {
-					onTickerArrivalListener.onTicks(tickerData);
-				}
-			}
+            private JSONObject createWsMWJSONRequest() {
+                JSONObject wsMWJSONRequest = new JSONObject();
+                wsMWJSONRequest.put(Constants.SmartAPITicker_task, "hb");
+                wsMWJSONRequest.put(Constants.SmartAPITicker_channel, "");
+                wsMWJSONRequest.put(Constants.SmartAPITicker_token, feedToken);
+                wsMWJSONRequest.put(Constants.SmartAPITicker_user, clientId);
+                wsMWJSONRequest.put(Constants.SmartAPITicker_acctid, clientId);
+                return wsMWJSONRequest;
+            }
 
-			@Override
-			public void onBinaryMessage(WebSocket websocket, byte[] binary) {
-				try {
-					super.onBinaryMessage(websocket, binary);
-				} catch (Exception e) {
-					e.printStackTrace();
-					if (onErrorListener != null) {
-						onErrorListener.onError(e);
-					}
-				}
-			}
+            @Override
+            public void onTextMessage(WebSocket websocket, String message) throws IOException, DataFormatException {
+                byte[] decoded = Base64.getDecoder().decode(message);
+                byte[] result = decompress(decoded);
+                String str = new String(result, StandardCharsets.UTF_8);
 
-			/**
-			 * On disconnection, return statement ensures that the thread ends.
-			 *
-			 * @param websocket
-			 * @param serverCloseFrame
-			 * @param clientCloseFrame
-			 * @param closedByServer
-			 * @throws Exception
-			 */
-			@Override
-			public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,
-					WebSocketFrame clientCloseFrame, boolean closedByServer) {
+                JSONArray tickerData = new JSONArray(str);
 
-				try {
-					context = NaiveSSLContext.getInstance("TLS");
-					ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(wsuri);
-					ws.addListener(getWebsocketAdapter());
-					connect();
+                if (onTickerArrivalListener != null) {
+                    onTickerArrivalListener.onTicks(tickerData);
+                }
+            }
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-	}
+            @Override
+            public void onBinaryMessage(WebSocket websocket, byte[] binary) {
+                try {
+                    super.onBinaryMessage(websocket, binary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (onErrorListener != null) {
+                        onErrorListener.onError(e);
+                    }
+                }
+            }
 
-	/** Disconnects websocket connection. */
-	public void disconnect() {
+            /**
+             * On disconnection, return statement ensures that the thread ends.
+             *
+             * @param websocket
+             * @param serverCloseFrame
+             * @param clientCloseFrame
+             * @param closedByServer
+             * @throws Exception
+             */
+            @Override
+            public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,
+                                       WebSocketFrame clientCloseFrame, boolean closedByServer) {
 
-		if (ws != null && ws.isOpen()) {
-			ws.disconnect();
-		}
-	}
+                try {
+                    context = NaiveSSLContext.getInstance("TLS");
+                    ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(wsuri);
+                    ws.addListener(getWebsocketAdapter());
+                    connect();
 
-	/**
-	 * Returns true if websocket connection is open.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isConnectionOpen() {
-		if (ws != null) {
-			if (ws.isOpen()) {
-				return true;
-			}
-		}
-		return false;
-	}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
 
-	/**
-	 * Subscribes script.
-	 */
-	public void subscribe() {
 
-		if (ws != null) {
-			if (ws.isOpen()) {
 
-				JSONObject wsMWJSONRequest = new JSONObject();
-				wsMWJSONRequest.put("task", this.task);
-				wsMWJSONRequest.put("channel", this.script);
-				wsMWJSONRequest.put("token", this.feedToken);
-				wsMWJSONRequest.put("user", this.clientId);
-				wsMWJSONRequest.put("acctid", this.clientId);
+    /**
+     * Returns true if websocket connection is open.
+     *
+     * @return boolean
+     */
+    public boolean isConnectionOpen() {
+        return ws != null && ws.isOpen();
+    }
 
-				ws.sendText(wsMWJSONRequest.toString());
+    /**
+     * Subscribes script.
+     */
+    public void subscribe() {
 
-			} else {
-				if (onErrorListener != null) {
-					onErrorListener.onError(new SmartAPIException("ticker is not connected", "504"));
-				}
-			}
-		} else {
-			if (onErrorListener != null) {
-				onErrorListener.onError(new SmartAPIException("ticker is null not connected", "504"));
-			}
-		}
-	}
+        if (ws != null) {
+            if (ws.isOpen()) {
+                ws.sendText(createWsMWJSONRequest().toString());
+            } else {
+                if (onErrorListener != null) {
+                    onErrorListener.onError(new SmartAPIException("ticker is not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
+                }
+            }
+        } else {
+            if (onErrorListener != null) {
+                onErrorListener.onError(new SmartAPIException("ticker is null not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
+            }
+        }
+    }
 
-	/**
-	 * runSript script.
-	 */
-	public void resubscribe() {
+    private JSONObject createWsMWJSONRequest() {
+        JSONObject wsMWJSONRequest = new JSONObject();
+        wsMWJSONRequest.put("task", this.task);
+        wsMWJSONRequest.put("channel", this.script);
+        wsMWJSONRequest.put("token", this.feedToken);
+        wsMWJSONRequest.put("user", this.clientId);
+        wsMWJSONRequest.put("acctid", this.clientId);
+        return wsMWJSONRequest;
+    }
 
-		if (ws != null) {
-			if (ws.isOpen()) {
+    public void connect() {
+        try {
+            ws.connect();
+        } catch (WebSocketException e) {
+            e.printStackTrace();
+        }
 
-				JSONObject wsMWJSONRequest = new JSONObject();
-				wsMWJSONRequest.put("task", this.task);
-				wsMWJSONRequest.put("channel", this.script);
-				wsMWJSONRequest.put("token", this.feedToken);
-				wsMWJSONRequest.put("user", this.clientId);
-				wsMWJSONRequest.put("acctid", this.clientId);
-
-				ws.sendText(wsMWJSONRequest.toString());
-
-			} else {
-				if (onErrorListener != null) {
-					onErrorListener.onError(new SmartAPIException("ticker is not connected", "504"));
-				}
-			}
-		} else {
-			if (onErrorListener != null) {
-				onErrorListener.onError(new SmartAPIException("ticker is null not connected", "504"));
-			}
-		}
-	}
-
-	public static byte[] decompress(byte[] compressedTxt) throws IOException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try (OutputStream ios = new InflaterOutputStream(os)) {
-			ios.write(compressedTxt);
-		}
-
-		return os.toByteArray();
-	}
-
-	public void connect() {
-		try {
-			ws.connect();
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		}
-
-	}
+    }
 
 }

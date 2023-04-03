@@ -16,6 +16,7 @@ import java.util.zip.InflaterOutputStream;
 
 import javax.net.ssl.SSLContext;
 
+import com.angelbroking.smartapi.utils.Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,21 +28,21 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import org.apache.http.HttpStatus;
 
 public class SmartWebsocket {
 
 	private Routes routes = new Routes();
-	private final String wsuri = routes.getSWsuri();
 	private SmartWSOnTicks onTickerArrivalListener;
 	private SmartWSOnConnect onConnectedListener;
 	private SmartWSOnDisconnect onDisconnectedListener;
 	private SmartWSOnError onErrorListener;
 	private WebSocket ws;
-	private String clientId;
-	private String jwtToken;
-	private String apiKey;
-	private String actionType;
-	private String feedType;
+	private final String clientId;
+	private final String jwtToken;
+	private final String apiKey;
+	private final String actionType;
+	private final String feedType;
 
 	/**
 	 * Initialize SmartAPITicker.
@@ -55,16 +56,21 @@ public class SmartWebsocket {
 		this.feedType = feedType;
 
 		try {
-			String swsuri = wsuri + "?jwttoken=" + this.jwtToken + "&&clientcode=" + this.clientId + "&&apikey="
-					+ this.apiKey;
+			StringBuilder sb = new StringBuilder();
+			sb.append(routes.getSWsuri())
+					.append("?jwttoken=")
+					.append(this.jwtToken)
+					.append("&&clientcode=")
+					.append(this.clientId)
+					.append("&&apikey=")
+					.append(this.apiKey);
 			SSLContext context = NaiveSSLContext.getInstance("TLS");
-			ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(swsuri);
+			ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(sb.toString());
 
 		} catch (IOException e) {
 			if (onErrorListener != null) {
 				onErrorListener.onError(e);
 			}
-			return;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -120,11 +126,11 @@ public class SmartWebsocket {
 				Runnable runnable = new Runnable() {
 					public void run() {
 						JSONObject wsMWJSONRequest = new JSONObject();
-						wsMWJSONRequest.put("actiontype", actionType);
-						wsMWJSONRequest.put("feedtype", feedType);
-						wsMWJSONRequest.put("jwttoken", jwtToken);
-						wsMWJSONRequest.put("clientcode", clientId);
-						wsMWJSONRequest.put("apikey", apiKey);
+						wsMWJSONRequest.put(Constants.ACTION_TYPE, actionType);
+						wsMWJSONRequest.put(Constants.FEEED_TYPE, feedType);
+						wsMWJSONRequest.put(Constants.JWT_TOKEN, jwtToken);
+						wsMWJSONRequest.put(Constants.CLIENT_CODE, clientId);
+						wsMWJSONRequest.put(Constants.API_KEY, apiKey);
 						ws.sendText(wsMWJSONRequest.toString());
 					}
 				};
@@ -206,12 +212,7 @@ public class SmartWebsocket {
 	 * @return boolean
 	 */
 	public boolean isConnectionOpen() {
-		if (ws != null) {
-			if (ws.isOpen()) {
-				return true;
-			}
-		}
-		return false;
+		return ws != null && ws.isOpen();
 	}
 
 	/**
@@ -233,12 +234,12 @@ public class SmartWebsocket {
 
 			} else {
 				if (onErrorListener != null) {
-					onErrorListener.onError(new SmartAPIException("ticker is not connected", "504"));
+					onErrorListener.onError(new SmartAPIException("ticker is not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
 				}
 			}
 		} else {
 			if (onErrorListener != null) {
-				onErrorListener.onError(new SmartAPIException("ticker is null not connected", "504"));
+				onErrorListener.onError(new SmartAPIException("ticker is null not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
 			}
 		}
 	}
@@ -247,6 +248,8 @@ public class SmartWebsocket {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try (OutputStream ios = new InflaterOutputStream(os)) {
 			ios.write(compressedTxt);
+		}finally {
+			os.close();
 		}
 
 		return os.toByteArray();

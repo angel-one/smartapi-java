@@ -1,0 +1,19 @@
+public User parseResponse(JSONObject response) throws JSONException {
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+
+        @Override
+        public Date deserialize(JsonElement jsonElement, Type type,
+                                JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            try {
+                return DateFormat.getDateInstance().parse(jsonElement.getAsString());
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+    });
+    Gson gson = gsonBuilder.create();
+    User user = gson.fromJson(String.valueOf(response.get(Constants.USER_DATA)), User.class);
+    user = parseArray(user, response.getJSONObject(Constants.USER_DATA));
+    return user;
+}

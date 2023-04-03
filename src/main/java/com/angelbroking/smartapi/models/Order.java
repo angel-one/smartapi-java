@@ -111,18 +111,44 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [disclosedQuantity=" + disclosedQuantity + ", duration=" + duration + ", tradingSymbol="
-				+ tradingSymbol + ", variety=" + variety + ", orderType=" + orderType + ", triggerPrice=" + triggerPrice
-				+ ", text=" + text + ", price=" + price + ", status=" + status + ", productType=" + productType
-				+ ", exchange=" + exchange + ", orderId=" + orderId + ", symbol=" + symbol + ", updateTime="
-				+ updateTime + ", exchangeTimestamp=" + exchangeTimestamp + ", exchangeUpdateTimestamp="
-				+ exchangeUpdateTimestamp + ", averagePrice=" + averagePrice + ", transactionType=" + transactionType
-				+ ", quantity=" + quantity + ", squareOff=" + squareOff + ", stopLoss=" + stopLoss
-				+ ", trailingStopLoss=" + trailingStopLoss + ", symbolToken=" + symbolToken + ", instrumentType="
-				+ instrumentType + ", strikePrice=" + strikePrice + ", optionType=" + optionType + ", expiryDate="
-				+ expiryDate + ", lotSize=" + lotSize + ", cancelSize=" + cancelSize + ", filledShares=" + filledShares
-				+ ", orderStatus=" + orderStatus + ", unfilledShares=" + unfilledShares + ", fillId=" + fillId
-				+ ", fillTime=" + fillTime + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Order [disclosedQuantity=").append(disclosedQuantity)
+				.append(", duration=").append(duration)
+				.append(", tradingSymbol=").append(tradingSymbol)
+				.append(", variety=").append(variety)
+				.append(", orderType=").append(orderType)
+				.append(", triggerPrice=").append(triggerPrice)
+				.append(", text=").append(text)
+				.append(", price=").append(price)
+				.append(", status=").append(status)
+				.append(", productType=").append(productType)
+				.append(", exchange=").append(exchange)
+				.append(", orderId=").append(orderId)
+				.append(", symbol=").append(symbol)
+				.append(", updateTime=").append(updateTime)
+				.append(", exchangeTimestamp=").append(exchangeTimestamp)
+				.append(", exchangeUpdateTimestamp=").append(exchangeUpdateTimestamp)
+				.append(", averagePrice=").append(averagePrice)
+				.append(", transactionType=").append(transactionType)
+				.append(", quantity=").append(quantity)
+				.append(", squareOff=").append(squareOff)
+				.append(", stopLoss=").append(stopLoss)
+				.append(", trailingStopLoss=").append(trailingStopLoss)
+				.append(", symbolToken=").append(symbolToken)
+				.append(", instrumentType=").append(instrumentType)
+				.append(", strikePrice=").append(strikePrice)
+				.append(", optionType=").append(optionType)
+				.append(", expiryDate=").append(expiryDate)
+				.append(", lotSize=").append(lotSize)
+				.append(", cancelSize=").append(cancelSize)
+				.append(", filledShares=").append(filledShares)
+				.append(", orderStatus=").append(orderStatus)
+				.append(", unfilledShares=").append(unfilledShares)
+				.append(", fillId=").append(fillId)
+				.append(", fillTime=").append(fillTime)
+				.append("]");
+		return sb.toString();
 	}
+
 
 }

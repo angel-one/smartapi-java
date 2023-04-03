@@ -275,30 +275,30 @@ public class SmartConnect {
 
 			if (orderParams.exchange != null)
 				params.put("exchange", orderParams.exchange);
-			if (orderParams.tradingsymbol != null)
-				params.put("tradingsymbol", orderParams.tradingsymbol);
-			if (orderParams.transactiontype != null)
-				params.put("transactiontype", orderParams.transactiontype);
+			if (orderParams.tradingSymbol != null)
+				params.put("tradingsymbol", orderParams.tradingSymbol);
+			if (orderParams.transactionType != null)
+				params.put("transactiontype", orderParams.transactionType);
 			if (orderParams.quantity != null)
 				params.put("quantity", orderParams.quantity);
 			if (orderParams.price != null)
 				params.put("price", orderParams.price);
-			if (orderParams.producttype != null)
-				params.put("producttype", orderParams.producttype);
-			if (orderParams.ordertype != null)
-				params.put("ordertype", orderParams.ordertype);
+			if (orderParams.productType != null)
+				params.put("producttype", orderParams.productType);
+			if (orderParams.orderType != null)
+				params.put("ordertype", orderParams.orderType);
 			if (orderParams.duration != null)
 				params.put("duration", orderParams.duration);
 			if (orderParams.price != null)
 				params.put("price", orderParams.price);
-			if (orderParams.symboltoken != null)
-				params.put("symboltoken", orderParams.symboltoken);
-			if (orderParams.squareoff != null)
-				params.put("squareoff", orderParams.squareoff);
-			if (orderParams.stoploss != null)
-				params.put("stoploss", orderParams.stoploss);
-			if (orderParams.triggerprice != null)
-				params.put("triggerprice", orderParams.triggerprice);
+			if (orderParams.symbolToken != null)
+				params.put("symboltoken", orderParams.symbolToken);
+			if (orderParams.squareOff != null)
+				params.put("squareoff", orderParams.squareOff);
+			if (orderParams.stopLoss != null)
+				params.put("stoploss", orderParams.stopLoss);
+			if (orderParams.triggerPrice != null)
+				params.put("triggerprice", orderParams.triggerPrice);
 
 			params.put("variety", variety);
 
@@ -332,18 +332,18 @@ public class SmartConnect {
 
 			if (orderParams.exchange != null)
 				params.put("exchange", orderParams.exchange);
-			if (orderParams.tradingsymbol != null)
-				params.put("tradingsymbol", orderParams.tradingsymbol);
-			if (orderParams.symboltoken != null)
-				params.put("symboltoken", orderParams.symboltoken);
+			if (orderParams.tradingSymbol != null)
+				params.put("tradingsymbol", orderParams.tradingSymbol);
+			if (orderParams.symbolToken != null)
+				params.put("symboltoken", orderParams.symbolToken);
 			if (orderParams.quantity != null)
 				params.put("quantity", orderParams.quantity);
 			if (orderParams.price != null)
 				params.put("price", orderParams.price);
-			if (orderParams.producttype != null)
-				params.put("producttype", orderParams.producttype);
-			if (orderParams.ordertype != null)
-				params.put("ordertype", orderParams.ordertype);
+			if (orderParams.productType != null)
+				params.put("producttype", orderParams.productType);
+			if (orderParams.orderType != null)
+				params.put("ordertype", orderParams.orderType);
 			if (orderParams.duration != null)
 				params.put("duration", orderParams.duration);
 
@@ -544,26 +544,26 @@ public class SmartConnect {
 
 			JSONObject params = new JSONObject();
 
-			if (gttParams.tradingsymbol != null)
-				params.put("tradingsymbol", gttParams.tradingsymbol);
-			if (gttParams.symboltoken != null)
-				params.put("symboltoken", gttParams.symboltoken);
+			if (gttParams.tradingSymbol != null)
+				params.put("tradingsymbol", gttParams.tradingSymbol);
+			if (gttParams.symbolToken != null)
+				params.put("symboltoken", gttParams.symbolToken);
 			if (gttParams.exchange != null)
 				params.put("exchange", gttParams.exchange);
-			if (gttParams.transactiontype != null)
-				params.put("transactiontype", gttParams.transactiontype);
-			if (gttParams.producttype != null)
-				params.put("producttype", gttParams.producttype);
+			if (gttParams.transactionType != null)
+				params.put("transactiontype", gttParams.transactionType);
+			if (gttParams.productType != null)
+				params.put("producttype", gttParams.productType);
 			if (gttParams.price != null)
 				params.put("price", gttParams.price);
 			if (gttParams.qty != null)
 				params.put("qty", gttParams.qty);
-			if (gttParams.triggerprice != null)
-				params.put("triggerprice", gttParams.triggerprice);
-			if (gttParams.disclosedqty != null)
-				params.put("disclosedqty", gttParams.disclosedqty);
-			if (gttParams.timeperiod != null)
-				params.put("timeperiod", gttParams.timeperiod);
+			if (gttParams.triggerPrice != null)
+				params.put("triggerprice", gttParams.triggerPrice);
+			if (gttParams.disclosedQty != null)
+				params.put("disclosedqty", gttParams.disclosedQty);
+			if (gttParams.timePeriod != null)
+				params.put("timeperiod", gttParams.timePeriod);
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 			Gtt gtt = new Gtt();
@@ -591,20 +591,20 @@ public class SmartConnect {
 
 			JSONObject params = new JSONObject();
 
-			if (gttParams.symboltoken != null)
-				params.put("symboltoken", gttParams.symboltoken);
+			if (gttParams.symbolToken != null)
+				params.put("symboltoken", gttParams.symbolToken);
 			if (gttParams.exchange != null)
 				params.put("exchange", gttParams.exchange);
 			if (gttParams.price != null)
 				params.put("price", gttParams.price);
 			if (gttParams.qty != null)
 				params.put("qty", gttParams.qty);
-			if (gttParams.triggerprice != null)
-				params.put("triggerprice", gttParams.triggerprice);
-			if (gttParams.disclosedqty != null)
-				params.put("disclosedqty", gttParams.disclosedqty);
-			if (gttParams.timeperiod != null)
-				params.put("timeperiod", gttParams.timeperiod);
+			if (gttParams.triggerPrice != null)
+				params.put("triggerprice", gttParams.triggerPrice);
+			if (gttParams.disclosedQty != null)
+				params.put("disclosedqty", gttParams.disclosedQty);
+			if (gttParams.timePeriod != null)
+				params.put("timeperiod", gttParams.timePeriod);
 
 			params.put("id", id);
 

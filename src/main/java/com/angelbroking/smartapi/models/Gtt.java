@@ -35,12 +35,23 @@ public class Gtt {
 
 	@SerializedName("timeperiod")
 	public Integer timePeriod;
-	
+
 	@Override
 	public String toString() {
-		return "Gtt [id=" + id + ", tradingSymbol=" + tradingSymbol + ", symbolToken="
-				+ symbolToken + ", exchange=" + exchange + ", transactionType=" + transactionType + ", productType=" + productType
-				+ ", price=" + price + ", quantity=" + quantity + ", triggerPrice=" + triggerPrice + ", disclosedQty=" + disclosedQty
-				+ ", timePeriod=" + timePeriod + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Gtt [id=").append(id)
+				.append(", tradingSymbol=").append(tradingSymbol)
+				.append(", symbolToken=").append(symbolToken)
+				.append(", exchange=").append(exchange)
+				.append(", transactionType=").append(transactionType)
+				.append(", productType=").append(productType)
+				.append(", price=").append(price)
+				.append(", quantity=").append(quantity)
+				.append(", triggerPrice=").append(triggerPrice)
+				.append(", disclosedQty=").append(disclosedQty)
+				.append(", timePeriod=").append(timePeriod)
+				.append("]");
+		return sb.toString();
 	}
+
 }

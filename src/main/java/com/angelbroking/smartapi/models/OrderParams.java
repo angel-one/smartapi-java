@@ -1,77 +1,90 @@
 package com.angelbroking.smartapi.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /** A wrapper for order params to be sent while placing an order. */
 public class OrderParams {
 
-	public String orderid;
+	@SerializedName("orderid")
+	public String orderId;
+
 	/**
 	 * Exchange in which instrument is listed (NSE, BSE, NFO, BFO, CDS, MCX).
 	 */
-
+	@SerializedName("exchange")
 	public String exchange;
 
 	/**
-	 * symboltoken of the instrument.
+	 * Symbol Token is unique identifier.
 	 */
-
+	@SerializedName("symbolToken")
 	public String symbolToken;
 
 	/**
 	 * Transaction type (BUY or SELL).
 	 */
-
-	public String transactiontype;
+	@SerializedName("transactiontype")
+	public String transactionType;
 
 	/**
-	 * Order quantity
+	 * Quantity to transact
 	 */
-
+	@SerializedName("quantity")
 	public Integer quantity;
 
 	/**
-	 * Order Price
+	 * The min or max price to execute the order at (for LIMIT orders)
 	 */
-
+	@SerializedName("price")
 	public Double price;
 
 	/**
 	 * producttype code (NRML, MIS, CNC).
 	 */
-
-	public String producttype;
+	@SerializedName("producttype")
+	public String productType;
 
 	/**
 	 * Order type (LIMIT, SL, SL-M, MARKET).
 	 */
-
-	public String ordertype;
+	@SerializedName("ordertype")
+	public String orderType;
 
 	/**
 	 * Order duration (DAY, IOC).
 	 */
-
+	@SerializedName("duration")
 	public String duration;
 
 	/**
 	 * variety
 	 */
-
+	@SerializedName("variety")
 	public String variety;
 
 	/**
-	 * Order duration (DAY, IOC).
+	 * Trading Symbol of the instrument
 	 */
+	@SerializedName("tradingsymbol")
+	public String tradingSymbol;
 
-	public String tradingsymbol;
-	
-	public String triggerprice;
-	
-	public String squareoff;
-	
-	public String stoploss;
-	
-	public String symboltoken;
-	
-	
+	/**
+	 * The price at which an order should be triggered (SL, SL-M)
+	 */
+	@SerializedName("triggerprice")
+	public String triggerPrice;
+
+	/**
+	 * Only For ROBO (Bracket Order)
+	 */
+	@SerializedName("squareoff")
+	public String squareOff;
+
+	/**
+	 * Only For ROBO (Bracket Order)
+	 */
+	@SerializedName("stoploss")
+	public String stopLoss;
+
 
 }
