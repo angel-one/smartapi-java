@@ -210,7 +210,6 @@ public class SmartConnect {
 			params.put("checksum", sha256hex);
 			String url = routes.get("api.refresh");
 			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println("jsonObject: "+response);
 			accessToken = response.getJSONObject("data").getString("jwtToken");
 			refreshToken = response.getJSONObject("data").getString("refreshToken");
 
@@ -303,7 +302,6 @@ public class SmartConnect {
 			params.put("variety", variety);
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println("jsonObject: "+jsonObject);
 			Order order = new Order();
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
 			logger.info(String.valueOf(order));
@@ -351,7 +349,6 @@ public class SmartConnect {
 			params.put("orderid", orderId);
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println("JsonObject: "+jsonObject);
 			Order order = new Order();
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
 			return order;
@@ -378,7 +375,6 @@ public class SmartConnect {
 			params.put("orderid", orderId);
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println("jsonObject: "+jsonObject);
 
 			Order order = new Order();
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
@@ -428,7 +424,6 @@ public class SmartConnect {
 
 			String url = routes.get("api.ltp.data");
 			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println("jsonObject: "+response);
 			return response.getJSONObject("data");
 		} catch (Exception | SmartAPIException e) {
 			logger.info(e.getMessage());
@@ -445,7 +440,6 @@ public class SmartConnect {
 		try {
 			String url = routes.get("api.order.trade.book");
 			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			System.out.println("jsonObject: "+response);
 			return response;
 		} catch (Exception | SmartAPIException e) {
 			logger.info(e.getMessage());
@@ -466,7 +460,6 @@ public class SmartConnect {
 		try {
 			String url = routes.get("api.order.rms.data");
 			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			System.out.println("jsonObject: "+response);
 			return response.getJSONObject("data");
 		} catch (Exception | SmartAPIException e) {
 			logger.info(e.getMessage());
@@ -484,7 +477,6 @@ public class SmartConnect {
 		try {
 			String url = routes.get("api.order.rms.holding");
 			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			System.out.println("jsonObject: "+response);
 			return response;
 		} catch (Exception | SmartAPIException e) {
 			logger.info(e.getMessage());
@@ -502,7 +494,6 @@ public class SmartConnect {
 		try {
 			String url = routes.get("api.order.rms.position");
 			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			System.out.println("jsonObject: "+response);
 			return response;
 		} catch (Exception | SmartAPIException e) {
 			logger.info(e.getMessage());

@@ -16,14 +16,18 @@ import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.TokenException;
 
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Response handler for handling all the responses.
  */
 public class SmartAPIResponseHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(SmartConnect.class);
+
 	public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
-		System.out.println("***************************");
+		logger.info("***************************");
 		if (response.header("Content-Type").contains("json")) {
 			JSONObject jsonObject = new JSONObject(body);
 			
@@ -36,7 +40,7 @@ public class SmartAPIResponseHandler {
 					throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
 				}
 			}
-			//System.out.println(jsonObject);
+			//logger.info(jsonObject);
 			return jsonObject;
 		} else {
 			throw new DataException("Unexpected content type received from server: " + response.header("Content-Type")

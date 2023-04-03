@@ -26,11 +26,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Request handler for all Http requests
  */
 public class SmartAPIRequestHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(SmartConnect.class);
 
 	private OkHttpClient client;
 	private String USER_AGENT = "javasmartapiconnect/3.0.0";
@@ -105,10 +109,10 @@ public class SmartAPIRequestHandler {
 			String sourceID = "WEB";
 			headers.put("sourceID", sourceID);
 
-			System.out.print(headers);
+			logger.info(headers.toString());
 			return headers;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 			return null;
 		}
 
@@ -317,8 +321,8 @@ public class SmartAPIRequestHandler {
 					.header("X-SourceID", apiheader.getString("sourceID")).build();
 			return request;
 		} catch (Exception e) {
-			System.out.println("exception createPostRequest");
-			System.out.println(e.getMessage());
+			logger.info("exception createPostRequest");
+			logger.info(e.getMessage());
 			return null;
 		}
 	}
@@ -350,7 +354,7 @@ public class SmartAPIRequestHandler {
 					.header("X-SourceID", apiheader.getString("sourceID")).build();
 			return request;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 			return null;
 		}
 	}
