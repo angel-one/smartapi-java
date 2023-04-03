@@ -22,16 +22,10 @@ public class Test {
 
 
 			// Initialize SmartAPI
-//			String apiKey = "<apiKey>"; // PROVIDE YOUR API KEY HERE
-//			String clientId = "<clientId>"; // PROVIDE YOUR Client ID HERE
-//			String clientPin = "<clientPin>"; // PROVIDE YOUR Client PIN HERE
-//			String tOTP = "<tOTP>"; // PROVIDE THE CODE DISPLAYED ON YOUR AUTHENTICATOR APP - https://smartapi.angelbroking.com/enable-totp
-
-
-			String apiKey = "zkWvUuLx"; // PROVIDE YOUR API KEY HERE
-			String clientId = "D541276"; // PROVIDE YOUR Client ID HERE
-			String clientPin = "1501"; // PROVIDE YOUR Client PIN HERE
-			String tOTP = "913090"; // PROVIDE THE CODE DISPLAYED ON YOUR AUTHENTICATOR APP - https://smartapi.angelbroking.com/enable-totp
+			String apiKey = "<apiKey>"; // PROVIDE YOUR API KEY HERE
+			String clientId = "<clientId>"; // PROVIDE YOUR Client ID HERE
+			String clientPin = "<clientPin>"; // PROVIDE YOUR Client PIN HERE
+			String tOTP = "<tOTP>"; // PROVIDE THE CODE DISPLAYED ON YOUR AUTHENTICATOR APP - https://smartapi.angelbroking.com/enable-totp
 
 			SmartConnect smartConnect = new SmartConnect(apiKey);
 
