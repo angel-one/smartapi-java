@@ -23,7 +23,6 @@ import okhttp3.Response;
 public class SmartAPIResponseHandler {
 
 	public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
-		System.out.println("***************************");
 		if (response.header("Content-Type").contains("json")) {
 			JSONObject jsonObject = new JSONObject(body);
 			
