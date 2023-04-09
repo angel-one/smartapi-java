@@ -18,7 +18,13 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+/**
 
+ SmartStreamTicker is a class that provides streaming data for the SmartAPI using WebSocket.
+ It listens to ticker related events and notifies the listeners whenever data is received.
+ This class is used for establishing a WebSocket connection to receive the market data feed.
+ The class listens to ticker related events and notifies the listeners whenever data is received.
+ */
 public class SmartStreamTicker {
 
 	private static final Logger logger = LoggerFactory.getLogger(SmartStreamTicker.class);
@@ -39,7 +45,13 @@ public class SmartStreamTicker {
 	private EnumMap<SmartStreamSubsMode, Set<TokenID>> tokensByModeMap = new EnumMap<>(SmartStreamSubsMode.class);
 
 	/**
-	 * Initialize SmartStreamTicker.
+	 * Initializes the SmartStreamTicker.
+	 *
+	 * @param clientId - the client ID used for authentication
+	 * @param feedToken - the feed token used for authentication
+	 * @param smartStreamListener - the SmartStreamListener for receiving callbacks
+	 *
+	 * @throws IllegalArgumentException - if the clientId, feedToken, or smartStreamListener is null or empty
 	 */
 	public SmartStreamTicker(String clientId, String feedToken, SmartStreamListener smartStreamListener) {
 		if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) || smartStreamListener == null) {
@@ -53,6 +65,9 @@ public class SmartStreamTicker {
 		init();
 	}
 
+	/**
+	 * Initializes the WebSocket connection and adds the necessary headers.
+	 */
 	private void init() {
 		try {
 			ws = new WebSocketFactory().setVerifyHostname(false).createSocket(wsuri).setPingInterval(PING_INTERVAL);
@@ -67,6 +82,13 @@ public class SmartStreamTicker {
 		}
 	}
 
+	/**
+	 * Returns a SmartStreamError object with the given Throwable object.
+	 *
+	 * @param e - the Throwable object
+	 *
+	 * @return a SmartStreamError object
+	 */
 	private SmartStreamError getErrorHolder(Throwable e) {
 		SmartStreamError error = new SmartStreamError();
 		error.setException(e);
@@ -127,6 +149,7 @@ public class SmartStreamTicker {
 				}
 			}
 
+
 			@Override
 			public void onPongFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
 				try {
@@ -138,15 +161,7 @@ public class SmartStreamTicker {
 				}
 			}
 
-			/**
-			 * On disconnection, return statement ensures that the thread ends.
-			 *
-			 * @param websocket
-			 * @param serverCloseFrame
-			 * @param clientCloseFrame
-			 * @param closedByServer
-			 * @throws Exception
-			 */
+
 			@Override
 			public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,
 					WebSocketFrame clientCloseFrame, boolean closedByServer) {
@@ -204,7 +219,11 @@ public class SmartStreamTicker {
 	}
 
 	/**
-	 * Subscribes tokens.
+
+	 Subscribes to the SmartStream for a given set of tokens and subscription mode.
+	 @param mode the subscription mode, indicating the level of data required.
+	 @param tokens the set of tokens to subscribe to.
+	 @throws SmartAPIException if an error occurs while attempting to subscribe.
 	 */
 	public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
 		if (ws != null) {
@@ -219,9 +238,6 @@ public class SmartStreamTicker {
 		}
 	}
 
-	/**
-	 * Unsubscribes tokens.
-	 */
 	public void unsubscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
 		if (ws != null) {
 			if (ws.isOpen()) {
@@ -280,6 +296,13 @@ public class SmartStreamTicker {
 		}
 	}
 
+	/**
+	 Generates a JSON request for the SmartStream API with the given parameters.
+	 @param action The SmartStream action to perform.
+	 @param mode The subscription mode to use.
+	 @param tokens The set of token IDs to subscribe to.
+	 @return The JSON request object.
+	 */
 	private JSONObject getApiRequest(SmartStreamAction action, SmartStreamSubsMode mode, Set<TokenID> tokens) {
 		JSONObject params = new JSONObject();
 		params.put("mode", mode.getVal());
@@ -296,5 +319,4 @@ public class SmartStreamTicker {
 		ws.connect();
 		logger.info("connected to uri: "+ wsuri);
 	}
-
 }

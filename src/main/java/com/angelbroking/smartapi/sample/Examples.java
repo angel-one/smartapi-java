@@ -126,7 +126,7 @@ public class Examples {
 
 	/** Get order details */
 	public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		JSONObject orders = smartConnect.getOrderHistory(smartConnect.getUserId());
+		JSONObject orders = smartConnect.getOrderHistory();
 		logger.info(String.valueOf(orders));
 //		for (int i = 0; i < orders.size(); i++) {
 //			logger.info(orders.get(i).orderId + " " + orders.get(i).status);
@@ -200,7 +200,7 @@ public class Examples {
 		gttParams.triggerPrice = 20000.1;
 		gttParams.timePeriod = 300;
 
-		Gtt gtt = smartConnect.gttCreateRule(gttParams);
+		String gtt = smartConnect.gttCreateRule(gttParams);
 	}
 
 	/** Modify Gtt Rule */
@@ -220,7 +220,7 @@ public class Examples {
 
 		Integer id = 1000051;
 
-		Gtt gtt = smartConnect.gttModifyRule(id, gttParams);
+		String gttID = smartConnect.gttModifyRule(id, gttParams);
 	}
 
 	/** Cancel Gtt Rule */

@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.utils;
 
 
+import org.json.JSONObject;
 
 /**
  * Contains all the Strings that are being used in the Smart API Connect library.
@@ -14,37 +15,24 @@ public class Constants {
     /** Product types. */
     public static final String PRODUCT_DELIVERY = "DELIVERY";
     public static final String PRODUCT_INTRADAY = "INTRADAY";
-    public static final String PRODUCT_MARGIN = "MARGIN";
-    public static final String PRODUCT_BO = "BO";
-    public static final String PRODUCT_CARRYFORWARD = "CARRYFORWARD";
+
 
     /** Order types. */
-    public static final String ORDER_TYPE_MARKET = "MARKET";
     public static final String ORDER_TYPE_LIMIT = "LIMIT";
     public static final String ORDER_TYPE_STOPLOSS_LIMIT = "STOPLOSS_LIMIT";
-    public static final String ORDER_TYPE_STOPLOSS_MARKET = "STOPLOSS_MARKET";
 
     /** Variety types. */
     public static final String VARIETY_NORMAL = "NORMAL";
-    public static final String VARIETY_AMO = "AMO";
     public static final String VARIETY_STOPLOSS = "STOPLOSS";
-    public static final String VARIETY_ROBO = "ROBO";
 
     /** Transaction types. */
     public static final String TRANSACTION_TYPE_BUY = "BUY";
-    public static final String TRANSACTION_TYPE_SELL = "SELL";
 
     /** Duration types. */
     public static final String DURATION_DAY = "DAY";
-    public static final String DURATION_IOC = "IOC";
 
     /** Exchanges. */
     public static final String EXCHANGE_NSE = "NSE";
-    public static final String EXCHANGE_BSE = "BSE";
-    public static final String EXCHANGE_NFO = "NFO";
-    public static final String EXCHANGE_CDS = "CDS";
-    public static final String EXCHANGE_NCDEX = "NCDEX";
-    public static final String EXCHANGE_MCX = "MCX";
 
 
     /** SmartStream Routes */
@@ -73,6 +61,47 @@ public class Constants {
     public static final String SmartAPITicker_token  = "token";
     public static final String SmartAPITicker_user  = "user";
     public static final String SmartAPITicker_acctid  = "acctid";
+
+
+
+    /** SmartConnect Constants */
+    public static final String SmartConnect_clientcode  = "clientcode";
+    public static final String SmartConnect_password  = "password";
+    public static final String SmartConnect_totp  = "totp";
+    public static final String SmartConnect_data  = "data";
+    public static final String SmartConnect_api_refresh  = "api.refresh";
+    public static final String SmartConnect_jwtToken  = "jwtToken";
+    public static final String SmartConnect_refreshToken  = "refreshToken";
+    public static final String SmartConnect_feedToken  = "feedToken";
+    public static final String SmartConnect_api_user_profile  = "api.user.profile";
+    public static final String SmartConnect_checksum  = "checksum";
+
+    /** SmartConnect Routes Constants */
+    public static final String SmartConnect_api_order_place  = "api.order.place";
+    public static final String SmartConnect_api_order_modify  = "api.order.modify";
+    public static final String SmartConnect_api_order_cancel  = "api.order.cancel";
+    public static final String SmartConnect_api_order_book  = "api.order.book";
+    public static final String SmartConnect_api_ltp_data  = "api.ltp.data";
+    public static final String SmartConnect_api_order_trade_book  = "api.order.trade.book";
+    public static final String SmartConnect_api_order_rms_data  = "api.order.rms.data";
+    public static final String SmartConnect_api_order_rms_holding  = "api.order.rms.holding";
+    public static final String SmartConnect_api_order_rms_position  = "api.order.rms.position";
+    public static final String SmartConnect_api_order_rms_position_convert  = "api.order.rms.position.convert";
+    public static final String SmartConnect_api_gtt_create  = "api.gtt.create";
+    public static final String SmartConnect_api_gtt_modify  = "api.gtt.modify";
+    public static final String SmartConnect_api_gtt_cancel  = "api.gtt.cancel";
+    public static final String SmartConnect_api_gtt_details  = "api.gtt.details";
+    public static final String SmartConnect_api_gtt_list  = "api.gtt.list";
+    public static final String SmartConnect_api_candle_data  = "api.candle.data";
+    public static final String SmartConnect_api_user_logout  = "api.user.logout";
+//    public static final String SmartConnect_  = "";
+//    public static final String SmartConnect_  = "";
+//    public static final String SmartConnect_  = "";
+//    public static final String SmartConnect_  = "";
+
+
+
+
 
 
 

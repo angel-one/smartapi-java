@@ -53,6 +53,7 @@ public class ByteUtils {
 
 	public static TokenID getTokenID(ByteBuffer byteBuffer) {
 		byte[] token = new byte[CHAR_ARRAY_SIZE];
+
 		for(int i=0; i<CHAR_ARRAY_SIZE; i++) {
 			token[i] = byteBuffer.get(2+i);
 		}
