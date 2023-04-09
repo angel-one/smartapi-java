@@ -7,6 +7,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class SmartAPIRequestHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(SmartAPIRequestHandler.class);
 
     JSONObject apiheader = apiHeaders();
     private final OkHttpClient client;
@@ -51,6 +55,7 @@ public class SmartAPIRequestHandler {
     }
 
     public JSONObject apiHeaders() {
+        BufferedReader sc = null;
         try {
             JSONObject headers = new JSONObject();
 
@@ -61,7 +66,7 @@ public class SmartAPIRequestHandler {
 
             // Public IP Address
             URL urlName = new URL("http://checkip.amazonaws.com");
-            BufferedReader sc = new BufferedReader(new InputStreamReader(urlName.openStream()));
+             sc = new BufferedReader(new InputStreamReader(urlName.openStream()));
             String clientPublicIP = sc.readLine().trim();
             headers.put("clientPublicIP", clientPublicIP);
             String macAddress = null;
@@ -98,11 +103,20 @@ public class SmartAPIRequestHandler {
             String sourceID = "WEB";
             headers.put("sourceID", sourceID);
 
-            System.out.print(headers);
+            logger.debug(String.valueOf(headers));
             return headers;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return null;
+        }finally{
+            if(sc != null) {
+                try {
+                    sc.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+
         }
 
     }
@@ -124,7 +138,7 @@ public class SmartAPIRequestHandler {
         Request request = createPostRequest(apiKey, url, params);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
-        System.out.println("Body"+body);
+        logger.debug("Body"+body);
         return new SmartAPIResponseHandler().handle(response, body);
 
     }
@@ -306,8 +320,8 @@ public class SmartAPIRequestHandler {
                     .header("X-SourceID", apiheader.getString("sourceID")).build();
             return request;
         } catch (Exception e) {
-            System.out.println("exception createPostRequest");
-            System.out.println(e.getMessage());
+            logger.error("exception createPostRequest");
+            logger.error(e.getMessage());
             return null;
         }
     }
@@ -339,7 +353,7 @@ public class SmartAPIRequestHandler {
                     .header("X-SourceID", apiheader.getString("sourceID")).build();
             return request;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return null;
         }
     }

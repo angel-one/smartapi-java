@@ -94,10 +94,32 @@ public class Constants {
     public static final String SmartConnect_api_gtt_list  = "api.gtt.list";
     public static final String SmartConnect_api_candle_data  = "api.candle.data";
     public static final String SmartConnect_api_user_logout  = "api.user.logout";
-//    public static final String SmartConnect_  = "";
-//    public static final String SmartConnect_  = "";
-//    public static final String SmartConnect_  = "";
-//    public static final String SmartConnect_  = "";
+
+    /** Order model Constants */
+    public static final String EXCHANGE = "exchange";
+    public static final String TRADING_SYMBOL = "tradingsymbol";
+    public static final String TRANSACTION_TYPE = "transactiontype";
+    public static final String QUANTITY = "quantity";
+    public static final String PRICE = "price";
+    public static final String PRODUCT_TYPE = "producttype";
+    public static final String ORDER_TYPE = "ordertype";
+    public static final String DURATION = "duration";
+    public static final String SYMBOL_TOKEN = "symboltoken";
+    public static final String SQUARE_OFF = "squareoff";
+    public static final String STOP_LOSS = "stoploss";
+    public static final String TRIGGER_PRICE = "triggerprice";
+    public static final String VARIETY = "variety";
+    public static final String ORDER_ID = "orderid";
+
+    /** ruleList Constants */
+    public static final String STATUS = "status";
+    public static final String PAGE = "page";
+    public static final String COUNT = "count";
+
+    public static final String ID = "id";
+    public static final String QTY = "qty";
+    public static final String DISCLOSED_QTY = "disclosedqty";
+    public static final String TIME_PERIOD = "timeperiod";
 
 
 

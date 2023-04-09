@@ -243,15 +243,15 @@ public class Examples {
 	@SuppressWarnings("serial")
 	public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-		List<String> status = new ArrayList<String>() {
-			{
-				add("NEW");
-				add("CANCELLED");
-				add("ACTIVE");
-				add("SENTTOEXCHANGE");
-				add("FORALL");
-			}
-		};
+		List<String> status = new ArrayList<String>();
+
+		status.add("NEW");
+		status.add("CANCELLED");
+		status.add("ACTIVE");
+		status.add("SENTTOEXCHANGE");
+		status.add("FORALL");
+
+
 		Integer page = 1;
 		Integer count = 10;
 
