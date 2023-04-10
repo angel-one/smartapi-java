@@ -1,8 +1,14 @@
 package com.angelbroking.smartapi.models;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** A wrapper for order params to be sent while placing an order. */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderParams {
 
 	@SerializedName("orderid")

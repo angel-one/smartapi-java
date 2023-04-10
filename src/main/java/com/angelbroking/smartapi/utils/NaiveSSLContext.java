@@ -16,6 +16,8 @@ package com.angelbroking.smartapi.utils;
  * language governing permissions and limitations under the
  * License.
  */
+import com.angelbroking.smartapi.http.exceptions.CustomException;
+
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -79,7 +81,7 @@ public class NaiveSSLContext {
 			// Set NaiveTrustManager.
 			context.init(null, new TrustManager[] { new NaiveTrustManager() }, null);
 		} catch (KeyManagementException e) {
-			throw new RuntimeException("Failed to initialize an SSLContext.", e);
+			throw new CustomException("Failed to initialize an SSLContext.", e);
 		}
 
 		return context;

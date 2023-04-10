@@ -2,6 +2,7 @@ package com.angelbroking.smartapi.http;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.*;
+import com.angelbroking.smartapi.utils.Constants;
 import okhttp3.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,11 +14,12 @@ import java.io.IOException;
  */
 public class SmartAPIResponseHandler {
 
+
+
     public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
         if (response.header("Content-Type").contains("json")) {
             JSONObject jsonObject = new JSONObject(body);
 
-//			if (jsonObject.optString("data") == null || jsonObject.optString("data") == "") {
             if (!jsonObject.has("status") || jsonObject.has("success")) {
                 if (jsonObject.has("errorcode")) {
                     throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
@@ -44,21 +46,21 @@ public class SmartAPIResponseHandler {
                 if (SmartConnect.sessionExpiryHook != null) {
                     SmartConnect.sessionExpiryHook.sessionExpired();
                 }
-                return new TokenException(jsonObject.getString("message"), code);
+                return new TokenException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "AG8001":
             case "AG8002":
-                return new DataException(jsonObject.getString("message"), code);
+                return new DataException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "AB1004":
             case "AB2000":
-                return new GeneralException(jsonObject.getString("message"), code);
+                return new GeneralException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "AB1003":
             case "AB1005":
             case "AB1012":
             case "AB1002":
-                return new InputException(jsonObject.getString("message"), code);
+                return new InputException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "AB1008":
             case "AB1009":
@@ -67,15 +69,15 @@ public class SmartAPIResponseHandler {
             case "AB1015":
             case "AB1016":
             case "AB1017":
-                return new OrderException(jsonObject.getString("message"), code);
+                return new OrderException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "NetworkException":
-                return new NetworkException(jsonObject.getString("message"), code);
+                return new NetworkException(jsonObject.getString(Constants.MESSAGE), code);
 
             case "AB1000":
             case "AB1001":
             case "AB1011":
-                return new PermissionException(jsonObject.getString("message"), code);
+                return new PermissionException(jsonObject.getString(Constants.MESSAGE), code);
 
             default:
                 return new SmartAPIException(jsonObject.getString("data not found"));

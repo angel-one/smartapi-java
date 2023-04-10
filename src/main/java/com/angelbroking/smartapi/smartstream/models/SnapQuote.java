@@ -1,8 +1,12 @@
 package com.angelbroking.smartapi.smartstream.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SnapQuote {
 	public static final int PACKET_SIZE_IN_BYTES = 379;
 

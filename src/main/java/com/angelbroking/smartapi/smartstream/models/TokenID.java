@@ -1,8 +1,10 @@
 package com.angelbroking.smartapi.smartstream.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class TokenID {
 
 	private ExchangeType exchangeType;

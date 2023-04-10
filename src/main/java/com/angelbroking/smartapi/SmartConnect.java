@@ -27,14 +27,14 @@ public class SmartConnect {
     private static final Logger logger = LoggerFactory.getLogger(SmartConnect.class);
     public static SessionExpiryHook sessionExpiryHook = null;
     public static boolean enableLogging = false;
-    public static final Routes routes = new Routes();
-    private final Proxy proxy = Proxy.NO_PROXY;
-
+    private static final Routes routes = new Routes();
+    private static final Proxy proxy = Proxy.NO_PROXY;
+    private SmartAPIRequestHandler smartAPIRequestHandler;
     private String apiKey;
+    private String orderID = "orderid";
     private String accessToken;
     private String refreshToken;
     private String userId;
-    public SmartAPIRequestHandler smartAPIRequestHandler;
 
 
     public SmartConnect(String apiKey) {
@@ -128,32 +128,34 @@ public class SmartConnect {
 
             loginResultObject = smartAPIRequestHandler.postRequest(this.apiKey, routes.getLoginUrl(), createLoginParams(clientCode, password, totp));
 
-        }catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
 
-        logger.info("genrate: " + loginResultObject);
-        String jwtToken = loginResultObject.getJSONObject(Constants.SmartConnect_data).getString(Constants.SmartConnect_jwtToken);
-        String refreshTokenLocal = loginResultObject.getJSONObject(Constants.SmartConnect_data).getString(Constants.SmartConnect_refreshToken);
-        String feedToken = loginResultObject.getJSONObject(Constants.SmartConnect_data).getString(Constants.SmartConnect_feedToken);
-        String url = routes.get(Constants.SmartConnect_api_user_profile);
+        if(logger.isDebugEnabled()) {
+            logger.debug(String.valueOf(loginResultObject));
+        }
+        String jwtToken = loginResultObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(Constants.SMART_CONNECT_JWT_TOKEN);
+        String refreshTokenLocal = loginResultObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(Constants.SMART_CONNECT_REFRESH_TOKEN);
+        String feedToken = loginResultObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(Constants.SMART_CONNECT_FEED_TOKEN);
+        String url = routes.get(Constants.SMART_CONNECT_API_USER_PROFILE);
         try {
             user = ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, jwtToken));
-        }catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
         user.setAccessToken(jwtToken);
@@ -168,47 +170,11 @@ public class SmartConnect {
         // Create JSON params object needed to be sent to api.
 
         JSONObject params = new JSONObject();
-        params.put(Constants.SmartConnect_clientcode, clientCode);
-        params.put(Constants.SmartConnect_password, password);
-        params.put(Constants.SmartConnect_totp, totp);
+        params.put(Constants.SMART_CONNECT_CLIENT_CODE, clientCode);
+        params.put(Constants.SMART_CONNECT_PASSWORD, password);
+        params.put(Constants.SMART_CONNECT_TOTP, totp);
         return params;
     }
-
-//    /**
-//     * Get a new access token using refresh token.
-//     *
-//     * @param refreshToken is the refresh token obtained after generateSession.
-//     * @param accessToken  is unique for each app.
-//     * @return TokenSet contains user id, refresh token, api secret.
-//     */
-//    public TokenSet renewAccessToken(String accessToken, String refreshToken) {
-//        try {
-//            String hashableText = this.apiKey + refreshToken + accessToken;
-//            String sha256hex = sha256Hex(hashableText);
-//
-//            JSONObject params = new JSONObject();
-//            params.put(Constants.SmartConnect_refreshToken, refreshToken);
-//            params.put(Constants.SmartConnect_checksum, sha256hex);
-//            String url = routes.get(Constants.SmartConnect_api_refresh);
-//            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-//            logger.info("jsonObject: " + response);
-//            accessToken = response.getJSONObject(Constants.SmartConnect_data).getString(Constants.SmartConnect_jwtToken);
-//            refreshToken = response.getJSONObject(Constants.SmartConnect_data).getString(Constants.SmartConnect_refreshToken);
-//
-//            TokenSet tokenSet = new TokenSet();
-//            tokenSet.setUserId(userId);
-//            tokenSet.setAccessToken(accessToken);
-//            tokenSet.setRefreshToken(refreshToken);
-//
-//            return tokenSet;
-//        } catch (SmartAPIException e) {
-//            logger.error(e.getMessage());
-//            return null;
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//            return null;
-//        }
-//    }
 
     /**
      * Hex encodes sha256 output for android support.
@@ -231,17 +197,17 @@ public class SmartConnect {
      */
     public User getProfile() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_user_profile);
+            String url = routes.get(Constants.SMART_CONNECT_API_USER_PROFILE);
             return ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken));
 
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -262,7 +228,7 @@ public class SmartConnect {
             Validators validator = new Validators();
             validator.orderValidator(orderParams);
 
-            String url = routes.get(Constants.SmartConnect_api_order_place);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_PLACE);
 
             JSONObject params = new JSONObject();
             params.put(Constants.EXCHANGE, orderParams.exchange);
@@ -279,21 +245,25 @@ public class SmartConnect {
             params.put(Constants.TRIGGER_PRICE, orderParams.triggerPrice);
             params.put(Constants.VARIETY, variety);
 
-
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info("jsonObject: " + jsonObject);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(jsonObject));
+            }
+
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SmartConnect_data).getString("orderid");
-            logger.info(String.valueOf(order));
+            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(order));
+            }
             return order;
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -312,7 +282,7 @@ public class SmartConnect {
             Validators validator = new Validators();
             validator.modifyOrderValidator(orderParams);
 
-            String url = routes.get(Constants.SmartConnect_api_order_modify);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_MODIFY);
 
             JSONObject params = new JSONObject();
 
@@ -330,18 +300,20 @@ public class SmartConnect {
 
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info("JsonObject: " + jsonObject);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(jsonObject));
+            }
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SmartConnect_data).getString("orderid");
+            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
             return order;
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -356,25 +328,27 @@ public class SmartConnect {
      */
     public Order cancelOrder(String orderId, String variety) {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_cancel);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_CANCEL);
             JSONObject params = new JSONObject();
             params.put(Constants.VARIETY, variety);
             params.put(Constants.ORDER_ID, orderId);
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info("jsonObject: " + jsonObject);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(jsonObject));
+            }
 
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SmartConnect_data).getString("orderid");
+            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
             return order;
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -388,18 +362,20 @@ public class SmartConnect {
     @SuppressWarnings({})
     public JSONObject getOrderHistory() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_book);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_BOOK);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            logger.info("response: " + response);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
             return response;
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -419,18 +395,20 @@ public class SmartConnect {
             params.put(Constants.SYMBOL_TOKEN, symboltoken);
 
 
-            String url = routes.get(Constants.SmartConnect_api_ltp_data);
+            String url = routes.get(Constants.SMART_CONNECT_API_LTP_DATA);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info("jsonObject: " + response);
-            return response.getJSONObject(Constants.SmartConnect_data);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
+            return response.getJSONObject(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -442,18 +420,20 @@ public class SmartConnect {
      */
     public JSONObject getTrades() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_trade_book);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_TRADE_BOOK);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            logger.info("jsonObject: " + response);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
             return response;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -469,18 +449,20 @@ public class SmartConnect {
      */
     public JSONObject getRMS() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_rms_data);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_DATA);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            logger.info("jsonObject: " + response);
-            return response.getJSONObject(Constants.SmartConnect_data);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
+            return response.getJSONObject(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -492,18 +474,20 @@ public class SmartConnect {
      */
     public JSONObject getHolding() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_rms_holding);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_HOLDING);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            logger.info("jsonObject: " + response);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
             return response;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -515,18 +499,20 @@ public class SmartConnect {
      */
     public JSONObject getPosition() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_rms_position);
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_POSITION);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            logger.info("jsonObject: " + response);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
             return response;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -542,17 +528,16 @@ public class SmartConnect {
      */
     public JSONObject convertPosition(JSONObject params) {
         try {
-            String url = routes.get(Constants.SmartConnect_api_order_rms_position_convert);
-            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            return response;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT);
+            return smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -571,7 +556,7 @@ public class SmartConnect {
 
             validator.gttParamsValidator(gttParams);
 
-            String url = routes.get(Constants.SmartConnect_api_gtt_create);
+            String url = routes.get(Constants.SMART_CONNECT_API_GTT_CREATE);
 
             JSONObject params = new JSONObject();
             params.put(Constants.TRADING_SYMBOL, gttParams.tradingSymbol);
@@ -586,17 +571,19 @@ public class SmartConnect {
             params.put(Constants.TIME_PERIOD, gttParams.timePeriod);
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            int gttId = jsonObject.getJSONObject(Constants.SmartConnect_data).getInt("id");
-            logger.info(String.valueOf(gttId));
+            int gttId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(gttId));
+            }
             return String.valueOf(gttId);
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
 
@@ -615,7 +602,7 @@ public class SmartConnect {
             validator.gttModifyRuleValidator(gttParams);
 
 
-            String url = routes.get(Constants.SmartConnect_api_gtt_modify);
+            String url = routes.get(Constants.SMART_CONNECT_API_GTT_MODIFY);
 
             JSONObject params = new JSONObject();
             params.put(Constants.SYMBOL_TOKEN, gttParams.symbolToken);
@@ -629,17 +616,19 @@ public class SmartConnect {
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 
-            int gttId  = jsonObject.getJSONObject(Constants.SmartConnect_data).getInt("id");
-            logger.info(String.valueOf(gttId));
+            int gttId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(gttId));
+            }
             return String.valueOf(gttId);
-        }catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
 
@@ -661,20 +650,22 @@ public class SmartConnect {
             params.put(Constants.EXCHANGE, exchange);
 
 
-            String url = routes.get(Constants.SmartConnect_api_gtt_cancel);
+            String url = routes.get(Constants.SMART_CONNECT_API_GTT_CANCEL);
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             Gtt gtt = new Gtt();
-            gtt.id = jsonObject.getJSONObject(Constants.SmartConnect_data).getInt("id");
-            logger.info(String.valueOf(gtt));
+            gtt.id = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(gtt));
+            }
             return gtt;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -692,19 +683,21 @@ public class SmartConnect {
             JSONObject params = new JSONObject();
             params.put("id", id);
 
-            String url = routes.get(Constants.SmartConnect_api_gtt_details);
+            String url = routes.get(Constants.SMART_CONNECT_API_GTT_DETAILS);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info(String.valueOf(response));
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
 
-            return response.getJSONObject(Constants.SmartConnect_data);
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            return response.getJSONObject(Constants.SMART_CONNECT_DATA);
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
 
@@ -725,18 +718,20 @@ public class SmartConnect {
             params.put(Constants.PAGE, page);
             params.put(Constants.COUNT, count);
 
-            String url = routes.get(Constants.SmartConnect_api_gtt_list);
+            String url = routes.get(Constants.SMART_CONNECT_API_GTT_LIST);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info(String.valueOf(response));
-            return response.getJSONArray(Constants.SmartConnect_data);
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
+            return response.getJSONArray(Constants.SMART_CONNECT_DATA);
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
 
@@ -750,18 +745,20 @@ public class SmartConnect {
      */
     public String candleData(JSONObject params) {
         try {
-            String url = routes.get(Constants.SmartConnect_api_candle_data);
+            String url = routes.get(Constants.SMART_CONNECT_API_CANDLE_DATA);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            logger.info(String.valueOf(response));
-            return response.getString(Constants.SmartConnect_data);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.valueOf(response));
+            }
+            return response.getString(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }
@@ -774,19 +771,18 @@ public class SmartConnect {
 
     public JSONObject logout() {
         try {
-            String url = routes.get(Constants.SmartConnect_api_user_logout);
+            String url = routes.get(Constants.SMART_CONNECT_API_USER_LOGOUT);
             JSONObject params = new JSONObject();
-            params.put(Constants.SmartConnect_clientcode, this.userId);
-            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            return response;
-        }  catch (SmartAPIException ex) {
-            logger.error(ex.getMessage());
+            params.put(Constants.SMART_CONNECT_CLIENT_CODE, this.userId);
+            return smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+        } catch (SmartAPIException ex) {
+            logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.IO_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         } catch (JSONException ex) {
-            logger.error(ex.getMessage());
+            logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
     }

@@ -2,6 +2,7 @@ package com.angelbroking.smartapi.http;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.utils.Constants;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.json.JSONArray;
@@ -13,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.Proxy;
-import java.net.URL;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -28,10 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class SmartAPIRequestHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SmartAPIRequestHandler.class);
-
-    JSONObject apiheader = apiHeaders();
+    private static final String USER_AGENT = "javasmartapiconnect/3.0.0";
     private final OkHttpClient client;
-    private final String USER_AGENT = "javasmartapiconnect/3.0.0";
+    JSONObject apiheader = apiHeaders();
 
     /**
      * Initialize request handler.
@@ -55,20 +52,18 @@ public class SmartAPIRequestHandler {
     }
 
     public JSONObject apiHeaders() {
-        BufferedReader sc = null;
+
         try {
             JSONObject headers = new JSONObject();
 
             // Local IP Address
             InetAddress localHost = InetAddress.getLocalHost();
             String clientLocalIP = localHost.getHostAddress();
-            headers.put("clientLocalIP", clientLocalIP);
+            headers.put(Constants.HEADER_CLIENT_LOCAL_IP, clientLocalIP);
 
             // Public IP Address
-            URL urlName = new URL("http://checkip.amazonaws.com");
-             sc = new BufferedReader(new InputStreamReader(urlName.openStream()));
-            String clientPublicIP = sc.readLine().trim();
-            headers.put("clientPublicIP", clientPublicIP);
+            String clientPublicIP = getPublicIPAddress();
+            headers.put(Constants.HEADER_CLIENT_PUBLIC_IP, clientPublicIP);
             String macAddress = null;
             // MAC Address
             // get all network interfaces of the current system
@@ -85,8 +80,7 @@ public class SmartAPIRequestHandler {
                     // iterate over the bytes of mac address
                     for (int i = 0; i < macAddressBytes.length; i++) {
                         // convert byte to string in hexadecimal form
-                        macAddressStr.append(String.format("%02X%s", macAddressBytes[i],
-                                (i < macAddressBytes.length - 1) ? "-" : ""));
+                        macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
                     }
 
                     macAddress = macAddressStr.toString();
@@ -95,30 +89,33 @@ public class SmartAPIRequestHandler {
                     }
                 }
             }
-            headers.put("macAddress", macAddress);
+            headers.put(Constants.MAC_ADDRESS, macAddress);
             String accept = "application/json";
-            headers.put("accept", accept);
+            headers.put(Constants.ACCEPT, accept);
             String userType = "USER";
-            headers.put("userType", userType);
+            headers.put(Constants.USER_TYPE, userType);
             String sourceID = "WEB";
-            headers.put("sourceID", sourceID);
+            headers.put(Constants.SOURCE_ID, sourceID);
 
-            logger.debug(String.valueOf(headers));
+            logger.debug("Headers {}", headers);
+
             return headers;
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;
-        }finally{
-            if(sc != null) {
-                try {
-                    sc.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-
         }
 
+    }
+
+    private String getPublicIPAddress() throws MalformedURLException {
+        String clientPublicIP = null;
+        URL urlName = new URL("http://checkip.amazonaws.com");
+        try (BufferedReader sc = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
+            clientPublicIP = sc.readLine().trim();
+        } catch (IOException e) {
+            logger.error("Error reading public IP address: {}", e.getMessage());
+        }
+        return clientPublicIP;
     }
 
     /**
@@ -132,13 +129,12 @@ public class SmartAPIRequestHandler {
      * @throws JSONException     if there is an error while parsing the response as a JSON object
      * @throws SmartAPIException if the server returns an error response
      */
-    public JSONObject postRequest(String apiKey, String url, JSONObject params)
-            throws IOException, JSONException, SmartAPIException {
+    public JSONObject postRequest(String apiKey, String url, JSONObject params) throws IOException, JSONException, SmartAPIException {
 
         Request request = createPostRequest(apiKey, url, params);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
-        logger.debug("Body"+body);
+        logger.debug("Body {}", body);
         return new SmartAPIResponseHandler().handle(response, body);
 
     }
@@ -156,8 +152,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject postRequest(String apiKey, String url, JSONObject params, String accessToken)
-            throws IOException, SmartAPIException, JSONException {
+    public JSONObject postRequest(String apiKey, String url, JSONObject params, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPostRequest(apiKey, url, params, accessToken);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
@@ -177,8 +172,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken)
-            throws IOException, SmartAPIException, JSONException {
+    public JSONObject postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createJsonPostRequest(url, jsonArray, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
@@ -198,8 +192,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject putRequest(String url, Map<String, Object> params, String apiKey, String accessToken)
-            throws IOException, SmartAPIException, JSONException {
+    public JSONObject putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPutRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
@@ -220,8 +213,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken)
-            throws IOException, SmartAPIException, JSONException {
+    public JSONObject deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createDeleteRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
@@ -240,8 +232,7 @@ public class SmartAPIRequestHandler {
      * @throws JSONException     if there is an error while processing the JSON response from the SmartAPI service
      */
 
-    public JSONObject getRequest(String apiKey, String url, String accessToken)
-            throws IOException, SmartAPIException, JSONException {
+    public JSONObject getRequest(String apiKey, String url, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createGetRequest(apiKey, url, accessToken);
         Response response = client.newCall(request).execute();
         String body = response.body().string();
@@ -263,14 +254,7 @@ public class SmartAPIRequestHandler {
 
         String privateKey = apiKey;
 
-        return new Request.Builder().url(httpBuilder.build()).header("User-Agent", USER_AGENT)
-                .header("Authorization", "Bearer " + accessToken).header("Content-Type", "application/json")
-                .header("X-ClientLocalIP", apiheader.getString("clientLocalIP"))
-                .header("X-ClientPublicIP", apiheader.getString("clientPublicIP"))
-                .header("X-MACAddress", apiheader.getString("macAddress"))
-                .header("Accept", apiheader.getString("accept")).header("X-PrivateKey", privateKey)
-                .header("X-UserType", apiheader.getString("userType"))
-                .header("X-SourceID", apiheader.getString("sourceID")).build();
+        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.AUTHORIZATION, "Bearer " + accessToken).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
     }
 
     /**
@@ -290,9 +274,7 @@ public class SmartAPIRequestHandler {
         for (int i = 0; i < values.length; i++) {
             httpBuilder.addQueryParameter(commonKey, values[i]);
         }
-        return new Request.Builder().url(httpBuilder.build()).header("User-Agent", USER_AGENT)
-                .header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
-                .build();
+        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
     }
 
     /**
@@ -307,18 +289,11 @@ public class SmartAPIRequestHandler {
     public Request createPostRequest(String apiKey, String url, JSONObject params) {
         try {
 
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            RequestBody body = RequestBody.create(params.toString(), JSON);
+            MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
+            RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
 
             String privateKey = apiKey;
-            Request request = new Request.Builder().url(url).post(body).header("Content-Type", "application/json")
-                    .header("X-ClientLocalIP", apiheader.getString("clientLocalIP"))
-                    .header("X-ClientPublicIP", apiheader.getString("clientPublicIP"))
-                    .header("X-MACAddress", apiheader.getString("macAddress"))
-                    .header("Accept", apiheader.getString("accept")).header("X-PrivateKey", privateKey)
-                    .header("X-UserType", apiheader.getString("userType"))
-                    .header("X-SourceID", apiheader.getString("sourceID")).build();
-            return request;
+            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
             logger.error("exception createPostRequest");
             logger.error(e.getMessage());
@@ -338,20 +313,11 @@ public class SmartAPIRequestHandler {
     public Request createPostRequest(String apiKey, String url, JSONObject params, String accessToken) {
         try {
 
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            RequestBody body = RequestBody.create(params.toString(), JSON);
+            MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
+            RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
 
             String privateKey = apiKey;
-
-            Request request = new Request.Builder().url(url).post(body).header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + accessToken)
-                    .header("X-ClientLocalIP", apiheader.getString("clientLocalIP"))
-                    .header("X-ClientPublicIP", apiheader.getString("clientPublicIP"))
-                    .header("X-MACAddress", apiheader.getString("macAddress"))
-                    .header("Accept", apiheader.getString("accept")).header("X-PrivateKey", privateKey)
-                    .header("X-UserType", apiheader.getString("userType"))
-                    .header("X-SourceID", apiheader.getString("sourceID")).build();
-            return request;
+            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, "Bearer " + accessToken).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;
@@ -368,13 +334,9 @@ public class SmartAPIRequestHandler {
      * @param jsonArray   is the JSONArray of data that has to be sent in the body.
      */
     public Request createJsonPostRequest(String url, JSONArray jsonArray, String apiKey, String accessToken) {
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-        RequestBody body = RequestBody.create(jsonArray.toString(), JSON);
-        Request request = new Request.Builder().url(url).header("User-Agent", USER_AGENT)
-                .header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
-                .post(body).build();
-        return request;
+        MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
+        RequestBody body = RequestBody.create(jsonArray.toString(), jsonMediaType);
+        return new Request.Builder().url(url).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).post(body).build();
     }
 
     /**
@@ -392,10 +354,7 @@ public class SmartAPIRequestHandler {
             builder.add(entry.getKey(), entry.getValue().toString());
         }
         RequestBody requestBody = builder.build();
-        Request request = new Request.Builder().url(url).put(requestBody).header("User-Agent", USER_AGENT)
-                .header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
-                .build();
-        return request;
+        return new Request.Builder().url(url).put(requestBody).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
     }
 
     /**
@@ -414,10 +373,7 @@ public class SmartAPIRequestHandler {
             httpBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
         }
 
-        Request request = new Request.Builder().url(httpBuilder.build()).delete().header("User-Agent", USER_AGENT)
-                .header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
-                .build();
-        return request;
+        return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
     }
 
 }

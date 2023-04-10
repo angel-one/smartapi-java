@@ -140,9 +140,8 @@ public class Examples {
 	 */
 	public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		String exchange = "NSE";
-		String tradingSymbol = "SBIN-EQ";
 		String symboltoken = "3045";
-		JSONObject ltpData = smartConnect.getLTP(exchange, tradingSymbol, symboltoken);
+		JSONObject ltpData = smartConnect.getLTP(exchange, Constants.SYMBOL_SBINEQ, symboltoken);
 	}
 
 	/** Get tradebook */
@@ -176,8 +175,8 @@ public class Examples {
 		JSONObject requestObejct = new JSONObject();
 		requestObejct.put("exchange", "NSE");
 		requestObejct.put("oldproducttype", "DELIVERY");
-		requestObejct.put("newproducttype", "MARGIN");
-		requestObejct.put("tradingsymbol", "SBIN-EQ");
+		requestObejct.put("newproducttype", Constants.MARGIN);
+		requestObejct.put("tradingsymbol", Constants.SYMBOL_SBINEQ);
 		requestObejct.put("transactiontype", "BUY");
 		requestObejct.put("quantity", 1);
 		requestObejct.put("type", "DAY");
@@ -189,10 +188,10 @@ public class Examples {
 	public void createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		GttParams gttParams = new GttParams();
 
-		gttParams.tradingSymbol = "SBIN-EQ";
+		gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
 		gttParams.symbolToken = "3045";
 		gttParams.exchange = "NSE";
-		gttParams.productType = "MARGIN";
+		gttParams.productType = Constants.MARGIN;
 		gttParams.transactionType = "BUY";
 		gttParams.price = 100000.01;
 		gttParams.qty = 10;
@@ -207,10 +206,10 @@ public class Examples {
 	public void modifyRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		GttParams gttParams = new GttParams();
 
-		gttParams.tradingSymbol = "SBIN-EQ";
+		gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
 		gttParams.symbolToken = "3045";
 		gttParams.exchange = "NSE";
-		gttParams.productType = "MARGIN";
+		gttParams.productType = Constants.MARGIN;
 		gttParams.transactionType = "BUY";
 		gttParams.price = 100000.1;
 		gttParams.qty = 10;
@@ -243,8 +242,7 @@ public class Examples {
 	@SuppressWarnings("serial")
 	public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-		List<String> status = new ArrayList<String>();
-
+		List<String> status = new ArrayList<>();
 		status.add("NEW");
 		status.add("CANCELLED");
 		status.add("ACTIVE");

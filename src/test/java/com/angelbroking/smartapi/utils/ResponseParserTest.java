@@ -1,16 +1,12 @@
 package com.angelbroking.smartapi.utils;
 
-import static org.junit.Assert.*;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.angelbroking.smartapi.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ResponseParserTest {
 
@@ -21,7 +17,7 @@ public class ResponseParserTest {
         JSONObject userData = new JSONObject();
         userData.put("clientcode", 1234);
         userData.put("name", "John Doe");
-         JSONArray productsArray = new JSONArray();
+        JSONArray productsArray = new JSONArray();
         productsArray.put("Product 1");
         productsArray.put("Product 2");
         userData.put("products", productsArray);

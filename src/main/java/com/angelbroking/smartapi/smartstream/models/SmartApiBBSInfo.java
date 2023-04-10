@@ -1,8 +1,12 @@
 package com.angelbroking.smartapi.smartstream.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SmartApiBBSInfo {
 	public static final int BYTES = (2 * Short.BYTES) + (2 * Long.BYTES);
 
