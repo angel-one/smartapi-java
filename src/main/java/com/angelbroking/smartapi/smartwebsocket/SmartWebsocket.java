@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.smartTicker;
+package com.angelbroking.smartapi.smartwebsocket;
 
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
@@ -47,7 +47,7 @@ public class SmartWebsocket {
     private SmartWSOnConnect onConnectedListener;
     private SmartWSOnDisconnect onDisconnectedListener;
     private SmartWSOnError onErrorListener;
-    private WebSocket ws;
+    private WebSocket webSocket;
 
     /**
      * Initialize SmartAPITicker.
@@ -70,7 +70,7 @@ public class SmartWebsocket {
                     .append("&&apikey=")
                     .append(this.apiKey);
             SSLContext context = NaiveSSLContext.getInstance("TLS");
-            ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(sb.toString());
+            webSocket = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(sb.toString());
 
         } catch (IOException e) {
             if (onErrorListener != null) {
@@ -80,7 +80,7 @@ public class SmartWebsocket {
             e.printStackTrace();
         }
 
-        ws.addListener(getWebsocketAdapter());
+        webSocket.addListener(getWebsocketAdapter());
 
     }
 
@@ -141,18 +141,15 @@ public class SmartWebsocket {
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
                 onConnectedListener.onConnected();
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        JSONObject wsMWJSONRequest = new JSONObject();
-                        wsMWJSONRequest.put(Constants.ACTION_TYPE, actionType);
-                        wsMWJSONRequest.put(Constants.FEEED_TYPE, feedType);
-                        wsMWJSONRequest.put(Constants.JWT_TOKEN, jwtToken);
-                        wsMWJSONRequest.put(Constants.CLIENT_CODE, clientId);
-                        wsMWJSONRequest.put(Constants.API_KEY, apiKey);
-                        ws.sendText(wsMWJSONRequest.toString());
-                    }
+                Runnable runnable = () -> {
+                    JSONObject wsMWJSONRequest = new JSONObject();
+                    wsMWJSONRequest.put(Constants.ACTION_TYPE, actionType);
+                    wsMWJSONRequest.put(Constants.FEEED_TYPE, feedType);
+                    wsMWJSONRequest.put(Constants.JWT_TOKEN, jwtToken);
+                    wsMWJSONRequest.put(Constants.CLIENT_CODE, clientId);
+                    wsMWJSONRequest.put(Constants.API_KEY, apiKey);
+                    webSocket.sendText(wsMWJSONRequest.toString());
                 };
-
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
 
@@ -198,7 +195,6 @@ public class SmartWebsocket {
                 if (onDisconnectedListener != null) {
                     onDisconnectedListener.onDisconnected();
                 }
-                return;
             }
 
             @Override
@@ -221,8 +217,8 @@ public class SmartWebsocket {
      */
     public void disconnect() {
 
-        if (ws != null && ws.isOpen()) {
-            ws.disconnect();
+        if (webSocket != null && webSocket.isOpen()) {
+            webSocket.disconnect();
         }
     }
 
@@ -232,7 +228,7 @@ public class SmartWebsocket {
      * @return boolean
      */
     public boolean isConnectionOpen() {
-        return ws != null && ws.isOpen();
+        return webSocket != null && webSocket.isOpen();
     }
 
     /**
@@ -240,8 +236,8 @@ public class SmartWebsocket {
      */
     public void runscript() {
 
-        if (ws != null) {
-            if (ws.isOpen()) {
+        if (webSocket != null) {
+            if (webSocket.isOpen()) {
 
                 JSONObject wsMWJSONRequest = new JSONObject();
                 wsMWJSONRequest.put("actiontype", this.actionType);
@@ -250,7 +246,7 @@ public class SmartWebsocket {
                 wsMWJSONRequest.put("clientcode", this.clientId);
                 wsMWJSONRequest.put("apikey", this.apiKey);
 
-                ws.sendText(wsMWJSONRequest.toString());
+                webSocket.sendText(wsMWJSONRequest.toString());
 
             } else {
                 if (onErrorListener != null) {
@@ -266,7 +262,7 @@ public class SmartWebsocket {
 
     public void connect() {
         try {
-            ws.connect();
+            webSocket.connect();
         } catch (WebSocketException e) {
             e.printStackTrace();
         }

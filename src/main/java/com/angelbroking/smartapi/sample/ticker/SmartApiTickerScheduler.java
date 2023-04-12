@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.ticker;
+package com.angelbroking.smartapi.sample.ticker;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

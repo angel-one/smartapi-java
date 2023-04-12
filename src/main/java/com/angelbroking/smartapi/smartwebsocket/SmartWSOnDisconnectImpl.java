@@ -1,6 +1,5 @@
-package com.angelbroking.smartapi.smartTicker;
+package com.angelbroking.smartapi.smartwebsocket;
 
-import com.angelbroking.smartapi.SmartConnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.ticker;
+package com.angelbroking.smartapi.sample.ticker;
 
 public interface OnConnect {
     void onConnected();

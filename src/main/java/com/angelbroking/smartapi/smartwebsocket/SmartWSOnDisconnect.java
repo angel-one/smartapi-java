@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.smartTicker;
+package com.angelbroking.smartapi.smartwebsocket;
 
 public interface SmartWSOnDisconnect {
 

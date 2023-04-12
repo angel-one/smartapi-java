@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.ticker;
+package com.angelbroking.smartapi.sample.ticker;
 
 import lombok.Data;
 

@@ -16,13 +16,11 @@ public class Order {
 	@SerializedName("disclosedquantity")
 	public String disclosedQuantity;
 
-	@SerializedName("duration")
 	public String duration;
 
 	@SerializedName("tradingsymbol")
 	public String tradingSymbol;
 
-	@SerializedName("variety")
 	public String variety;
 
 	@SerializedName("ordertype")
@@ -31,25 +29,20 @@ public class Order {
 	@SerializedName("triggerprice")
 	public String triggerPrice;
 
-	@SerializedName("text")
 	public String text;
 
-	@SerializedName("price")
 	public String price;
 
-	@SerializedName("status")
 	public String status;
 
 	@SerializedName("producttype")
 	public String productType;
 
-	@SerializedName("exchange")
 	public String exchange;
 
 	@SerializedName("orderid")
 	public String orderId;
 
-	@SerializedName("symbol")
 	public String symbol;
 
 	@SerializedName("updatetime")
@@ -67,7 +60,6 @@ public class Order {
 	@SerializedName("transactiontype")
 	public String transactionType;
 
-	@SerializedName("quantity")
 	public String quantity;
 
 	@SerializedName("squareoff")
