@@ -10,13 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GttParams {
 
-    @SerializedName("id")
     public Integer id;
 
     @SerializedName("tradingsymbol")
     public String tradingSymbol;
 
-    @SerializedName("exchange")
     public String exchange;
 
     @SerializedName("transactiontype")
@@ -25,10 +23,8 @@ public class GttParams {
     @SerializedName("producttype")
     public String productType;
 
-    @SerializedName("price")
     public Double price;
 
-    @SerializedName("qty")
     public Integer qty;
 
     @SerializedName("triggerprice")
