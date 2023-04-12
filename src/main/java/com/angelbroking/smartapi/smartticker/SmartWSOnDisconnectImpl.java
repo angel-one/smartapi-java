@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.smartwebsocket;
+package com.angelbroking.smartapi.smartticker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

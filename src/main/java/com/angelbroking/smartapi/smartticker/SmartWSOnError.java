@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.smartwebsocket;
+package com.angelbroking.smartapi.smartticker;
 
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 
