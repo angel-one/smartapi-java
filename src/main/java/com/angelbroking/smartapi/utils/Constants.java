@@ -7,9 +7,6 @@ package com.angelbroking.smartapi.utils;
  */
 public class Constants {
 
-    private Constants() {
-
-    }
 
     /** Product types. */
     public static final String PRODUCT_DELIVERY = "DELIVERY";
@@ -61,6 +58,11 @@ public class Constants {
     public static final String SMART_API_TICKER_USER = "user";
     public static final String SMART_API_TICKER_ACCTID = "acctid";
 
+    /** SmartStreamTicker Constants */
+    public static final int PING_INTERVAL = 10000; // 10 seconds
+    public static final String CLIENT_ID_HEADER = "x-client-code";
+    public static final String FEED_TOKEN_HEADER = "x-feed-token";
+    public static final String CLIENT_LIB_HEADER = "x-client-lib";
 
 
     /** SmartConnect Constants */
@@ -150,10 +152,17 @@ public class Constants {
     public static final String IO_EXCEPTION_OCCURRED = "IOException occurred: ";
     public static final String JSON_EXCEPTION_OCCURRED = "JSONException occurred: " ;
     public static final String TICKER_NOT_CONNECTED = "ticker is not connected";
+    public static final String TICKER_NOT_NULL_CONNECTED = "ticker is not connected";
 
 
     public static final String SYMBOL_SBINEQ = "SBIN-EQ";
     public static final String MARGIN = "MARGIN";
+
+
+    public static final String PARAM_MODE = "mode";
+    public static final String PARAM_TOKEN_LIST = "tokenList";
+    public static final String PARAM_ACTION = "action";
+    public static final String PARAM_PARAMS = "params";
 
 
 

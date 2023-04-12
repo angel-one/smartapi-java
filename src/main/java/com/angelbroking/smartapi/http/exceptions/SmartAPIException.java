@@ -9,8 +9,8 @@ public class SmartAPIException extends Throwable {
 
 	private static final long serialVersionUID = 1L;
 	// variables
-	public String message;
-	public String code;
+	private String message;
+	private String code;
 
 	// constructor that sets the message and code
 	public SmartAPIException(String message, String code) {

@@ -5,10 +5,10 @@ package com.angelbroking.smartapi.http.exceptions;
  */
 
 @SuppressWarnings("serial")
-public class DataException extends SmartAPIException {
+public class DataSmartAPIException extends SmartAPIException {
 
     // initialize 2fa exception and call constructor of Base Exception
-    public DataException(String message, String code){
+    public DataSmartAPIException(String message, String code){
         super(message, code);
     }
 }

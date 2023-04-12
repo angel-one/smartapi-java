@@ -1,8 +1,11 @@
 package com.angelbroking.smartapi.smartstream.models;
 
+import com.angelbroking.smartapi.utils.ByteUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.nio.ByteBuffer;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +35,13 @@ public class SnapQuote {
 	private long lowerCircuit = 0;
 	private long yearlyHighPrice = 0;
 	private long yearlyLowPrice = 0;
+
+	public SnapQuote(ByteBuffer buffer) {
+		this.token = ByteUtils.getTokenID(buffer);
+		this.sequenceNumber = buffer.getLong(27);
+		this.exchangeFeedTimeEpochMillis = buffer.getLong(35);
+		this.lastTradedPrice = buffer.getLong(43);
+	}
 
 
 	

@@ -36,6 +36,9 @@ public class ResponseParser {
                 }
             }
         });
+        if(response == null){
+            return null;
+        }
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         User user = gson.fromJson(String.valueOf(response.get(Constants.USER_DATA)), User.class);
         user = parseArray(user, response.getJSONObject(Constants.USER_DATA));

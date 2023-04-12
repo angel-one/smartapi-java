@@ -38,7 +38,7 @@ public class SmartAPIRequestHandlerTest {
 
 
     @Test
-    public void testGetRequest() throws IOException, SmartAPIException, JSONException, InterruptedException {
+    void testGetRequest() throws IOException, SmartAPIException, JSONException, InterruptedException {
         // create a mock web server
         MockWebServer server = new MockWebServer();
 
@@ -67,7 +67,7 @@ public class SmartAPIRequestHandlerTest {
     }
 
     @Test
-    public void testApiHeaders() throws JSONException {
+     void testApiHeaders() throws JSONException {
         JSONObject headers = requestHandler.apiHeaders();
         assertNotNull(headers);
         assertEquals("USER", headers.getString("userType"));
@@ -79,7 +79,7 @@ public class SmartAPIRequestHandlerTest {
     }
 
     @Test
-    public void testPostRequest() throws IOException, JSONException, SmartAPIException, InterruptedException {
+    void testPostRequest() throws IOException, JSONException, SmartAPIException, InterruptedException {
         // set the response for the server
         JSONObject response = new JSONObject();
         response.put("success", true);

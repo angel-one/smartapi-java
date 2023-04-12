@@ -128,20 +128,15 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	}
     
 	public void cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Order modify request will return order model which will contain only
-		// order_id.
-		// Cancel order will return order model which will only have orderId.
 		Order order = smartConnect.cancelOrder("201009000000015", Constants.VARIETY_REGULAR);
 	}
 
 	/** Get order details */
     public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         List<Order> orders = smartConnect.getOrderHistory(smartConnect.getUserId());
-        Iterator<Order> orderIterator = orders.iterator();
-        while (orderIterator.hasNext()) {
-            Order order = orderIterator.next();
+            for (Order order : orders) {
             logger.info(order.orderId + " " + order.status);
-        }
+            }
     }
 
 
@@ -161,9 +156,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
     public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
             // Returns tradebook.
             List<Trade> trades = smartConnect.getTrades();
-            Iterator<Trade> iterator = trades.iterator();
-            while (iterator.hasNext()) {
-            Trade trade = iterator.next();
+            for (Trade trade : trades) {
             logger.info(trade.tradingSymbol + " " + trades.size());
             }
             }

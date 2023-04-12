@@ -1,5 +1,4 @@
 package com.angelbroking.smartapi.http;
-import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.InputException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import okhttp3.MediaType;
