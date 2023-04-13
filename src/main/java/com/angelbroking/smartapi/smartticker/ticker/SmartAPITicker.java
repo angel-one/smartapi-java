@@ -107,8 +107,6 @@ public class SmartAPITicker {
 
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-                // Send a text frame.
-
                 ws.sendText(createWsCNJSONRequest().toString());
                 onConnectedListener.onConnected();
 
