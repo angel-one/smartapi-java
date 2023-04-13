@@ -27,30 +27,28 @@ public class SmartStreamTicker {
 
     private Routes routes = new Routes();
     private final String wsuri = routes.getSmartStreamWSURI();
-    private SmartStreamListenerImplTest SmartStreamListenerImplTest;
+    private SmartStreamListenerImplTest smartStreamListenerImplTest;
     private WebSocket webSocket;
     private String clientId;
     private String feedToken;
-
-    private EnumMap<SmartStreamSubsMode, Set<TokenID>> tokensByModeMap = new EnumMap<>(SmartStreamSubsMode.class);
 
     /**
      * Initializes the SmartStreamTicker.
      *
      * @param clientId            - the client ID used for authentication
      * @param feedToken           - the feed token used for authentication
-     * @param SmartStreamListenerImplTest - the SmartStreamListenerImplTest for receiving callbacks
+     * @param smartStreamListenerImplTest - the SmartStreamListenerImplTest for receiving callbacks
      * @throws IllegalArgumentException - if the clientId, feedToken, or SmartStreamListenerImplTest is null or empty
      */
-    public SmartStreamTicker(String clientId, String feedToken, SmartStreamListenerImplTest SmartStreamListenerImplTest) {
-        if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) || SmartStreamListenerImplTest == null) {
+    public SmartStreamTicker(String clientId, String feedToken, SmartStreamListenerImplTest smartStreamListenerImplTest) {
+        if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) || smartStreamListenerImplTest == null) {
             throw new IllegalArgumentException(
                     "clientId, feedToken and SmartStreamListenerImplTest should not be empty or null");
         }
 
         this.clientId = clientId;
         this.feedToken = feedToken;
-        this.SmartStreamListenerImplTest = SmartStreamListenerImplTest;
+        this.smartStreamListenerImplTest = smartStreamListenerImplTest;
         init();
     }
 
@@ -62,8 +60,8 @@ public class SmartStreamTicker {
             webSocket.addHeader(Constants.CLIENT_LIB_HEADER, "JAVA");
             webSocket.addListener(getWebsocketAdapter());
         } catch (IOException e) {
-            if (SmartStreamListenerImplTest != null) {
-                SmartStreamListenerImplTest.onError(getErrorHolder(e));
+            if (smartStreamListenerImplTest != null) {
+                smartStreamListenerImplTest.onError(getErrorHolder(e));
             }
         }
     }
@@ -86,7 +84,7 @@ public class SmartStreamTicker {
 
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
-                SmartStreamListenerImplTest.onConnected();
+                smartStreamListenerImplTest.onConnected();
             }
 
             @Override
@@ -98,7 +96,7 @@ public class SmartStreamTicker {
             public void onBinaryMessage(WebSocket websocket, byte[] binary) {
                 SmartStreamSubsMode mode = SmartStreamSubsMode.findByVal(binary[0]);
                 if (mode == null) {
-                    SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(
+                    smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(
                             "Invalid SubsMode=" + binary[0] + " in the response binary packet")));
                     return;
                 }
@@ -107,29 +105,29 @@ public class SmartStreamTicker {
                         case LTP: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
                             LTP ltp = ByteUtils.mapByteBufferToLTP(packet);
-                            SmartStreamListenerImplTest.onLTPArrival(ltp);
+                            smartStreamListenerImplTest.onLTPArrival(ltp);
                             break;
                         }
                         case QUOTE: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
                             Quote quote = ByteUtils.mapByteBufferToQuote(packet);
-                            SmartStreamListenerImplTest.onQuoteArrival(quote);
+                            smartStreamListenerImplTest.onQuoteArrival(quote);
                             break;
                         }
                         case SNAP_QUOTE: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
                             SnapQuote snapQuote = ByteUtils.mapByteBufferToSnapQuote(packet);
-                            SmartStreamListenerImplTest.onSnapQuoteArrival(snapQuote);
+                            smartStreamListenerImplTest.onSnapQuoteArrival(snapQuote);
                             break;
                         }
                         default:
-                            SmartStreamListenerImplTest.onError(getErrorHolder(
+                            smartStreamListenerImplTest.onError(getErrorHolder(
                                     new SmartAPIException("SubsMode=" + mode + " in the response is not handled.")));
                             break;
                     }
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
-                    SmartStreamListenerImplTest.onError(getErrorHolder(e));
+                    smartStreamListenerImplTest.onError(getErrorHolder(e));
                 }
             }
 
@@ -137,11 +135,11 @@ public class SmartStreamTicker {
             @Override
             public void onPongFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
                 try {
-                    SmartStreamListenerImplTest.onPong();
+                    smartStreamListenerImplTest.onPong();
                 } catch (Exception e) {
                     SmartStreamError error = new SmartStreamError();
                     error.setException(e);
-                    SmartStreamListenerImplTest.onError(error);
+                    smartStreamListenerImplTest.onError(error);
                 }
             }
 
@@ -153,7 +151,8 @@ public class SmartStreamTicker {
                 try {
                     if (closedByServer) {
                         if (serverCloseFrame.getCloseCode() == 1001) {
-
+                            // Log the server close code for debugging purposes
+                            logger.info("Server closed connection with code: {}", serverCloseFrame.getCloseCode());
                         }
                         reconnectAndResubscribe();
                     }
@@ -217,10 +216,10 @@ public class SmartStreamTicker {
                 JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
                 webSocket.sendText(wsMWJSONRequest.toString());
             } else {
-                SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_CONNECTED, "504")));
+                smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_CONNECTED, "504")));
             }
         } else {
-            SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_NULL_CONNECTED, "504")));
+            smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_NULL_CONNECTED, "504")));
         }
     }
 
@@ -229,10 +228,10 @@ public class SmartStreamTicker {
             if (webSocket.isOpen()) {
                 getApiRequest(SmartStreamAction.UNSUBS, mode, tokens);
             } else {
-                SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
+                smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }
         } else {
-            SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is null not connected", "504")));
+            smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is null not connected", "504")));
         }
     }
 
@@ -272,10 +271,10 @@ public class SmartStreamTicker {
                 webSocket.sendText(wsMWJSONRequest.toString());
 
             } else {
-                SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
+                smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }
         } else {
-            SmartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is null not connected", "504")));
+            smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException("ticker is null not connected", "504")));
         }
     }
 

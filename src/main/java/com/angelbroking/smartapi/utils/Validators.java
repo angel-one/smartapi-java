@@ -16,9 +16,9 @@ public class Validators {
         validateNotEmpty(orderParams.orderType, orderParams.orderType);
         validateNotEmpty(orderParams.duration, orderParams.duration);
         validateNotEmpty(orderParams.symbolToken, orderParams.symbolToken);
-//        validateNotEmpty(orderParams.squareOff, orderParams.squareOff);
-//        validateNotEmpty(orderParams.stopLoss, orderParams.stopLoss);
-//        validateNotEmpty(orderParams.triggerPrice, orderParams.triggerPrice);
+        validateNotEmpty(orderParams.squareOff, orderParams.squareOff);
+        validateNotEmpty(orderParams.stopLoss, orderParams.stopLoss);
+        validateNotEmpty(orderParams.triggerPrice, orderParams.triggerPrice);
 
         return true;
     }

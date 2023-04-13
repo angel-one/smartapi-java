@@ -6,10 +6,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class SmartAPITickerTest {
+class SmartAPITickerTest {
 
     @Test
-    public void testSmartAPITickerInitialization() {
+    void testSmartAPITickerInitialization() {
         SmartApiTickerParams params = mock(SmartApiTickerParams.class);
         OnTicks onTickerArrivalListener = mock(OnTicks.class);
         OnConnect onConnectedListener = mock(OnConnect.class);
@@ -18,7 +18,6 @@ public class SmartAPITickerTest {
         SmartAPITicker ticker = new SmartAPITicker(params, onTickerArrivalListener, onConnectedListener, onErrorListener);
         assertNotNull(ticker);
         assertNotNull(ticker.getWebsocketAdapter());
-        assertNotNull(ticker.isConnectionOpen());
     }
 
 

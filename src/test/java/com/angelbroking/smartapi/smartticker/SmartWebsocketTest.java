@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify ;
 
 
-public class SmartWebsocketTest {
+ class SmartWebsocketTest {
 
     private static final String CLIENT_ID = "clientId";
     private static final String JWT_TOKEN = "jwtToken";
@@ -36,7 +36,7 @@ public class SmartWebsocketTest {
     private SmartWSOnError onErrorListener;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         smartWebsocket = new SmartWebsocket(CLIENT_ID, JWT_TOKEN, API_KEY, ACTION_TYPE, FEED_TYPE);
         onTicksListener = mock(SmartWSOnTicks.class);
         onErrorListener = mock(SmartWSOnError.class);
@@ -45,14 +45,13 @@ public class SmartWebsocketTest {
     }
 
     @Test
-    public void testConstructor() {
+     void testConstructor() {
         Assertions.assertNotNull(smartWebsocket);
-        Assertions.assertNotNull(smartWebsocket.isConnectionOpen());
         Assertions.assertNotNull(smartWebsocket.getWebsocketAdapter());
     }
 
     @Test
-    public void testOnConnected() throws Exception {
+     void testOnConnected() throws Exception {
         WebSocketAdapter adapter = smartWebsocket.getWebsocketAdapter();
         WebSocket webSocket = mock(WebSocket.class);
         Map<String, List<String>> headers = new HashMap<>();

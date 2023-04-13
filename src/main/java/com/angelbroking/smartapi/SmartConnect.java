@@ -142,10 +142,6 @@ public class SmartConnect {
             logger.error(Constants.JSON_EXCEPTION_OCCURRED + ex.getMessage(), ex);
             return null;
         }
-
-        if(logger.isDebugEnabled()) {
-            logger.debug("generateSession:  "+String.valueOf(loginResultObject));
-        }
         if(loginResultObject.optJSONObject(Constants.SMART_CONNECT_DATA) == null){
             return null;
         }
@@ -747,7 +743,6 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_CANDLE_DATA);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            System.out.println("response"+response);
             if(logger.isDebugEnabled()) {
                 logger.debug(String.valueOf(response));
             }

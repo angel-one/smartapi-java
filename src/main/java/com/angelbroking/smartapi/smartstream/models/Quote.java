@@ -1,7 +1,6 @@
 package com.angelbroking.smartapi.smartstream.models;
 
 import com.angelbroking.smartapi.utils.ByteUtils;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.nio.ByteBuffer;
 
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
 public class Quote {
 	public static final int PACKET_SIZE_IN_BYTES = 123;
 

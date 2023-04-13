@@ -8,23 +8,25 @@ import lombok.Data;
 
 @Data
 public class ByteUtils {
+
+	// Private constructor to prevent instantiation from outside the class
+	private ByteUtils() {
+		// This constructor is intentionally left blank
+	}
 	
 	private static final int CHAR_ARRAY_SIZE = 25;
 
 	public static LTP mapByteBufferToLTP(ByteBuffer buffer) {
-		LTP ltp = new LTP(buffer);
-		return ltp;
+		return new LTP(buffer);
 	}
 
 	public static Quote mapByteBufferToQuote(ByteBuffer buffer) {
-		Quote quote = new Quote(buffer);
-		return quote;
+		return new Quote(buffer);
 	}
 
 
 	public static SnapQuote mapByteBufferToSnapQuote(ByteBuffer buffer) {
-		SnapQuote snapQuote = new SnapQuote(buffer);
-		return snapQuote;
+		return new SnapQuote(buffer);
 	}
 
 

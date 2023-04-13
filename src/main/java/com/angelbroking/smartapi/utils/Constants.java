@@ -6,6 +6,10 @@ package com.angelbroking.smartapi.utils;
  */
 public class Constants {
 
+    // Private constructor to prevent instantiation from outside the class
+    private Constants() {
+        // This constructor is intentionally left blank
+    }
 
     /**
      * Product types.
