@@ -8,6 +8,8 @@ import com.neovisionaries.ws.client.*;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
@@ -28,15 +30,16 @@ import java.util.zip.InflaterOutputStream;
  * The `SmartWebsocket` class provides a websocket client for connecting to a financial data feed provided by SmartAPI.
  * It allows for receiving real-time market data and provides event listeners for various websocket events, such as
  * when a connection is established or closed, and when new ticker data arrives.
- *
+ * <p>
  * To use this class, create an instance of `SmartWebsocket` and pass in the required parameters: `clientId`, `jwtToken`,
  * `apiKey`, `actionType`, and `feedType`. You can then register event listeners using the `setOn...Listener` methods.
  * Finally, call the `connect` method to initiate the websocket connection.
- *
+ * <p>
  * The `SmartWebsocket` class also provides a method `disconnect` to close the websocket connection.
  */
 public class SmartWebsocket {
 
+    private static final Logger logger = LoggerFactory.getLogger(SmartWebsocket.class);
     private final String clientId;
     private final String jwtToken;
     private final String apiKey;
@@ -77,7 +80,7 @@ public class SmartWebsocket {
                 onErrorListener.onError(e);
             }
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         webSocket.addListener(getWebsocketAdapter());
@@ -173,7 +176,7 @@ public class SmartWebsocket {
                 try {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -202,7 +205,7 @@ public class SmartWebsocket {
                 try {
                     super.onError(websocket, cause);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -264,7 +267,7 @@ public class SmartWebsocket {
         try {
             webSocket.connect();
         } catch (WebSocketException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }

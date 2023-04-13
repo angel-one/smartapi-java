@@ -22,11 +22,11 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unused")
 public class Examples {
 
-	private static final Logger logger = LoggerFactory.getLogger(SmartAPIRequestHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(Examples.class);
 
-	public void getProfile(SmartConnect smartConnect) throws IOException, SmartAPIException {
+	public void getProfile(SmartConnect smartConnect) throws SmartAPIException {
 		User profile = smartConnect.getProfile();
-		logger.info(profile.toString());
+		logger.debug(profile.toString());
 	}
 
 	/** CONSTANT Details */
@@ -95,12 +95,13 @@ public class Examples {
 		orderParams.triggerPrice = "209";
 
 		Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
-		logger.info("placeOrder"+String.valueOf(order));
+		logger.debug("placeOrder: {}", order);
+
 		return order;
 	}
 
 	/** Modify order. */
-	public Order modifyOrder(SmartConnect smartConnect, Order orderInput) throws SmartAPIException, IOException {
+	public Order modifyOrder(SmartConnect smartConnect, Order orderInput) throws SmartAPIException {
 		// Order modify request will return order model which will contain only
 
 		OrderParams orderParams = new OrderParams();
@@ -117,7 +118,7 @@ public class Examples {
 		orderParams.triggerPrice = "209";
 		Order order = smartConnect.modifyOrder(orderInput.orderId, orderParams, "STOPLOSS");
 
-		logger.info("modifyOrder"+order.toString());
+		logger.debug("modifyOrder {}",order);
 		return order;
 
 	}
@@ -127,22 +128,19 @@ public class Examples {
 	 *
 	 * @return
 	 */
-	public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException, IOException {
+	public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException {
 		// Order modify request will return order model which will contain only
 		// order_id.
 		// Cancel order will return order model which will only have orderId.
 		Order order = smartConnect.cancelOrder(modifyOrder.getOrderId(), Constants.VARIETY_STOPLOSS);
-		logger.info("cancelOrder"+order.toString());
+		logger.debug("cancelOrder {}",order);
 		return order;
 	}
 
 	/** Get order details */
-	public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getOrder(SmartConnect smartConnect) {
 		JSONObject orders = smartConnect.getOrderHistory();
-		logger.info("getOrder"+String.valueOf(orders));
-//		for (int i = 0; i < orders.size(); i++) {
-//			logger.info(orders.get(i).orderId + " " + orders.get(i).status);
-//		}
+		logger.debug("getOrder {}",orders);
 	}
 
 	/**
@@ -150,44 +148,45 @@ public class Examples {
 	 * exchange with tradingsymbol or instrument token only. For example {NSE:NIFTY
 	 * 50, BSE:SENSEX} or {256265, 265}
 	 */
-	public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getLTP(SmartConnect smartConnect){
 		String exchange = "NSE";
 		String symboltoken = "3045";
 		JSONObject ltpData = smartConnect.getLTP(exchange, Constants.SYMBOL_SBINEQ, symboltoken);
-		logger.info("getLTP"+ltpData.toString());
+		logger.debug("getLTP {}",ltpData);
 	}
 
 	/** Get tradebook */
-	public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getTrades(SmartConnect smartConnect) throws SmartAPIException {
 		// Returns tradebook.
 		JSONObject trades = smartConnect.getTrades();
-		logger.info("getTrades"+trades.toString());
+
+		logger.debug("getTrades {}",trades);
 
 	}
 
 	/** Get RMS */
-	public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getRMS(SmartConnect smartConnect) throws SmartAPIException {
 		// Returns RMS.
 		JSONObject response = smartConnect.getRMS();
-		logger.info("getRMS"+response.toString());
+		logger.debug("getRMS {}",response);
 	}
 
 	/** Get Holdings */
-	public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getHolding(SmartConnect smartConnect) throws SmartAPIException {
 		// Returns Holding.
 		JSONObject response = smartConnect.getHolding();
-		logger.info("getHolding"+response.toString());
+		logger.debug("getHolding {}",response);
 	}
 
 	/** Get Position */
-	public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getPosition(SmartConnect smartConnect) throws SmartAPIException {
 		// Returns Position.
 		JSONObject response = smartConnect.getPosition();
-		logger.info("getPosition"+response.toString());
+		logger.debug("getPosition {}",response);
 	}
 
 	/** convert Position */
-	public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void convertPosition(SmartConnect smartConnect) throws SmartAPIException {
 
 		JSONObject requestObejct = new JSONObject();
 		requestObejct.put("exchange", "NSE");
@@ -199,11 +198,11 @@ public class Examples {
 		requestObejct.put("type", "DAY");
 
 		JSONObject response = smartConnect.convertPosition(requestObejct);
-		logger.info("convertPosition"+response.toString());
+		logger.debug("convertPosition {}",response);
 	}
 
 	/** Create Gtt Rule */
-	public String createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public String createRule(SmartConnect smartConnect) {
 		GttParams gttParams = new GttParams();
 
 		gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
@@ -221,7 +220,7 @@ public class Examples {
 	}
 
 	/** Modify Gtt Rule */
-	public String modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
+	public String modifyRule(SmartConnect smartConnect, String ruleID){
 		GttParams gttParams = new GttParams();
 
 		gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
@@ -235,32 +234,33 @@ public class Examples {
 		gttParams.triggerPrice = 20000.1;
 		gttParams.timePeriod = 300;
 
-//		Integer id = 1000051;
+
 
 		return smartConnect.gttModifyRule(Integer.valueOf(ruleID), gttParams);
 	}
 
 	/** Cancel Gtt Rule */
-	public void cancelRule(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
+	public void cancelRule(SmartConnect smartConnect, String modifyRuleID) {
 
 		String symboltoken = "3045";
 		String exchange = "NSE";
 
 		Gtt gtt = smartConnect.gttCancelRule(Integer.valueOf(modifyRuleID), symboltoken, exchange);
-		logger.info("cancelRule"+gtt.toString());
+		logger.debug("cancelRule {}",gtt);
+
 	}
 
 	/** Gtt Rule Details */
-	public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
+	public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) {
 
 
 		JSONObject gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
-		logger.info("ruleDetails"+gtt.toString());
+		logger.debug("ruleDetails {}",gtt);
 	}
 
 	/** Gtt Rule Lists */
 	@SuppressWarnings("serial")
-	public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void ruleList(SmartConnect smartConnect){
 
 		List<String> status = new ArrayList<>();
 		status.add("NEW");
@@ -274,12 +274,12 @@ public class Examples {
 		Integer count = 10;
 
 		JSONArray gtt = smartConnect.gttRuleList(status, page, count);
-		logger.info("ruleList"+gtt.toString());
+		logger.debug("ruleList {}",gtt);
 
 	}
 
 	/** Historic Data */
-	public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void getCandleData(SmartConnect smartConnect){
 
 		JSONObject obj = new JSONObject();
 		obj.put("todate", "2021-03-09 09:20");
@@ -289,14 +289,14 @@ public class Examples {
 		obj.put("fromdate", "2021-03-08 09:00");
 
 		String response = smartConnect.candleData(obj);
-		logger.info("getCandleData"+response.toString());
+		logger.debug("getCandleData {}",response);
 	}
 
 	/** Logout user. */
-	public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
+	public void logout(SmartConnect smartConnect) throws SmartAPIException {
 		/** Logout user and kill session. */
 		JSONObject jsonObject = smartConnect.logout();
-		logger.info("logout"+jsonObject.toString());
+		logger.debug("logout {}",jsonObject);
 	}
 
 }

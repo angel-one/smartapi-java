@@ -158,7 +158,7 @@ public class SmartStreamTicker {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                  logger.error(e.getMessage());
                 }
             }
 

@@ -3,6 +3,7 @@ package com.angelbroking.smartapi.smartticker.ticker;
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.CustomException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.smartticker.SmartWebsocket;
 import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.neovisionaries.ws.client.WebSocket;
@@ -12,6 +13,8 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
@@ -39,11 +42,14 @@ public class SmartAPITicker {
     private final SSLContext context;
     private final SmartApiTickerScheduler scheduler;
 
+    private static final Logger logger = LoggerFactory.getLogger(SmartAPITicker.class);
+
+
     /**
      * Initialize SmartAPITicker.
      */
     public SmartAPITicker(SmartApiTickerParams params, OnTicks onTickerArrivalListener,
-                          OnConnect onConnectedListener, OnError onErrorListener) {
+                          OnConnect onConnectedListener, OnError onErrorListener) throws NoSuchAlgorithmException {
         this.params = params;
         this.onTickerArrivalListener = onTickerArrivalListener;
         this.onConnectedListener = onConnectedListener;
@@ -57,8 +63,8 @@ public class SmartAPITicker {
             }
             throw new CustomException("Could not create WebSocket instance.", e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new CustomException("Could not create SSL context.", e);
+            logger.error(e.getMessage());
+            throw new NoSuchAlgorithmException("Could not create SSL context.", e);
         }
         ws.addListener(getWebsocketAdapter());
         scheduler = new SmartApiTickerScheduler();
@@ -152,7 +158,7 @@ public class SmartAPITicker {
                 try {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -205,7 +211,7 @@ public class SmartAPITicker {
         try {
             ws.connect();
         } catch (WebSocketException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }

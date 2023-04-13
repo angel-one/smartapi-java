@@ -21,10 +21,10 @@ public class Test {
     public static void main(String[] args) throws SmartAPIException {
         try {
 
-            String apiKey = "zkWvUuLx";
-            String clientId = "D541276";
-            String clientPin = "1501";
-            String tOTP = "344542";
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
+            String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
 
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
@@ -65,13 +65,12 @@ public class Test {
 
             logger.info("placeOrder");
             Order placeOrder = examples.placeOrder(smartConnect);
-//
-//            logger.info("modifyOrder");
-//            Order modifyOrder = examples.modifyOrder(smartConnect, placeOrder);
 
+//            logger.info("modifyOrder");
+//           examples.modifyOrder(smartConnect, placeOrder);
 
             logger.info("cancelOrder");
-            Order cancelOrder = examples.cancelOrder(smartConnect, placeOrder);
+            examples.cancelOrder(smartConnect, placeOrder);
 
             logger.info("getOrder");
             examples.getOrder(smartConnect);
@@ -118,7 +117,6 @@ public class Test {
 
         } catch (Exception e) {
             logger.info("Exception: " + e.getMessage());
-            e.printStackTrace();
         }
 
     }

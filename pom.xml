@@ -73,10 +73,6 @@
             <artifactId>docker-client</artifactId>
             <version>${docker-client.version}</version>
         </dependency>
-
-
-
-
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -172,9 +168,6 @@
             <version>${okhttp.mockwebserver.version}</version>
             <scope>test</scope>
         </dependency>
-
-
-
     </dependencies>
 
 </project>

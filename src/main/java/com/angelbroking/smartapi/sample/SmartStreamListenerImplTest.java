@@ -12,7 +12,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class SmartStreamListenerImplTest {
-//		implements SmartStreamListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SmartStreamListenerImplTest.class);
 
@@ -88,8 +87,7 @@ public class SmartStreamListenerImplTest {
 	}
 
 	public void onError(SmartStreamError error) {
-		logger.error("An error occurred while processing the SmartStream: " + error.getException().getMessage());
-		error.getException().printStackTrace();
+		logger.error("An error occurred while processing the SmartStream: {}", error.getException().getMessage());
 	}
 
 	public void onPong() {
