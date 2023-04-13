@@ -113,10 +113,7 @@ public class SmartAPITicker {
                 onConnectedListener.onConnected();
 
                 Runnable runnable = () -> ws.sendText(createWsMWJSONRequest().toString());
-                ScheduledExecutorService service = Executors
-                        .newSingleThreadScheduledExecutor();
-
-                service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
+                scheduler.schedule(runnable, 0, 1, TimeUnit.MINUTES);
 
             }
 

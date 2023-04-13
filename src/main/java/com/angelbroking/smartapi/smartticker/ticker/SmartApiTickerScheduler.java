@@ -14,6 +14,7 @@ public class SmartApiTickerScheduler {
     }
 
     public void schedule(Runnable runnable, long delay, long period, TimeUnit timeUnit) {
+
         scheduledExecutorService.scheduleAtFixedRate(runnable, delay, period, timeUnit);
     }
 
