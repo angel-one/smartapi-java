@@ -7,58 +7,57 @@ import com.angelbroking.smartapi.models.OrderParams;
 public class Validators {
 
     public boolean orderValidator(OrderParams orderParams) throws InvalidParamsException {
-        validateNotEmpty(orderParams.exchange, orderParams.exchange);
-        validateNotEmpty(orderParams.tradingSymbol, orderParams.tradingSymbol);
-        validateNotEmpty(orderParams.transactionType, orderParams.transactionType);
-        validateGreaterThanZero(orderParams.quantity, String.valueOf( orderParams.quantity));
-        validateGreaterThanZeroDouble(orderParams.price, String.valueOf(orderParams.price));
-        validateNotEmpty(orderParams.productType, orderParams.productType);
-        validateNotEmpty(orderParams.orderType, orderParams.orderType);
-        validateNotEmpty(orderParams.duration, orderParams.duration);
-        validateNotEmpty(orderParams.symbolToken, orderParams.symbolToken);
-        validateNotEmpty(orderParams.squareOff, orderParams.squareOff);
-        validateNotEmpty(orderParams.stopLoss, orderParams.stopLoss);
-        validateNotEmpty(orderParams.triggerPrice, orderParams.triggerPrice);
+        validateNotEmpty(orderParams.exchange, Constants.EXCHANGE);
+        validateNotEmpty(orderParams.tradingSymbol, Constants.TRADING_SYMBOL);
+        validateNotEmpty(orderParams.transactionType, Constants.TRANSACTION_TYPE);
+        validateGreaterThanZero(orderParams.quantity, Constants.QUANTITY);
+        validateGreaterThanZeroDouble(orderParams.price, Constants.PRICE);
+        validateNotEmpty(orderParams.productType, Constants.PRODUCT_TYPE);
+        validateNotEmpty(orderParams.orderType, Constants.ORDER_TYPE);
+        validateNotEmpty(orderParams.duration, Constants.DURATION);
+        validateNotEmpty(orderParams.symbolToken, Constants.SYMBOL_TOKEN);
+        validateNotEmpty(orderParams.squareOff, Constants.SQUARE_OFF);
+        validateNotEmpty(orderParams.stopLoss, Constants.STOP_LOSS);
 
         return true;
     }
 
 
     public boolean gttParamsValidator(GttParams gttParams) throws InvalidParamsException {
-        validateNotEmpty(gttParams.tradingSymbol, gttParams.tradingSymbol);
-        validateNotEmpty(gttParams.symbolToken, gttParams.symbolToken);
-        validateNotEmpty(gttParams.exchange, gttParams.exchange);
-        validateNotEmpty(gttParams.transactionType, gttParams.transactionType);
-        validateNotEmpty(gttParams.productType, gttParams.productType);
-        validateGreaterThanZeroDouble(gttParams.price, String.valueOf(gttParams.price));
-        validateGreaterThanZero(gttParams.qty, String.valueOf(gttParams.qty));
-        validateGreaterThanZeroDouble(gttParams.triggerPrice, String.valueOf(gttParams.triggerPrice));
-        validateGreaterThanZero(gttParams.disclosedQty, String.valueOf(gttParams.disclosedQty));
-        validateGreaterThanZero(gttParams.timePeriod, String.valueOf(gttParams.timePeriod));
+        validateNotEmpty(gttParams.tradingSymbol, Constants.TRADING_SYMBOL);
+        validateNotEmpty(gttParams.symbolToken, Constants.SYMBOL_TOKEN);
+        validateNotEmpty(gttParams.exchange, Constants.EXCHANGE);
+        validateNotEmpty(gttParams.transactionType, Constants.TRANSACTION_TYPE);
+        validateNotEmpty(gttParams.productType, Constants.PRODUCT_TYPE);
+        validateGreaterThanZeroDouble(gttParams.price, Constants.PRICE);
+        validateGreaterThanZero(gttParams.qty, Constants.QTY);
+        validateGreaterThanZeroDouble(gttParams.triggerPrice, Constants.TRIGGER_PRICE);
+        validateGreaterThanZero(gttParams.disclosedQty, Constants.DISCLOSED_QTY);
+        validateGreaterThanZero(gttParams.timePeriod, Constants.TIME_PERIOD);
 
         return true;
     }
 
     public boolean gttModifyRuleValidator(GttParams gttParams) throws InvalidParamsException {
-        validateNotEmpty(gttParams.symbolToken, gttParams.symbolToken);
-        validateNotEmpty(gttParams.exchange, gttParams.exchange);
-        validateGreaterThanZeroDouble(gttParams.price,  String.valueOf(gttParams.price));
-        validateGreaterThanZero(gttParams.qty, String.valueOf(gttParams.qty));
-        validateGreaterThanZeroDouble(gttParams.triggerPrice, String.valueOf(gttParams.triggerPrice));
-        validateGreaterThanZero(gttParams.disclosedQty, String.valueOf(gttParams.disclosedQty));
-        validateGreaterThanZero(gttParams.timePeriod, String.valueOf(gttParams.timePeriod));
+        validateNotEmpty(gttParams.symbolToken, Constants.SYMBOL_TOKEN);
+        validateNotEmpty(gttParams.exchange, Constants.EXCHANGE);
+        validateGreaterThanZeroDouble(gttParams.price, Constants.PRICE);
+        validateGreaterThanZero(gttParams.qty, Constants.QTY);
+        validateGreaterThanZeroDouble(gttParams.triggerPrice, Constants.TRIGGER_PRICE);
+        validateGreaterThanZero(gttParams.disclosedQty, Constants.DISCLOSED_QTY);
+        validateGreaterThanZero(gttParams.timePeriod, Constants.TIME_PERIOD);
         return true;
     }
 
     public boolean modifyOrderValidator(OrderParams orderParams) throws InvalidParamsException {
-        validateNotEmpty(orderParams.exchange, orderParams.exchange);
-        validateNotEmpty(orderParams.tradingSymbol, orderParams.tradingSymbol);
-        validateNotEmpty(orderParams.symbolToken, orderParams.symbolToken);
-        validateGreaterThanZero(orderParams.quantity, String.valueOf(orderParams.quantity));
-        validateGreaterThanZeroDouble(orderParams.price, String.valueOf(orderParams.price));
-        validateNotEmpty(orderParams.productType, orderParams.productType);
-        validateNotEmpty(orderParams.orderType, orderParams.orderType);
-        validateNotEmpty(orderParams.duration, orderParams.duration);
+        validateNotEmpty(orderParams.exchange, Constants.EXCHANGE);
+        validateNotEmpty(orderParams.tradingSymbol, Constants.TRADING_SYMBOL);
+        validateNotEmpty(orderParams.symbolToken, Constants.SYMBOL_TOKEN);
+        validateGreaterThanZero(orderParams.quantity, Constants.QUANTITY);
+        validateGreaterThanZeroDouble(orderParams.price, Constants.PRICE);
+        validateNotEmpty(orderParams.productType, Constants.PRODUCT_TYPE);
+        validateNotEmpty(orderParams.orderType, Constants.ORDER_TYPE);
+        validateNotEmpty(orderParams.duration, Constants.DURATION);
         return true;
     }
 

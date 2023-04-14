@@ -21,10 +21,10 @@ public class Test {
     public static void main(String[] args) throws SmartAPIException {
         try {
 
-            String apiKey = "zkWvUuLx";
-            String clientId = "D541276";
-            String clientPin = "1501";
-            String tOTP = "552251";
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
+            String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
 
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
