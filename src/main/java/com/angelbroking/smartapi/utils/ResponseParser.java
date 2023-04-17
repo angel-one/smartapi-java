@@ -36,7 +36,7 @@ public class ResponseParser {
                 }
             }
         });
-        if(response == null){
+        if (response == null) {
             return null;
         }
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -44,6 +44,7 @@ public class ResponseParser {
         user = parseArray(user, response.getJSONObject(Constants.USER_DATA));
         return user;
     }
+
     /**
      * Parses array details of product, exchange and order_type from json response.
      *
@@ -53,17 +54,17 @@ public class ResponseParser {
      */
     public static User parseArray(User user, JSONObject response) throws JSONException {
         JSONArray productArray = response.getJSONArray(Constants.USER_PRODUCTS);
-        user.products = new String[productArray.length()];
+        String[] products = new String[productArray.length()];
         for (int i = 0; i < productArray.length(); i++) {
-            user.products[i] = productArray.getString(i);
+            products[i] = productArray.getString(i);
         }
-
+        user.setProducts(products);
         JSONArray exchangesArray = response.getJSONArray(Constants.USER_EXCHANGES);
-        user.exchanges = new String[exchangesArray.length()];
+        String[] exchanges = new String[exchangesArray.length()];
         for (int j = 0; j < exchangesArray.length(); j++) {
-            user.exchanges[j] = exchangesArray.getString(j);
+            exchanges[j] = exchangesArray.getString(j);
         }
-
+        user.setExchanges(exchanges);
 
         return user;
     }
