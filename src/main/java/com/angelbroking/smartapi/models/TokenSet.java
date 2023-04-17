@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class TokenSet {
 
 	@SerializedName("clientcode")
-	public String userId;
+	private String userId;
 	@SerializedName("access_token")
-	public String accessToken;
+	private String accessToken;
 	@SerializedName("refresh_token")
-	public String refreshToken;
+	private String refreshToken;
 
 }

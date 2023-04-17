@@ -230,25 +230,24 @@ public class SmartConnect {
             validator.orderValidator(orderParams);
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_PLACE);
             JSONObject params = new JSONObject();
-            params.put(Constants.EXCHANGE, orderParams.exchange);
-            params.put(Constants.TRADING_SYMBOL, orderParams.tradingSymbol);
-            params.put(Constants.TRANSACTION_TYPE, orderParams.transactionType);
-            params.put(Constants.QUANTITY, orderParams.quantity);
-            params.put(Constants.PRICE, orderParams.price);
-            params.put(Constants.PRODUCT_TYPE, orderParams.productType);
-            params.put(Constants.ORDER_TYPE, orderParams.orderType);
-            params.put(Constants.DURATION, orderParams.duration);
-            params.put(Constants.SYMBOL_TOKEN, orderParams.symbolToken);
-            params.put(Constants.SQUARE_OFF, orderParams.squareOff);
-            params.put(Constants.STOP_LOSS, orderParams.stopLoss);
-            params.put(Constants.TRIGGER_PRICE, orderParams.triggerPrice);
+            params.put(Constants.EXCHANGE, orderParams.getExchange());
+            params.put(Constants.TRADING_SYMBOL, orderParams.getTradingSymbol());
+            params.put(Constants.TRANSACTION_TYPE, orderParams.getTransactionType());
+            params.put(Constants.QUANTITY, orderParams.getQuantity());
+            params.put(Constants.PRICE, orderParams.getPrice());
+            params.put(Constants.PRODUCT_TYPE, orderParams.getProductType());
+            params.put(Constants.ORDER_TYPE, orderParams.getOrderType());
+            params.put(Constants.DURATION, orderParams.getDuration());
+            params.put(Constants.SYMBOL_TOKEN, orderParams.getSymbolToken());
+            params.put(Constants.SQUARE_OFF, orderParams.getSquareOff());
+            params.put(Constants.STOP_LOSS, orderParams.getStopLoss());
             params.put(Constants.VARIETY, variety);
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             if (logger.isDebugEnabled()) {
                 logger.debug(String.valueOf(jsonObject));
             }
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
+            order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
             if (logger.isDebugEnabled()) {
                 logger.debug(String.valueOf(order));
             }
@@ -282,16 +281,14 @@ public class SmartConnect {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_MODIFY);
 
             JSONObject params = new JSONObject();
-
-
-            params.put(Constants.EXCHANGE, orderParams.exchange);
-            params.put(Constants.TRADING_SYMBOL, orderParams.tradingSymbol);
-            params.put(Constants.SYMBOL_TOKEN, orderParams.symbolToken);
-            params.put(Constants.QUANTITY, orderParams.quantity);
-            params.put(Constants.PRICE, orderParams.price);
-            params.put(Constants.PRODUCT_TYPE, orderParams.productType);
-            params.put(Constants.ORDER_TYPE, orderParams.orderType);
-            params.put(Constants.DURATION, orderParams.duration);
+            params.put(Constants.EXCHANGE, orderParams.getExchange());
+            params.put(Constants.TRADING_SYMBOL, orderParams.getTradingSymbol());
+            params.put(Constants.SYMBOL_TOKEN, orderParams.getSymbolToken());
+            params.put(Constants.QUANTITY, orderParams.getQuantity());
+            params.put(Constants.PRICE, orderParams.getPrice());
+            params.put(Constants.PRODUCT_TYPE, orderParams.getProductType());
+            params.put(Constants.ORDER_TYPE, orderParams.getOrderType());
+            params.put(Constants.DURATION, orderParams.getDuration());
             params.put(Constants.VARIETY, variety);
             params.put(Constants.ORDER_ID, orderId);
 
@@ -301,7 +298,7 @@ public class SmartConnect {
                 logger.debug(String.valueOf(jsonObject));
             }
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
+            order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
             return order;
         } catch (SmartAPIException ex) {
             logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
@@ -336,7 +333,7 @@ public class SmartConnect {
             }
 
             Order order = new Order();
-            order.orderId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID);
+            order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
             return order;
         } catch (SmartAPIException ex) {
             logger.error(Constants.SMART_API_EXCEPTION_OCCURRED + ex.getMessage(), ex);
@@ -556,17 +553,16 @@ public class SmartConnect {
             String url = routes.get(Constants.SMART_CONNECT_API_GTT_CREATE);
 
             JSONObject params = new JSONObject();
-            params.put(Constants.TRADING_SYMBOL, gttParams.tradingSymbol);
-            params.put(Constants.SYMBOL_TOKEN, gttParams.symbolToken);
-            params.put(Constants.EXCHANGE, gttParams.exchange);
-            params.put(Constants.TRANSACTION_TYPE, gttParams.transactionType);
-            params.put(Constants.PRODUCT_TYPE, gttParams.productType);
-            params.put(Constants.PRICE, gttParams.price);
-            params.put(Constants.QTY, gttParams.qty);
-            params.put(Constants.TRIGGER_PRICE, gttParams.triggerPrice);
-            params.put(Constants.DISCLOSED_QTY, gttParams.disclosedQty);
-            params.put(Constants.TIME_PERIOD, gttParams.timePeriod);
-
+            params.put(Constants.TRADING_SYMBOL, gttParams.getTradingSymbol());
+            params.put(Constants.SYMBOL_TOKEN, gttParams.getSymbolToken());
+            params.put(Constants.EXCHANGE, gttParams.getExchange());
+            params.put(Constants.TRANSACTION_TYPE, gttParams.getTransactionType());
+            params.put(Constants.PRODUCT_TYPE, gttParams.getProductType());
+            params.put(Constants.PRICE, gttParams.getPrice());
+            params.put(Constants.QTY, gttParams.getQty());
+            params.put(Constants.TRIGGER_PRICE, gttParams.getTriggerPrice());
+            params.put(Constants.DISCLOSED_QTY, gttParams.getDisclosedQty());
+            params.put(Constants.TIME_PERIOD, gttParams.getTimePeriod());
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             int gttId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
             if (logger.isDebugEnabled()) {
@@ -602,13 +598,13 @@ public class SmartConnect {
             String url = routes.get(Constants.SMART_CONNECT_API_GTT_MODIFY);
 
             JSONObject params = new JSONObject();
-            params.put(Constants.SYMBOL_TOKEN, gttParams.symbolToken);
-            params.put(Constants.EXCHANGE, gttParams.exchange);
-            params.put(Constants.PRICE, gttParams.price);
-            params.put(Constants.QTY, gttParams.qty);
-            params.put(Constants.TRIGGER_PRICE, gttParams.triggerPrice);
-            params.put(Constants.DISCLOSED_QTY, gttParams.disclosedQty);
-            params.put(Constants.TIME_PERIOD, gttParams.timePeriod);
+            params.put(Constants.SYMBOL_TOKEN, gttParams.getSymbolToken());
+            params.put(Constants.EXCHANGE, gttParams.getExchange());
+            params.put(Constants.PRICE, gttParams.getPrice());
+            params.put(Constants.QTY, gttParams.getQty());
+            params.put(Constants.TRIGGER_PRICE, gttParams.getTriggerPrice());
+            params.put(Constants.DISCLOSED_QTY, gttParams.getDisclosedQty());
+            params.put(Constants.TIME_PERIOD, gttParams.getTimePeriod());
             params.put(Constants.ID, id);
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
@@ -645,12 +641,10 @@ public class SmartConnect {
             params.put(Constants.ID, id);
             params.put(Constants.SYMBOL_TOKEN, symboltoken);
             params.put(Constants.EXCHANGE, exchange);
-
-
             String url = routes.get(Constants.SMART_CONNECT_API_GTT_CANCEL);
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             Gtt gtt = new Gtt();
-            gtt.id = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
+            gtt.setId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id"));
             if (logger.isDebugEnabled()) {
                 logger.debug(String.valueOf(gtt));
             }

@@ -78,21 +78,18 @@ public class Examples {
     public Order placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         OrderParams orderParams = new OrderParams();
-        orderParams.variety = Constants.VARIETY_STOPLOSS;
-        orderParams.quantity = 323;
-        orderParams.symbolToken = "1660";
-        orderParams.exchange = Constants.EXCHANGE_NSE;
-        orderParams.orderType = Constants.ORDER_TYPE_STOPLOSS_LIMIT;
-        orderParams.tradingSymbol = "ITC-EQ";
-        orderParams.productType = Constants.PRODUCT_INTRADAY;
-        orderParams.duration = Constants.DURATION_DAY;
-        orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
-        orderParams.price = 122.2;
-        orderParams.triggerPrice = "209";
-        orderParams.squareOff = "0";
-        orderParams.stopLoss = "0";
-
-
+        orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+        orderParams.setQuantity(323);
+        orderParams.setSymbolToken("1660");
+        orderParams.setExchange(Constants.EXCHANGE_NSE);
+        orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+        orderParams.setTradingSymbol("ITC-EQ");
+        orderParams.setProductType(Constants.PRODUCT_INTRADAY);
+        orderParams.setDuration(Constants.DURATION_DAY);
+        orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+        orderParams.setPrice(122.2);
+        orderParams.setSquareOff("0");
+        orderParams.setStopLoss("0");
         Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
         logger.debug("placeOrder: {}", order);
 
@@ -106,18 +103,18 @@ public class Examples {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
-        orderParams.variety = Constants.VARIETY_STOPLOSS;
-        orderParams.quantity = 324;
-        orderParams.symbolToken = "1660";
-        orderParams.exchange = Constants.EXCHANGE_NSE;
-        orderParams.orderType = Constants.ORDER_TYPE_STOPLOSS_LIMIT;
-        orderParams.tradingSymbol = "ITC-EQ";
-        orderParams.productType = Constants.PRODUCT_INTRADAY;
-        orderParams.duration = Constants.DURATION_DAY;
-        orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
-        orderParams.price = 122.2;
-        orderParams.triggerPrice = "209";
-        Order order = smartConnect.modifyOrder(orderInput.orderId, orderParams, "STOPLOSS");
+        orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+        orderParams.setQuantity(324);
+        orderParams.setSymbolToken("1660");
+        orderParams.setExchange(Constants.EXCHANGE_NSE);
+        orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+        orderParams.setTradingSymbol("ITC-EQ");
+        orderParams.setProductType(Constants.PRODUCT_INTRADAY);
+        orderParams.setDuration(Constants.DURATION_DAY);
+        orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+        orderParams.setPrice(122.2);
+        orderParams.setTriggerPrice("209");
+        Order order = smartConnect.modifyOrder(orderInput.getOrderId(), orderParams, "STOPLOSS");
 
         logger.debug("modifyOrder {}", order);
         return order;
@@ -220,17 +217,16 @@ public class Examples {
     public String createRule(SmartConnect smartConnect) {
         GttParams gttParams = new GttParams();
 
-        gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
-        gttParams.symbolToken = "3045";
-        gttParams.exchange = "NSE";
-        gttParams.productType = Constants.MARGIN;
-        gttParams.transactionType = "BUY";
-        gttParams.price = 100000.01;
-        gttParams.qty = 10;
-        gttParams.disclosedQty = 10;
-        gttParams.triggerPrice = 20000.1;
-        gttParams.timePeriod = 300;
-
+        gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+        gttParams.setSymbolToken("3045");
+        gttParams.setExchange("NSE");
+        gttParams.setProductType(Constants.MARGIN);
+        gttParams.setTransactionType("BUY");
+        gttParams.setPrice(100000.01);
+        gttParams.setQty(10);
+        gttParams.setDisclosedQty(10);
+        gttParams.setTriggerPrice(20000.1);
+        gttParams.setTimePeriod(300);
         return smartConnect.gttCreateRule(gttParams);
     }
 
@@ -239,19 +235,16 @@ public class Examples {
      */
     public String modifyRule(SmartConnect smartConnect, String ruleID) {
         GttParams gttParams = new GttParams();
-
-        gttParams.tradingSymbol = Constants.SYMBOL_SBINEQ;
-        gttParams.symbolToken = "3045";
-        gttParams.exchange = "NSE";
-        gttParams.productType = Constants.MARGIN;
-        gttParams.transactionType = "BUY";
-        gttParams.price = 100000.1;
-        gttParams.qty = 11;
-        gttParams.disclosedQty = 11;
-        gttParams.triggerPrice = 20000.1;
-        gttParams.timePeriod = 300;
-
-
+        gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+        gttParams.setSymbolToken("3045");
+        gttParams.setExchange("NSE");
+        gttParams.setProductType(Constants.MARGIN);
+        gttParams.setTransactionType("BUY");
+        gttParams.setPrice(100000.1);
+        gttParams.setQty(11);
+        gttParams.setDisclosedQty(11);
+        gttParams.setTriggerPrice(20000.1);
+        gttParams.setTimePeriod(300);
         return smartConnect.gttModifyRule(Integer.valueOf(ruleID), gttParams);
     }
 

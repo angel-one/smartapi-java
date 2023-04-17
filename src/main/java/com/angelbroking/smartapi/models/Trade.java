@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 public class Trade {
 
 	@SerializedName("order_id")
-	public String orderId;
+	private String orderId;
 
 	@SerializedName("tradingsymbol")
-	public String tradingSymbol;
+	private String tradingSymbol;
 
-	public String exchange;
+	private String exchange;
 
-	public String product;
+	private String product;
 
-	public String quantity;
+	private String quantity;
 
 	@SerializedName("transaction_type")
-	public String transactionType;
+	private String transactionType;
 
 }

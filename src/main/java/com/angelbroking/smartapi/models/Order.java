@@ -14,98 +14,98 @@ import lombok.NoArgsConstructor;
 public class Order {
 
 	@SerializedName("disclosedquantity")
-	public String disclosedQuantity;
+	private String disclosedQuantity;
 
-	public String duration;
+	private String duration;
 
 	@SerializedName("tradingsymbol")
-	public String tradingSymbol;
+	private String tradingSymbol;
 
-	public String variety;
+	private String variety;
 
 	@SerializedName("ordertype")
-	public String orderType;
+	private String orderType;
 
 	@SerializedName("triggerprice")
-	public String triggerPrice;
+	private String triggerPrice;
 
-	public String text;
+	private String text;
 
-	public String price;
+	private String price;
 
-	public String status;
+	private String status;
 
 	@SerializedName("producttype")
-	public String productType;
+	private String productType;
 
-	public String exchange;
+	private String exchange;
 
 	@SerializedName("orderid")
-	public String orderId;
+	private String orderId;
 
-	public String symbol;
+	private String symbol;
 
 	@SerializedName("updatetime")
-	public String updateTime;
+	private String updateTime;
 
 	@SerializedName("exchtime")
-	public String exchangeTimestamp;
+	private String exchangeTimestamp;
 
 	@SerializedName("exchorderupdatetime")
-	public String exchangeUpdateTimestamp;
+	private String exchangeUpdateTimestamp;
 
 	@SerializedName("averageprice")
-	public String averagePrice;
+	private String averagePrice;
 
 	@SerializedName("transactiontype")
-	public String transactionType;
+	private String transactionType;
 
-	public String quantity;
+	private String quantity;
 
 	@SerializedName("squareoff")
-	public String squareOff;
+	private String squareOff;
 
 	@SerializedName("stoploss")
-	public String stopLoss;
+	private String stopLoss;
 
 	@SerializedName("trailingstoploss")
-	public String trailingStopLoss;
+	private String trailingStopLoss;
 
 	@SerializedName("symboltoken")
-	public String symbolToken;
+	private String symbolToken;
 
 	@SerializedName("instrumenttype")
-	public String instrumentType;
+	private String instrumentType;
 
 	@SerializedName("strikeprice")
-	public String strikePrice;
+	private String strikePrice;
 
 	@SerializedName("optiontype")
-	public String optionType;
+	private String optionType;
 
 	@SerializedName("expirydate")
-	public String expiryDate;
+	private String expiryDate;
 
 	@SerializedName("lotsize")
-	public String lotSize;
+	private String lotSize;
 
 	@SerializedName("cancelsize")
-	public String cancelSize;
+	private String cancelSize;
 
 	@SerializedName("filledshares")
-	public String filledShares;
+	private String filledShares;
 
 	@SerializedName("orderstatus")
-	public String orderStatus;
+	private String orderStatus;
 
 	@SerializedName("unfilledshares")
-	public String unfilledShares;
+	private String unfilledShares;
 
 	@SerializedName("fillid")
-	public String fillId;
+	private String fillId;
 
 	@SerializedName("filltime")
-	public String fillTime;
+	private String fillTime;
 
 	@Override
 	public String toString() {

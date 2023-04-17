@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Profile {
 
-    public String email;
+    private String email;
 
     @SerializedName("name")
-    public String userName;
+    private String userName;
 
-    public String broker;
+    private String broker;
 
-    public String[] exchanges;
+    private String[] exchanges;
 
-    public String[] products;
+    private String[] products;
 
 
 }

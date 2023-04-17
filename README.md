@@ -92,19 +92,19 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	/** Place order. */
 	public void placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-		OrderParams orderParams = new OrderParams();
-		orderParams.variety = "NORMAL";
-		orderParams.quantity = 1;
-		orderParams.symboltoken = "3045";
-		orderParams.exchange = Constants.EXCHANGE_NSE;
-		orderParams.ordertype = Constants.ORDER_TYPE_LIMIT;
-		orderParams.tradingsymbol = "SBIN-EQ";
-		orderParams.producttype = Constants.PRODUCT_INTRADAY;
-		orderParams.duration = Constants.VALIDITY_DAY;
-		orderParams.transactiontype = Constants.TRANSACTION_TYPE_BUY;
-		orderParams.price = 122.2;
-		orderParams.squareoff = "0";
-		orderParams.stoploss = "0";
+            OrderParams orderParams = new OrderParams();
+            orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+            orderParams.setQuantity(323);
+            orderParams.setSymbolToken("1660");
+            orderParams.setExchange(Constants.EXCHANGE_NSE);
+            orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+            orderParams.setTradingSymbol("ITC-EQ");
+            orderParams.setProductType(Constants.PRODUCT_INTRADAY);
+            orderParams.setDuration(Constants.DURATION_DAY);
+            orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+            orderParams.setPrice(122.2);
+            orderParams.setSquareOff("0");
+            orderParams.setStopLoss("0");
 
 		Order order = smartConnect.placeOrder(orderParams, Constants.VARIETY_REGULAR);
 	}
@@ -112,18 +112,16 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	/** Modify order. */
 	public void modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		// Order modify request will return order model which will contain only
-
-		OrderParams orderParams = new OrderParams();
-		orderParams.quantity = 1;
-		orderParams.ordertype = Constants.ORDER_TYPE_LIMIT;
-		orderParams.tradingsymbol = "ASHOKLEY";
-		orderParams.symboltoken = "3045";
-		orderParams.producttype = Constants.PRODUCT_DELIVERY;
-		orderParams.exchange = Constants.EXCHANGE_NSE;
-		orderParams.duration = Constants.VALIDITY_DAY;
-		orderParams.price = 122.2;
-
-		String orderId = "201216000755110";
+            
+            orderParams.setQuantity(324);
+            orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+            orderParams.setTradingSymbol("ITC-EQ");
+            orderParams.setSymbolToken("1660");
+            orderParams.setProductType(Constants.PRODUCT_INTRADAY);
+            orderParams.setExchange(Constants.EXCHANGE_NSE);
+            orderParams.setDuration(Constants.DURATION_DAY);
+            orderParams.setPrice(122.2);
+            String orderId = "201216000755110";
 		Order order = smartConnect.modifyOrder(orderId, orderParams, Constants.VARIETY_REGULAR);
 	}
     
@@ -198,37 +196,38 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	public void createRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
 		GttParams gttParams= new GttParams();
 
-		gttParams.tradingsymbol="SBIN-EQ";
-		gttParams.symboltoken="3045";
-		gttParams.exchange="NSE";
-		gttParams.producttype="MARGIN";
-		gttParams.transactiontype="BUY";
-		gttParams.price= 100000.01;
-		gttParams.qty=10;
-		gttParams.disclosedqty=10;
-		gttParams.triggerprice=20000.1;
-		gttParams.timeperiod=300;
-		
-		Gtt gtt = smartConnect.gttCreateRule(gttParams);
+            gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+            gttParams.setSymbolToken("3045");
+            gttParams.setExchange("NSE");
+            gttParams.setProductType(Constants.MARGIN);
+            gttParams.setTransactionType("BUY");
+            gttParams.setPrice(100000.01);
+            gttParams.setQty(10);
+            gttParams.setDisclosedQty(10);
+            gttParams.setTriggerPrice(20000.1);
+            gttParams.setTimePeriod(300);
+
+            Gtt gtt = smartConnect.gttCreateRule(gttParams);
 	}
 
 	
 	/** Modify Gtt Rule */
 	public void modifyRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
 		GttParams gttParams= new GttParams();
-		
-		gttParams.tradingsymbol="SBIN-EQ";
-		gttParams.symboltoken="3045";
-		gttParams.exchange="NSE";
-		gttParams.producttype="MARGIN";
-		gttParams.transactiontype="BUY";
-		gttParams.price= 100000.1;
-		gttParams.qty=10;
-		gttParams.disclosedqty=10;
-		gttParams.triggerprice=20000.1;
-		gttParams.timeperiod=300;
-		
-		Integer id= 1000051;
+
+            gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+            gttParams.setSymbolToken("3045");
+            gttParams.setExchange("NSE");
+            gttParams.setProductType(Constants.MARGIN);
+            gttParams.setTransactionType("BUY");
+            gttParams.setPrice(100000.1);
+            gttParams.setQty(11);
+            gttParams.setDisclosedQty(11);
+            gttParams.setTriggerPrice(20000.1);
+            gttParams.setTimePeriod(300);
+
+
+            Integer id= 1000051;
 		
 		Gtt gtt = smartConnect.gttModifyRule(id,gttParams);
 	}

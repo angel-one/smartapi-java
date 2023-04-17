@@ -7,57 +7,55 @@ import com.angelbroking.smartapi.models.OrderParams;
 public class Validators {
 
     public boolean orderValidator(OrderParams orderParams) throws InvalidParamsException {
-        validateNotEmpty(orderParams.exchange, Constants.EXCHANGE);
-        validateNotEmpty(orderParams.tradingSymbol, Constants.TRADING_SYMBOL);
-        validateNotEmpty(orderParams.transactionType, Constants.TRANSACTION_TYPE);
-        validateGreaterThanZero(orderParams.quantity, Constants.QUANTITY);
-        validateGreaterThanZeroDouble(orderParams.price, Constants.PRICE);
-        validateNotEmpty(orderParams.productType, Constants.PRODUCT_TYPE);
-        validateNotEmpty(orderParams.orderType, Constants.ORDER_TYPE);
-        validateNotEmpty(orderParams.duration, Constants.DURATION);
-        validateNotEmpty(orderParams.symbolToken, Constants.SYMBOL_TOKEN);
-        validateNotEmpty(orderParams.squareOff, Constants.SQUARE_OFF);
-        validateNotEmpty(orderParams.stopLoss, Constants.STOP_LOSS);
-
+        validateNotEmpty(orderParams.getExchange(), Constants.EXCHANGE);
+        validateNotEmpty(orderParams.getTradingSymbol(), Constants.TRADING_SYMBOL);
+        validateNotEmpty(orderParams.getTransactionType(), Constants.TRANSACTION_TYPE);
+        validateGreaterThanZero(orderParams.getQuantity(), Constants.QUANTITY);
+        validateGreaterThanZeroDouble(orderParams.getPrice(), Constants.PRICE);
+        validateNotEmpty(orderParams.getProductType(), Constants.PRODUCT_TYPE);
+        validateNotEmpty(orderParams.getOrderType(), Constants.ORDER_TYPE);
+        validateNotEmpty(orderParams.getDuration(), Constants.DURATION);
+        validateNotEmpty(orderParams.getSymbolToken(), Constants.SYMBOL_TOKEN);
+        validateNotEmpty(orderParams.getSquareOff(), Constants.SQUARE_OFF);
+        validateNotEmpty(orderParams.getStopLoss(), Constants.STOP_LOSS);
         return true;
     }
 
 
     public boolean gttParamsValidator(GttParams gttParams) throws InvalidParamsException {
-        validateNotEmpty(gttParams.tradingSymbol, Constants.TRADING_SYMBOL);
-        validateNotEmpty(gttParams.symbolToken, Constants.SYMBOL_TOKEN);
-        validateNotEmpty(gttParams.exchange, Constants.EXCHANGE);
-        validateNotEmpty(gttParams.transactionType, Constants.TRANSACTION_TYPE);
-        validateNotEmpty(gttParams.productType, Constants.PRODUCT_TYPE);
-        validateGreaterThanZeroDouble(gttParams.price, Constants.PRICE);
-        validateGreaterThanZero(gttParams.qty, Constants.QTY);
-        validateGreaterThanZeroDouble(gttParams.triggerPrice, Constants.TRIGGER_PRICE);
-        validateGreaterThanZero(gttParams.disclosedQty, Constants.DISCLOSED_QTY);
-        validateGreaterThanZero(gttParams.timePeriod, Constants.TIME_PERIOD);
-
+        validateNotEmpty(gttParams.getTradingSymbol(), Constants.TRADING_SYMBOL);
+        validateNotEmpty(gttParams.getSymbolToken(), Constants.SYMBOL_TOKEN);
+        validateNotEmpty(gttParams.getExchange(), Constants.EXCHANGE);
+        validateNotEmpty(gttParams.getTransactionType(), Constants.TRANSACTION_TYPE);
+        validateNotEmpty(gttParams.getProductType(), Constants.PRODUCT_TYPE);
+        validateGreaterThanZeroDouble(gttParams.getPrice(), Constants.PRICE);
+        validateGreaterThanZero(gttParams.getQty(), Constants.QTY);
+        validateGreaterThanZeroDouble(gttParams.getTriggerPrice(), Constants.TRIGGER_PRICE);
+        validateGreaterThanZero(gttParams.getDisclosedQty(), Constants.DISCLOSED_QTY);
+        validateGreaterThanZero(gttParams.getTimePeriod(), Constants.TIME_PERIOD);
         return true;
     }
 
     public boolean gttModifyRuleValidator(GttParams gttParams) throws InvalidParamsException {
-        validateNotEmpty(gttParams.symbolToken, Constants.SYMBOL_TOKEN);
-        validateNotEmpty(gttParams.exchange, Constants.EXCHANGE);
-        validateGreaterThanZeroDouble(gttParams.price, Constants.PRICE);
-        validateGreaterThanZero(gttParams.qty, Constants.QTY);
-        validateGreaterThanZeroDouble(gttParams.triggerPrice, Constants.TRIGGER_PRICE);
-        validateGreaterThanZero(gttParams.disclosedQty, Constants.DISCLOSED_QTY);
-        validateGreaterThanZero(gttParams.timePeriod, Constants.TIME_PERIOD);
+        validateNotEmpty(gttParams.getSymbolToken(), Constants.SYMBOL_TOKEN);
+        validateNotEmpty(gttParams.getExchange(), Constants.EXCHANGE);
+        validateGreaterThanZeroDouble(gttParams.getPrice(), Constants.PRICE);
+        validateGreaterThanZero(gttParams.getQty(), Constants.QTY);
+        validateGreaterThanZeroDouble(gttParams.getTriggerPrice(), Constants.TRIGGER_PRICE);
+        validateGreaterThanZero(gttParams.getDisclosedQty(), Constants.DISCLOSED_QTY);
+        validateGreaterThanZero(gttParams.getTimePeriod(), Constants.TIME_PERIOD);
         return true;
     }
 
     public boolean modifyOrderValidator(OrderParams orderParams) throws InvalidParamsException {
-        validateNotEmpty(orderParams.exchange, Constants.EXCHANGE);
-        validateNotEmpty(orderParams.tradingSymbol, Constants.TRADING_SYMBOL);
-        validateNotEmpty(orderParams.symbolToken, Constants.SYMBOL_TOKEN);
-        validateGreaterThanZero(orderParams.quantity, Constants.QUANTITY);
-        validateGreaterThanZeroDouble(orderParams.price, Constants.PRICE);
-        validateNotEmpty(orderParams.productType, Constants.PRODUCT_TYPE);
-        validateNotEmpty(orderParams.orderType, Constants.ORDER_TYPE);
-        validateNotEmpty(orderParams.duration, Constants.DURATION);
+        validateNotEmpty(orderParams.getExchange(), Constants.EXCHANGE);
+        validateNotEmpty(orderParams.getTradingSymbol(), Constants.TRADING_SYMBOL);
+        validateNotEmpty(orderParams.getSymbolToken(), Constants.SYMBOL_TOKEN);
+        validateGreaterThanZero(orderParams.getQuantity(), Constants.QUANTITY);
+        validateGreaterThanZeroDouble(orderParams.getPrice(), Constants.PRICE);
+        validateNotEmpty(orderParams.getProductType(), Constants.PRODUCT_TYPE);
+        validateNotEmpty(orderParams.getOrderType(), Constants.ORDER_TYPE);
+        validateNotEmpty(orderParams.getDuration(), Constants.DURATION);
         return true;
     }
 

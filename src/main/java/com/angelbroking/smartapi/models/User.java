@@ -19,30 +19,30 @@ import java.util.Date;
 public class User {
 
     @SerializedName("name")
-    public String userName;
+    private String userName;
 
     @SerializedName("clientcode")
-    public String userId;
+    private String userId;
 
     @SerializedName("mobileno")
-    public String mobileNo;
+    private String mobileNo;
 
     @SerializedName("broker")
-    public String brokerName;
+    private String brokerName;
 
-    public String email;
+    private String email;
 
     @SerializedName("lastlogintime")
-    public Date lastLoginTime;
+    private Date lastLoginTime;
 
-    public String accessToken;
+    private String accessToken;
 
-    public String refreshToken;
+    private String refreshToken;
 
-    public String[] products;
-    public String[] exchanges;
+    private String[] products;
+    private String[] exchanges;
 
-    public String feedToken;
+    private String feedToken;
 
 
     @Override

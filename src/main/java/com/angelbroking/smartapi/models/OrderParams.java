@@ -12,85 +12,85 @@ import lombok.NoArgsConstructor;
 public class OrderParams {
 
 	@SerializedName("orderid")
-	public String orderId;
+	private String orderId;
 
 	/**
 	 * Exchange in which instrument is listed (NSE, BSE, NFO, BFO, CDS, MCX).
 	 */
 	@SerializedName("exchange")
-	public String exchange;
+	private String exchange;
 
 	/**
 	 * Symbol Token is unique identifier.
 	 */
 	@SerializedName("symbolToken")
-	public String symbolToken;
+	private String symbolToken;
 
 	/**
 	 * Transaction type (BUY or SELL).
 	 */
 	@SerializedName("transactiontype")
-	public String transactionType;
+	private String transactionType;
 
 	/**
 	 * Quantity to transact
 	 */
 	@SerializedName("quantity")
-	public Integer quantity;
+	private Integer quantity;
 
 	/**
 	 * The min or max price to execute the order at (for LIMIT orders)
 	 */
 	@SerializedName("price")
-	public Double price;
+	private Double price;
 
 	/**
 	 * producttype code (NRML, MIS, CNC).
 	 */
 	@SerializedName("producttype")
-	public String productType;
+	private String productType;
 
 	/**
 	 * Order type (LIMIT, SL, SL-M, MARKET).
 	 */
 	@SerializedName("ordertype")
-	public String orderType;
+	private String orderType;
 
 	/**
 	 * Order duration (DAY, IOC).
 	 */
 	@SerializedName("duration")
-	public String duration;
+	private String duration;
 
 	/**
 	 * variety
 	 */
 	@SerializedName("variety")
-	public String variety;
+	private String variety;
 
 	/**
 	 * Trading Symbol of the instrument
 	 */
 	@SerializedName("tradingsymbol")
-	public String tradingSymbol;
+	private String tradingSymbol;
 
 	/**
 	 * The price at which an order should be triggered (SL, SL-M)
 	 */
 	@SerializedName("triggerprice")
-	public String triggerPrice;
+	private String triggerPrice;
 
 	/**
 	 * Only For ROBO (Bracket Order)
 	 */
 	@SerializedName("squareoff")
-	public String squareOff;
+	private String squareOff;
 
 	/**
 	 * Only For ROBO (Bracket Order)
 	 */
 	@SerializedName("stoploss")
-	public String stopLoss;
+	private String stopLoss;
 
 
 }
