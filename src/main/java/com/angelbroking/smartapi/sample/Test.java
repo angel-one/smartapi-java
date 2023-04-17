@@ -3,6 +3,7 @@ package com.angelbroking.smartapi.sample;
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.Order;
+import com.angelbroking.smartapi.models.TokenSet;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
@@ -54,10 +55,6 @@ public class Test {
             ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
 
             logger.info("DONE");
-            // token re-generate
-//			TokenSet tokenSet = smartConnect.renewAccessToken(user.getAccessToken(),
-//					user.getRefreshToken());
-//			smartConnect.setAccessToken(tokenSet.getAccessToken());
 
             Examples examples = new Examples();
             logger.info("getProfile");
