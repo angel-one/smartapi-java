@@ -30,7 +30,6 @@ import static com.angelbroking.smartapi.utils.Constants.*;
 @Slf4j
 public class SmartAPIRequestHandler {
 
-    private static final String USER_AGENT = "javasmartapiconnect/3.0.0";
     private final OkHttpClient client;
     JSONObject apiheader = apiHeaders();
 
@@ -255,7 +254,7 @@ public class SmartAPIRequestHandler {
         StringBuilder authHeader = new StringBuilder();
         authHeader.append("Bearer ");
         authHeader.append(accessToken);
-        return new Request.Builder().url(httpBuilder.build()).header(USER_AGENT, USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(ACCEPT, apiheader.getString(ACCEPT)).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getString(USER_TYPE)).header(X_SOURCE_ID, apiheader.getString(SOURCE_ID)).build();
+        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(ACCEPT, apiheader.getString(ACCEPT)).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getString(USER_TYPE)).header(X_SOURCE_ID, apiheader.getString(SOURCE_ID)).build();
     }
 
     /**
@@ -275,7 +274,7 @@ public class SmartAPIRequestHandler {
         for (int i = 0; i < values.length; i++) {
             httpBuilder.addQueryParameter(commonKey, values[i]);
         }
-        return new Request.Builder().url(httpBuilder.build()).header(USER_AGENT, USER_AGENT).header(SMART_API_VERSION, "3").header(AUTHORIZATION, String.format("%s%s:%s", TOKEN, apiKey, accessToken)).build();
+        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(SMART_API_VERSION, "3").header(AUTHORIZATION, String.format("%s%s:%s", TOKEN, apiKey, accessToken)).build();
     }
 
     /**
@@ -336,7 +335,7 @@ public class SmartAPIRequestHandler {
     public Request createJsonPostRequest(String url, JSONArray jsonArray, String apiKey, String accessToken) {
         MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
         RequestBody body = RequestBody.create(jsonArray.toString(), jsonMediaType);
-        return new Request.Builder().url(url).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).post(body).build();
+        return new Request.Builder().url(url).header(Constants.USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).post(body).build();
     }
 
     /**
@@ -354,7 +353,7 @@ public class SmartAPIRequestHandler {
             builder.add(entry.getKey(), entry.getValue().toString());
         }
         RequestBody requestBody = builder.build();
-        return new Request.Builder().url(url).put(requestBody).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
+        return new Request.Builder().url(url).put(requestBody).header(Constants.USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
 
     /**
@@ -373,7 +372,7 @@ public class SmartAPIRequestHandler {
             httpBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
         }
 
-        return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
+        return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
 
 }

@@ -199,4 +199,7 @@ public class Constants {
     public static final String PARAM_PARAMS = "params";
 
 
+    public static final String SMARTAPIREQUESTHANDLER_USER_AGENT = "javasmartapiconnect/3.0.0";
+
+
 }
