@@ -113,7 +113,7 @@ public class Test {
             examples.logout(smartConnect);
 
         } catch (Exception e) {
-            logger.info("Exception: " + e.getMessage());
+            logger.info("Exception: {}", e.getMessage());
         }
 
     }

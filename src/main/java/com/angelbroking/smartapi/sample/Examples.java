@@ -18,7 +18,7 @@ public class Examples {
 
     private static final Logger logger = LoggerFactory.getLogger(Examples.class);
 
-    public void getProfile(SmartConnect smartConnect) throws SmartAPIException {
+    public void getProfile(SmartConnect smartConnect) throws SmartAPIException, IOException {
         User profile = smartConnect.getProfile();
         logger.debug(profile.toString());
     }
@@ -99,7 +99,7 @@ public class Examples {
     /**
      * Modify order.
      */
-    public Order modifyOrder(SmartConnect smartConnect, Order orderInput) throws SmartAPIException {
+    public Order modifyOrder(SmartConnect smartConnect, Order orderInput) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
@@ -126,7 +126,7 @@ public class Examples {
      *
      * @return
      */
-    public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException {
+    public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
@@ -138,7 +138,7 @@ public class Examples {
     /**
      * Get order details
      */
-    public void getOrder(SmartConnect smartConnect) {
+    public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         JSONObject orders = smartConnect.getOrderHistory();
         logger.debug("getOrder {}", orders);
     }
@@ -148,7 +148,7 @@ public class Examples {
      * exchange with tradingsymbol or instrument token only. For example {NSE:NIFTY
      * 50, BSE:SENSEX} or {256265, 265}
      */
-    public void getLTP(SmartConnect smartConnect) {
+    public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
         String exchange = "NSE";
         String symboltoken = "3045";
         JSONObject ltpData = smartConnect.getLTP(exchange, Constants.SYMBOL_SBINEQ, symboltoken);
@@ -158,7 +158,7 @@ public class Examples {
     /**
      * Get tradebook
      */
-    public void getTrades(SmartConnect smartConnect) throws SmartAPIException {
+    public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns tradebook.
         JSONObject trades = smartConnect.getTrades();
 
@@ -169,7 +169,7 @@ public class Examples {
     /**
      * Get RMS
      */
-    public void getRMS(SmartConnect smartConnect) throws SmartAPIException {
+    public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns RMS.
         JSONObject response = smartConnect.getRMS();
         logger.debug("getRMS {}", response);
@@ -178,7 +178,7 @@ public class Examples {
     /**
      * Get Holdings
      */
-    public void getHolding(SmartConnect smartConnect) throws SmartAPIException {
+    public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns Holding.
         JSONObject response = smartConnect.getHolding();
         logger.debug("getHolding {}", response);
@@ -187,7 +187,7 @@ public class Examples {
     /**
      * Get Position
      */
-    public void getPosition(SmartConnect smartConnect) throws SmartAPIException {
+    public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns Position.
         JSONObject response = smartConnect.getPosition();
         logger.debug("getPosition {}", response);
@@ -196,7 +196,7 @@ public class Examples {
     /**
      * convert Position
      */
-    public void convertPosition(SmartConnect smartConnect) throws SmartAPIException {
+    public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         JSONObject requestObejct = new JSONObject();
         requestObejct.put("exchange", "NSE");
@@ -214,7 +214,7 @@ public class Examples {
     /**
      * Create Gtt Rule
      */
-    public String createRule(SmartConnect smartConnect) {
+    public String createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
 
         gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
@@ -233,7 +233,7 @@ public class Examples {
     /**
      * Modify Gtt Rule
      */
-    public String modifyRule(SmartConnect smartConnect, String ruleID) {
+    public String modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
         gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
         gttParams.setSymbolToken("3045");
@@ -251,7 +251,7 @@ public class Examples {
     /**
      * Cancel Gtt Rule
      */
-    public void cancelRule(SmartConnect smartConnect, String modifyRuleID) {
+    public void cancelRule(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
 
         String symboltoken = "3045";
         String exchange = "NSE";
@@ -264,7 +264,7 @@ public class Examples {
     /**
      * Gtt Rule Details
      */
-    public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) {
+    public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
 
 
         JSONObject gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
@@ -275,7 +275,7 @@ public class Examples {
      * Gtt Rule Lists
      */
     @SuppressWarnings("serial")
-    public void ruleList(SmartConnect smartConnect) {
+    public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         List<String> status = new ArrayList<>();
         status.add("NEW");
@@ -296,7 +296,7 @@ public class Examples {
     /**
      * Historic Data
      */
-    public void getCandleData(SmartConnect smartConnect) {
+    public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         JSONObject obj = new JSONObject();
         obj.put("todate", "2021-03-09 09:20");
@@ -312,7 +312,7 @@ public class Examples {
     /**
      * Logout user.
      */
-    public void logout(SmartConnect smartConnect) throws SmartAPIException {
+    public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
         /** Logout user and kill session. */
         JSONObject jsonObject = smartConnect.logout();
         logger.debug("logout {}", jsonObject);

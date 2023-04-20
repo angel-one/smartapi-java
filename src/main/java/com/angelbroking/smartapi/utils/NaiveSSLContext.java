@@ -93,7 +93,7 @@ public class NaiveSSLContext {
 	private static class NaiveTrustManager implements X509TrustManager {
 		@Override
 		public X509Certificate[] getAcceptedIssuers() {
-			return null;
+			throw new UnsupportedOperationException("Method getAcceptedIssuers() is not implemented");
 		}
 
 		public void checkClientTrusted(X509Certificate[] certs, String authType) {

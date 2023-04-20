@@ -25,7 +25,7 @@ public class SmartAPIException extends Throwable {
 
 	@Override
 	public String toString() {
-		return "SmartAPIException [message=" + message + ", code=" + code + "]";
+		return String.format("SmartAPIException [message=%s, code=%s]", message, code);
 	}
 
 }

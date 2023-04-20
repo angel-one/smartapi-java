@@ -20,7 +20,7 @@ public enum ExchangeType {
 		return Arrays.stream(ExchangeType.values())
 				.filter(entry -> entry.getVal() == val)
 				.findFirst()
-				.orElseThrow(() -> new NoSuchElementException("No ExchangeType found with value: " + val));
+				.orElseThrow(() -> new NoSuchElementException(String.format("No ExchangeType found with value: %s", val)));
 	}
 
 

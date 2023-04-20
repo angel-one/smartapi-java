@@ -18,15 +18,11 @@ public class SmartStreamListenerImplTest {
     private static final Logger logger = LoggerFactory.getLogger(SmartStreamListenerImplTest.class);
 
     public void onLTPArrival(LTP ltp) {
-        String ltpData = String.format("token: %s"
-                        + " sequenceNumber: %d"
-                        + " ltp: %.2f"
-                        + " exchangeTime: %s"
-                        + " exchangeToClientLatency: %s",
+        String ltpData = String.format("token: %s sequenceNumber: %d ltp: %.2f exchangeTime: %s exchangeToClientLatency: %s",
                 ltp.getToken().toString(),
                 ltp.getSequenceNumber(),
                 (ltp.getLastTradedPrice() / 100.0),
-				getExchangeTime(ltp.getExchangeFeedTimeEpochMillis()),
+                getExchangeTime(ltp.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - ltp.getExchangeFeedTimeEpochMillis());
         logger.info(ltpData);
     }
@@ -36,15 +32,7 @@ public class SmartStreamListenerImplTest {
     }
 
     public void onQuoteArrival(Quote quote) {
-        String quoteData = String.format("token: %s"
-                        + " sequenceNumber: %d"
-                        + " ltp: %.2f"
-                        + " open: %.2f"
-                        + " high: %.2f"
-                        + " low: %.2f"
-                        + " close: %.2f"
-                        + " exchangeTime: %s"
-                        + " exchangeToClientLatency: %s",
+        String quoteData = String.format("token: %s sequenceNumber: %d ltp: %.2f open: %.2f high: %.2f low: %.2f close: %.2f exchangeTime: %s exchangeToClientLatency: %s",
                 quote.getToken().toString(),
                 quote.getSequenceNumber(),
                 (quote.getLastTradedPrice() / 100.0),
@@ -52,21 +40,14 @@ public class SmartStreamListenerImplTest {
                 (quote.getHighPrice() / 100.0),
                 (quote.getLowPrice() / 100.0),
                 (quote.getClosePrice() / 100.0),
-				getExchangeTime(quote.getExchangeFeedTimeEpochMillis()),
+                getExchangeTime(quote.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - quote.getExchangeFeedTimeEpochMillis());
         logger.info(quoteData);
+
     }
 
     public void onSnapQuoteArrival(SnapQuote snapQuote) {
-        String snapQuoteData = String.format("token: %s"
-                        + " sequenceNumber: %d"
-                        + " ltp: %.2f"
-                        + " open: %.2f"
-                        + " high: %.2f"
-                        + " low: %.2f"
-                        + " close: %.2f"
-                        + " exchangeTime: %s"
-                        + " exchangeToClientLatency: %s",
+        String snapQuoteData = String.format("token: %s sequenceNumber: %d ltp: %.2f open: %.2f high: %.2f low: %.2f close: %.2f exchangeTime: %s exchangeToClientLatency: %s",
                 snapQuote.getToken().toString(),
                 snapQuote.getSequenceNumber(),
                 (snapQuote.getLastTradedPrice() / 100.0),
@@ -74,7 +55,7 @@ public class SmartStreamListenerImplTest {
                 (snapQuote.getHighPrice() / 100.0),
                 (snapQuote.getLowPrice() / 100.0),
                 (snapQuote.getClosePrice() / 100.0),
-				getExchangeTime(snapQuote.getExchangeFeedTimeEpochMillis()),
+                getExchangeTime(snapQuote.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - snapQuote.getExchangeFeedTimeEpochMillis());
         logger.info(snapQuoteData);
     }

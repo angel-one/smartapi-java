@@ -17,7 +17,10 @@ public enum SmartStreamSubsMode {
 				return entry;
 			}
 		}
-		return null;
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append("No SmartStreamSubsMode found with value ").append(val);
+		throw new IllegalArgumentException(messageBuilder.toString());
+
 	}
 	
 	public static int size() {

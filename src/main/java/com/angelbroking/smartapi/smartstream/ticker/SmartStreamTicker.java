@@ -96,9 +96,12 @@ public class SmartStreamTicker {
             public void onBinaryMessage(WebSocket websocket, byte[] binary) {
                 SmartStreamSubsMode mode = SmartStreamSubsMode.findByVal(binary[0]);
                 if (mode == null) {
-                    smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(
-                            "Invalid SubsMode=" + binary[0] + " in the response binary packet")));
-                    return;
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Invalid SubsMode=");
+                    sb.append(binary[0]);
+                    sb.append(" in the response binary packet");
+                    smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(sb.toString())));
+
                 }
                 try {
                     switch (mode) {
@@ -122,7 +125,7 @@ public class SmartStreamTicker {
                         }
                         default:
                             smartStreamListenerImplTest.onError(getErrorHolder(
-                                    new SmartAPIException("SubsMode=" + mode + " in the response is not handled.")));
+                             new SmartAPIException("SubsMode=${mode} in the response is not handled.")));
                             break;
                     }
                     super.onBinaryMessage(websocket, binary);

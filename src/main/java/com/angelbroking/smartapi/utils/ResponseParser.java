@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.utils;
 
+import com.angelbroking.smartapi.http.exceptions.InvalidParamsException;
 import com.angelbroking.smartapi.models.User;
 import com.google.gson.*;
 import org.json.JSONArray;
@@ -32,13 +33,10 @@ public class ResponseParser {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     return format.parse(jsonElement.getAsString());
                 } catch (ParseException e) {
-                    return null;
+                    throw new InvalidParamsException("Failed to parse response due to invalid date format");
                 }
             }
         });
-        if (response == null) {
-            return null;
-        }
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         User user = gson.fromJson(String.valueOf(response.get(Constants.USER_DATA)), User.class);
         user = parseArray(user, response.getJSONObject(Constants.USER_DATA));

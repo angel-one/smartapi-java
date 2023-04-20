@@ -1,6 +1,8 @@
 package com.angelbroking.smartapi.http;
 
 import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.http.exceptions.APIRequestCreationException;
+import com.angelbroking.smartapi.http.exceptions.CustomException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.utils.Constants;
 import okhttp3.*;
@@ -14,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.Proxy;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -52,10 +57,8 @@ public class SmartAPIRequestHandler {
     }
 
     public JSONObject apiHeaders() {
-
         try {
             JSONObject headers = new JSONObject();
-
             // Local IP Address
             InetAddress localHost = InetAddress.getLocalHost();
             String clientLocalIP = localHost.getHostAddress();
@@ -82,7 +85,6 @@ public class SmartAPIRequestHandler {
                         // convert byte to string in hexadecimal form
                         macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
                     }
-
                     macAddress = macAddressStr.toString();
                     if (macAddress != null) {
                         break;
@@ -96,24 +98,23 @@ public class SmartAPIRequestHandler {
             headers.put(Constants.USER_TYPE, userType);
             String sourceID = "WEB";
             headers.put(Constants.SOURCE_ID, sourceID);
-
             logger.debug("Headers {}", headers);
-
             return headers;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new CustomException("Failed to generate API headers");
         }
 
     }
 
-    private String getPublicIPAddress() throws MalformedURLException {
+    private String getPublicIPAddress() throws IOException {
         String clientPublicIP = null;
         URL urlName = new URL("http://checkip.amazonaws.com");
         try (BufferedReader sc = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
             clientPublicIP = sc.readLine().trim();
         } catch (IOException e) {
             logger.error("Error reading public IP address: {}", e.getMessage());
+            throw new IOException("Failed to get public ip address");
         }
         return clientPublicIP;
     }
@@ -243,18 +244,19 @@ public class SmartAPIRequestHandler {
      * Creates a GET request.
      *
      * @param url         is the endpoint to which request has to be done.
-     * @param apiKey      is the api key of the Smart API Connect app.
+     * @param privateKey      is the api key of the Smart API Connect app.
      * @param accessToken is the access token obtained after successful login
      *                    process.
      * @throws IOException
      */
-    public Request createGetRequest(String apiKey, String url, String accessToken) {
+    public Request createGetRequest(String privateKey, String url, String accessToken) {
 
         HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
 
-        String privateKey = apiKey;
-
-        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.AUTHORIZATION, "Bearer " + accessToken).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
+        StringBuilder authHeader = new StringBuilder();
+        authHeader.append("Bearer ");
+        authHeader.append(accessToken);
+        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.AUTHORIZATION, authHeader.toString()).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
     }
 
     /**
@@ -274,7 +276,7 @@ public class SmartAPIRequestHandler {
         for (int i = 0; i < values.length; i++) {
             httpBuilder.addQueryParameter(commonKey, values[i]);
         }
-        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
+        return new Request.Builder().url(httpBuilder.build()).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
 
     /**
@@ -295,9 +297,8 @@ public class SmartAPIRequestHandler {
             String privateKey = apiKey;
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
-            logger.error("exception createPostRequest");
-            logger.error(e.getMessage());
-            return null;
+            logger.error("Failed to create API request", e.getMessage());
+            throw new APIRequestCreationException("Failed to create API request", e);
         }
     }
 
@@ -317,10 +318,10 @@ public class SmartAPIRequestHandler {
             RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
 
             String privateKey = apiKey;
-            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, "Bearer " + accessToken).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
+            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, String.format("Bearer %s", accessToken)).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(Constants.HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(Constants.HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(Constants.MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new APIRequestCreationException("Failed to create API request", e);
         }
     }
 
@@ -336,7 +337,7 @@ public class SmartAPIRequestHandler {
     public Request createJsonPostRequest(String url, JSONArray jsonArray, String apiKey, String accessToken) {
         MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
         RequestBody body = RequestBody.create(jsonArray.toString(), jsonMediaType);
-        return new Request.Builder().url(url).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).post(body).build();
+        return new Request.Builder().url(url).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).post(body).build();
     }
 
     /**
@@ -354,7 +355,7 @@ public class SmartAPIRequestHandler {
             builder.add(entry.getKey(), entry.getValue().toString());
         }
         RequestBody requestBody = builder.build();
-        return new Request.Builder().url(url).put(requestBody).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
+        return new Request.Builder().url(url).put(requestBody).header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
 
     /**
@@ -373,7 +374,7 @@ public class SmartAPIRequestHandler {
             httpBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
         }
 
-        return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, Constants.TOKEN + apiKey + ":" + accessToken).build();
+        return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
 
 }

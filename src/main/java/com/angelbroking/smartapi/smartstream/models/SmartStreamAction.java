@@ -24,7 +24,7 @@ public enum SmartStreamAction {
 				return entry;
 			}
 		}
-		String errorMessage = "No SmartStreamAction found with value: " + val;
+		String errorMessage = "No SmartStreamAction found with value: ${val}";
 		logger.error(errorMessage);
 		throw new NoSuchElementException(errorMessage);
 	}

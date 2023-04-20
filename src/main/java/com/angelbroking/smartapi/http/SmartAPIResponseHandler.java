@@ -30,8 +30,7 @@ public class SmartAPIResponseHandler {
             }
             return jsonObject;
         } else {
-            throw new DataSmartAPIException("Unexpected content type received from server: " + response.header("Content-Type")
-                    + " " + response.body().string(), "AG8001");
+            throw new DataSmartAPIException(String.format("Unexpected content type received from server: %s %s", response.header("Content-Type"), response.body().string()), "AG8001");
         }
     }
 

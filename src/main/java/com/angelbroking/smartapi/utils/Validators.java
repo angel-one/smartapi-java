@@ -4,6 +4,8 @@ import com.angelbroking.smartapi.http.exceptions.InvalidParamsException;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.OrderParams;
 
+import java.util.Objects;
+
 public class Validators {
 
     public boolean orderValidator(OrderParams orderParams) throws InvalidParamsException {
@@ -61,21 +63,22 @@ public class Validators {
 
     private void validateGreaterThanZero(Integer value, String fieldName) throws InvalidParamsException {
         if (value == null || value <= 0) {
-            throw new InvalidParamsException(fieldName + " must be greater than zero");
+            throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
     private void validateGreaterThanZeroDouble(Double value, String fieldName) throws InvalidParamsException {
         if (value == null || value <= 0) {
-            throw new InvalidParamsException(fieldName + " must be greater than zero");
+            throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
     private void validateNotEmpty(String value, String fieldName) throws InvalidParamsException {
         if (value == null || value.isEmpty()) {
-            throw new InvalidParamsException(fieldName + " is required");
+            throw new InvalidParamsException(String.format("%s is required", fieldName));
         }
     }
+
 
 
 }

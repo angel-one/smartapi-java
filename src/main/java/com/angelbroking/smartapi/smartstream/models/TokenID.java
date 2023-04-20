@@ -37,6 +37,9 @@ public class TokenID {
 	
 	@Override
 	public String toString() {
-		return  (exchangeType.name()+"-"+token);
+		StringBuilder sb = new StringBuilder();
+		sb.append(exchangeType.name()).append("-").append(token);
+		return sb.toString();
+
 	}
 }
