@@ -23,13 +23,14 @@ public class SmartAPIResponseHandlerTest {
         JSONObject responseJson = new JSONObject();
         responseJson.put("status", "success");
 
+        ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), responseJson.toString());
         Response response = new Response.Builder()
                 .request(new Request.Builder().url("http://example.com").build())
-                .header("Content-Type","json")
+                .header("Content-Type", "application/json")
                 .protocol(Protocol.HTTP_1_1)
                 .code(200)
                 .message("")
-                .body(ResponseBody.create(MediaType.parse("application/json"), responseJson.toString()))
+                .body(responseBody)
                 .build();
 
         JSONObject result = handler.handle(response, responseJson.toString());

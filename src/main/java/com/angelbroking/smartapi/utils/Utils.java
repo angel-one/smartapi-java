@@ -1,8 +1,12 @@
 package com.angelbroking.smartapi.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
+import org.json.JSONObject;
 
 import java.util.Arrays;
+
+import static com.angelbroking.smartapi.utils.Constants.*;
 
 public class Utils {
 
@@ -51,5 +55,23 @@ public class Utils {
      */
     public static boolean areByteArraysEqual(byte[] firstArray, byte[] secondArray) {
         return Arrays.equals(firstArray, secondArray);
+    }
+
+    public static JSONObject createLoginParams(String clientCode, String password, String totp) {
+        // Create JSON params object needed to be sent to api.
+
+        JSONObject params = new JSONObject();
+        params.put(SMART_CONNECT_CLIENT_CODE, clientCode);
+        params.put(SMART_CONNECT_PASSWORD, password);
+        params.put(SMART_CONNECT_TOTP, totp);
+        return params;
+    }
+
+    public static String sha256Hex(String str) {
+        byte[] a = DigestUtils.sha256(str);
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x", b));
+        return sb.toString();
     }
 }

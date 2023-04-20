@@ -150,6 +150,7 @@ public class Constants {
     public static final String SMART_CONNECT_FEED_TOKEN = "feedToken";
     public static final String SMART_CONNECT_API_USER_PROFILE = "api.user.profile";
     public static final String SMART_CONNECT_CHECKSUM = "checksum";
+    private String orderID = "orderid";
 
     public static final String ID = "id";
     public static final String QTY = "qty";

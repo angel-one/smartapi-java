@@ -5,10 +5,10 @@ import com.angelbroking.smartapi.utils.Constants;
 
 import java.util.Map;
 
+import static com.angelbroking.smartapi.utils.Constants.*;
+
 /**
- * Generates end-points for all smart api calls.
- * <p>
- * Here all the routes are translated into a Java Map.
+ This class generates end-points for all smart API calls by translating all the routes into a Java Map.
  */
 
 public class Routes {
@@ -25,25 +25,25 @@ public class Routes {
 
     public String get(String key) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Constants.ROOT_URL);
+        sb.append(ROOT_URL);
         sb.append(routes.get(key));
         return sb.toString();
     }
 
 
     public String getLoginUrl() {
-        return Constants.LOGIN_URL;
+        return LOGIN_URL;
     }
 
     public String getWsuri() {
-        return Constants.WSURI;
+        return WSURI;
     }
 
     public String getSWsuri() {
-        return Constants.SWSURI;
+        return SWSURI;
     }
 
     public String getSmartStreamWSURI() {
-        return Constants.SMARTSTREAM_WSURI;
+        return SMARTSTREAM_WSURI;
     }
 }

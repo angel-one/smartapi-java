@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.angelbroking.smartapi.utils.Constants.*;
+
 public class ResponseParser {
 
 
@@ -38,8 +40,8 @@ public class ResponseParser {
             }
         });
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-        User user = gson.fromJson(String.valueOf(response.get(Constants.USER_DATA)), User.class);
-        user = parseArray(user, response.getJSONObject(Constants.USER_DATA));
+        User user = gson.fromJson(String.valueOf(response.get(USER_DATA)), User.class);
+        user = parseArray(user, response.getJSONObject(USER_DATA));
         return user;
     }
 
@@ -51,13 +53,13 @@ public class ResponseParser {
      * @return User is the pojo of parsed data.
      */
     public static User parseArray(User user, JSONObject response) throws JSONException {
-        JSONArray productArray = response.getJSONArray(Constants.USER_PRODUCTS);
+        JSONArray productArray = response.getJSONArray(USER_PRODUCTS);
         String[] products = new String[productArray.length()];
         for (int i = 0; i < productArray.length(); i++) {
             products[i] = productArray.getString(i);
         }
         user.setProducts(products);
-        JSONArray exchangesArray = response.getJSONArray(Constants.USER_EXCHANGES);
+        JSONArray exchangesArray = response.getJSONArray(USER_EXCHANGES);
         String[] exchanges = new String[exchangesArray.length()];
         for (int j = 0; j < exchangesArray.length(); j++) {
             exchanges[j] = exchangesArray.getString(j);

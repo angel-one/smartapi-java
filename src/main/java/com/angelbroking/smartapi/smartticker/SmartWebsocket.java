@@ -5,12 +5,10 @@ import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.neovisionaries.ws.client.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterOutputStream;
 
+import static com.angelbroking.smartapi.utils.Constants.*;
+
 /**
  * The `SmartWebsocket` class provides a websocket client for connecting to a financial data feed provided by SmartAPI.
  * It allows for receiving real-time market data and provides event listeners for various websocket events, such as
@@ -37,10 +37,10 @@ import java.util.zip.InflaterOutputStream;
  * <p>
  * The `SmartWebsocket` class also provides a method `disconnect` to close the websocket connection.
  */
+@Slf4j
 public class SmartWebsocket {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartWebsocket.class);
-    private final String clientId;
+   private final String clientId;
     private final String jwtToken;
     private final String apiKey;
     private final String actionType;
@@ -80,7 +80,7 @@ public class SmartWebsocket {
                 onErrorListener.onError(e);
             }
         } catch (NoSuchAlgorithmException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
         webSocket.addListener(getWebsocketAdapter());
@@ -146,11 +146,11 @@ public class SmartWebsocket {
                 onConnectedListener.onConnected();
                 Runnable runnable = () -> {
                     JSONObject wsMWJSONRequest = new JSONObject();
-                    wsMWJSONRequest.put(Constants.ACTION_TYPE, actionType);
-                    wsMWJSONRequest.put(Constants.FEEED_TYPE, feedType);
-                    wsMWJSONRequest.put(Constants.JWT_TOKEN, jwtToken);
-                    wsMWJSONRequest.put(Constants.CLIENT_CODE, clientId);
-                    wsMWJSONRequest.put(Constants.API_KEY, apiKey);
+                    wsMWJSONRequest.put(ACTION_TYPE, actionType);
+                    wsMWJSONRequest.put(FEEED_TYPE, feedType);
+                    wsMWJSONRequest.put(JWT_TOKEN, jwtToken);
+                    wsMWJSONRequest.put(CLIENT_CODE, clientId);
+                    wsMWJSONRequest.put(API_KEY, apiKey);
                     webSocket.sendText(wsMWJSONRequest.toString());
                 };
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
@@ -176,7 +176,7 @@ public class SmartWebsocket {
                 try {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    log.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -205,7 +205,7 @@ public class SmartWebsocket {
                 try {
                     super.onError(websocket, cause);
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    log.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -267,7 +267,7 @@ public class SmartWebsocket {
         try {
             webSocket.connect();
         } catch (WebSocketException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }

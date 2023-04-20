@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.angelbroking.smartapi.utils.Constants.*;
 import static org.junit.Assert.*;
 
 public class ResponseParserTest {
@@ -25,7 +26,7 @@ public class ResponseParserTest {
         exchangesArray.put("Exchange 1");
         exchangesArray.put("Exchange 2");
         userData.put("exchanges", exchangesArray);
-        response.put(Constants.USER_DATA, userData);
+        response.put(USER_DATA, userData);
 
         // Parse the response
         User user = ResponseParser.parseResponse(response);
@@ -45,11 +46,11 @@ public class ResponseParserTest {
         JSONArray productsArray = new JSONArray();
         productsArray.put("Product 1");
         productsArray.put("Product 2");
-        response.put(Constants.USER_PRODUCTS, productsArray);
+        response.put(USER_PRODUCTS, productsArray);
         JSONArray exchangesArray = new JSONArray();
         exchangesArray.put("Exchange 1");
         exchangesArray.put("Exchange 2");
-        response.put(Constants.USER_EXCHANGES, exchangesArray);
+        response.put(USER_EXCHANGES, exchangesArray);
 
         // Prepare a User object to pass to the parseArray method
         User user = new User();

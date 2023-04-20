@@ -1,15 +1,16 @@
 package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.IOException;
-
+import java.net.Proxy;
+@Slf4j
 public class LoginWithTOTPSample {
-	private static final Logger logger = LoggerFactory.getLogger(LoginWithTOTPSample.class);
 
 	public static void main(String[] args) throws SmartAPIException, IOException {
 		String clientID = System.getProperty("clientID");
@@ -17,8 +18,9 @@ public class LoginWithTOTPSample {
 		String apiKey = System.getProperty("apiKey");
 		String totp = System.getProperty("totp");
 		SmartConnect smartConnect = new SmartConnect(apiKey);
-		User user = smartConnect.generateSession(clientID, clientPass, totp);
+		SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
+		User user = smartConnect.generateSession(smartAPIRequestHandler,clientID, clientPass, totp);
 		String feedToken = user.getFeedToken();
-		logger.info(feedToken);
+		log.info(feedToken);
 	}
 }

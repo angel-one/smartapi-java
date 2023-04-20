@@ -8,11 +8,9 @@ import com.angelbroking.smartapi.utils.ByteUtils;
 import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.Utils;
 import com.neovisionaries.ws.client.*;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,9 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SmartStreamTicker {
+import static com.angelbroking.smartapi.utils.Constants.*;
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartStreamTicker.class);
+@Slf4j
+public class SmartStreamTicker {
 
     private Routes routes = new Routes();
     private final String wsuri = routes.getSmartStreamWSURI();
@@ -54,10 +53,10 @@ public class SmartStreamTicker {
 
     private void init() {
         try {
-            webSocket = new WebSocketFactory().setVerifyHostname(false).createSocket(wsuri).setPingInterval(Constants.PING_INTERVAL);
-            webSocket.addHeader(Constants.CLIENT_ID_HEADER, clientId);
-            webSocket.addHeader(Constants.FEED_TOKEN_HEADER, feedToken);
-            webSocket.addHeader(Constants.CLIENT_LIB_HEADER, "JAVA");
+            webSocket = new WebSocketFactory().setVerifyHostname(false).createSocket(wsuri).setPingInterval(PING_INTERVAL);
+            webSocket.addHeader(CLIENT_ID_HEADER, clientId);
+            webSocket.addHeader(FEED_TOKEN_HEADER, feedToken);
+            webSocket.addHeader(CLIENT_LIB_HEADER, "JAVA");
             webSocket.addListener(getWebsocketAdapter());
         } catch (IOException e) {
             if (smartStreamListenerImplTest != null) {
@@ -155,13 +154,13 @@ public class SmartStreamTicker {
                     if (closedByServer) {
                         if (serverCloseFrame.getCloseCode() == 1001) {
                             // Log the server close code for debugging purposes
-                            logger.info("Server closed connection with code: {}", serverCloseFrame.getCloseCode());
+                            log.info("Server closed connection with code: {}", serverCloseFrame.getCloseCode());
                         }
                         reconnectAndResubscribe();
                     }
 
                 } catch (Exception e) {
-                  logger.error(e.getMessage());
+                  log.error(e.getMessage());
                 }
             }
 
@@ -219,10 +218,10 @@ public class SmartStreamTicker {
                 JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
                 webSocket.sendText(wsMWJSONRequest.toString());
             } else {
-                smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_CONNECTED, "504")));
+                smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(TICKER_NOT_CONNECTED, "504")));
             }
         } else {
-            smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(Constants.TICKER_NOT_NULL_CONNECTED, "504")));
+            smartStreamListenerImplTest.onError(getErrorHolder(new SmartAPIException(TICKER_NOT_NULL_CONNECTED, "504")));
         }
     }
 
@@ -291,20 +290,17 @@ public class SmartStreamTicker {
      */
     private JSONObject getApiRequest(SmartStreamAction action, SmartStreamSubsMode mode, Set<TokenID> tokens) {
         JSONObject params = new JSONObject();
-        params.put(Constants.PARAM_MODE, mode.getVal());
-        params.put(Constants.PARAM_TOKEN_LIST, this.generateExchangeTokensList(tokens));
+        params.put(PARAM_MODE, mode.getVal());
+        params.put(PARAM_TOKEN_LIST, this.generateExchangeTokensList(tokens));
 
         JSONObject wsMWJSONRequest = new JSONObject();
-        wsMWJSONRequest.put(Constants.PARAM_ACTION, action.getVal());
-        wsMWJSONRequest.put(Constants.PARAM_PARAMS, params);
+        wsMWJSONRequest.put(PARAM_ACTION, action.getVal());
+        wsMWJSONRequest.put(PARAM_PARAMS, params);
 
         return wsMWJSONRequest;
     }
 
     public void connect() throws WebSocketException {
         webSocket.connect();
-        if (logger.isDebugEnabled()) {
-            logger.info(String.format("connected to uri: %s", wsuri));
-        }
     }
 }

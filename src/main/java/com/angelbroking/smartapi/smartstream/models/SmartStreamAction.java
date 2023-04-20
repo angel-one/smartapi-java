@@ -1,18 +1,18 @@
 package com.angelbroking.smartapi.smartstream.models;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
 
-
+@Slf4j
 public enum SmartStreamAction {
 
 	SUBS(1), UNSUBS(0);
 	
 	private int val;
 
-	private static final Logger logger = LoggerFactory.getLogger(SmartStreamAction.class);
 
 	private SmartStreamAction(int val) {
 		this.val = val;
@@ -25,7 +25,7 @@ public enum SmartStreamAction {
 			}
 		}
 		String errorMessage = "No SmartStreamAction found with value: ${val}";
-		logger.error(errorMessage);
+		log.error(errorMessage);
 		throw new NoSuchElementException(errorMessage);
 	}
 	

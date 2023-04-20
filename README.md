@@ -31,7 +31,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	smartConnect.setSessionExpiryHook(new SessionExpiryHook() {
 	@Override
 	public void sessionExpired() {
-		logger.info("session expired");
+		log.info("session expired");
 	}
 	});
 	
@@ -93,20 +93,20 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	public void placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
             OrderParams orderParams = new OrderParams();
-            orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+            orderParams.setVariety(VARIETY_STOPLOSS);
             orderParams.setQuantity(323);
             orderParams.setSymbolToken("1660");
-            orderParams.setExchange(Constants.EXCHANGE_NSE);
-            orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+            orderParams.setExchange(EXCHANGE_NSE);
+            orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
             orderParams.setTradingSymbol("ITC-EQ");
-            orderParams.setProductType(Constants.PRODUCT_INTRADAY);
-            orderParams.setDuration(Constants.DURATION_DAY);
-            orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+            orderParams.setProductType(PRODUCT_INTRADAY);
+            orderParams.setDuration(DURATION_DAY);
+            orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
             orderParams.setPrice(122.2);
             orderParams.setSquareOff("0");
             orderParams.setStopLoss("0");
 
-		Order order = smartConnect.placeOrder(orderParams, Constants.VARIETY_REGULAR);
+		Order order = smartConnect.placeOrder(orderParams, VARIETY_REGULAR);
 	}
 
 	/** Modify order. */
@@ -114,26 +114,26 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 		// Order modify request will return order model which will contain only
             
             orderParams.setQuantity(324);
-            orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+            orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
             orderParams.setTradingSymbol("ITC-EQ");
             orderParams.setSymbolToken("1660");
-            orderParams.setProductType(Constants.PRODUCT_INTRADAY);
-            orderParams.setExchange(Constants.EXCHANGE_NSE);
-            orderParams.setDuration(Constants.DURATION_DAY);
+            orderParams.setProductType(PRODUCT_INTRADAY);
+            orderParams.setExchange(EXCHANGE_NSE);
+            orderParams.setDuration(DURATION_DAY);
             orderParams.setPrice(122.2);
             String orderId = "201216000755110";
-		Order order = smartConnect.modifyOrder(orderId, orderParams, Constants.VARIETY_REGULAR);
+		Order order = smartConnect.modifyOrder(orderId, orderParams, VARIETY_REGULAR);
 	}
     
 	public void cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		Order order = smartConnect.cancelOrder("201009000000015", Constants.VARIETY_REGULAR);
+		Order order = smartConnect.cancelOrder("201009000000015", VARIETY_REGULAR);
 	}
 
 	/** Get order details */
     public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         List<Order> orders = smartConnect.getOrderHistory(smartConnect.getUserId());
             for (Order order : orders) {
-           logger.info("{} {}", order.orderId, order.status);
+           log.info("{} {}", order.orderId, order.status);
             }
     }
 
@@ -155,7 +155,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
             // Returns tradebook.
             List<Trade> trades = smartConnect.getTrades();
             for (Trade trade : trades) {
-            logger.info("{} {}", trade.tradingSymbol, trades.size());
+            log.info("{} {}", trade.tradingSymbol, trades.size());
             }
             }
 
@@ -196,10 +196,10 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	public void createRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
 		GttParams gttParams= new GttParams();
 
-            gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+            gttParams.setTradingSymbol(SYMBOL_SBINEQ);
             gttParams.setSymbolToken("3045");
             gttParams.setExchange("NSE");
-            gttParams.setProductType(Constants.MARGIN);
+            gttParams.setProductType(MARGIN);
             gttParams.setTransactionType("BUY");
             gttParams.setPrice(100000.01);
             gttParams.setQty(10);
@@ -215,10 +215,10 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	public void modifyRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
 		GttParams gttParams= new GttParams();
 
-            gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+            gttParams.setTradingSymbol(SYMBOL_SBINEQ);
             gttParams.setSymbolToken("3045");
             gttParams.setExchange("NSE");
-            gttParams.setProductType(Constants.MARGIN);
+            gttParams.setProductType(MARGIN);
             gttParams.setTransactionType("BUY");
             gttParams.setPrice(100000.1);
             gttParams.setQty(11);

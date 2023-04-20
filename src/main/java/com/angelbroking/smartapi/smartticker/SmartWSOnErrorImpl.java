@@ -1,22 +1,21 @@
 package com.angelbroking.smartapi.smartticker;
 
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SmartWSOnErrorImpl   implements SmartWSOnError{
-    private static final Logger logger = LoggerFactory.getLogger(SmartWSOnErrorImpl.class);
 
     @Override
     public void onError(Exception exception) {
 
-        logger.error("Error: %s", exception.getMessage());
+        log.error("Error: %s", exception.getMessage());
 
     }
 
     @Override
     public void onError(SmartAPIException smartAPIException) {
-        logger.error("Error: %s", smartAPIException.getMessage());
+        log.error("Error: %s", smartAPIException.getMessage());
 
     }
 }

@@ -1,9 +1,8 @@
 package com.angelbroking.smartapi.smartticker.ticker;
 
 import com.angelbroking.smartapi.Routes;
-import com.angelbroking.smartapi.http.exceptions.CustomException;
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.smartticker.SmartWebsocket;
 import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.neovisionaries.ws.client.WebSocket;
@@ -25,10 +24,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
+
+import static com.angelbroking.smartapi.utils.Constants.*;
 
 public class SmartAPITicker {
 
@@ -61,7 +60,7 @@ public class SmartAPITicker {
             if (onErrorListener != null) {
                 onErrorListener.onError(e);
             }
-            throw new CustomException("Could not create WebSocket instance.", e);
+            throw new SmartConnectException("Could not create WebSocket instance.", e);
         } catch (NoSuchAlgorithmException e) {
             logger.error(e.getMessage());
             throw new NoSuchAlgorithmException("Could not create SSL context.", e);
@@ -117,21 +116,21 @@ public class SmartAPITicker {
 
             private JSONObject createWsCNJSONRequest() {
                 JSONObject wsCNJSONRequest = new JSONObject();
-                wsCNJSONRequest.put(Constants.SMART_API_TICKER_TASK, "cn");
-                wsCNJSONRequest.put(Constants.SMART_API_TICKER_CHANNEL, "");
-                wsCNJSONRequest.put(Constants.SMART_API_TICKER_CHANNEL, params.getFeedToken());
-                wsCNJSONRequest.put(Constants.SMART_API_TICKER_USER, params.getClientId() );
-                wsCNJSONRequest.put(Constants.SMART_API_TICKER_ACCTID, params.getClientId() );
+                wsCNJSONRequest.put(SMART_API_TICKER_TASK, "cn");
+                wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
+                wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, params.getFeedToken());
+                wsCNJSONRequest.put(SMART_API_TICKER_USER, params.getClientId() );
+                wsCNJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId() );
                 return wsCNJSONRequest;
             }
 
             private JSONObject createWsMWJSONRequest() {
                 JSONObject wsMWJSONRequest = new JSONObject();
-                wsMWJSONRequest.put(Constants.SMART_API_TICKER_TASK, "hb");
-                wsMWJSONRequest.put(Constants.SMART_API_TICKER_CHANNEL, "");
-                wsMWJSONRequest.put(Constants.SMART_API_TICKER_TOKEN,params.getFeedToken() );
-                wsMWJSONRequest.put(Constants.SMART_API_TICKER_USER,params.getClientId() );
-                wsMWJSONRequest.put(Constants.SMART_API_TICKER_ACCTID,params.getClientId() );
+                wsMWJSONRequest.put(SMART_API_TICKER_TASK, "hb");
+                wsMWJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
+                wsMWJSONRequest.put(SMART_API_TICKER_TOKEN,params.getFeedToken() );
+                wsMWJSONRequest.put(SMART_API_TICKER_USER,params.getClientId() );
+                wsMWJSONRequest.put(SMART_API_TICKER_ACCTID,params.getClientId() );
                 return wsMWJSONRequest;
             }
 
@@ -182,12 +181,12 @@ public class SmartAPITicker {
                 ws.sendText(createWsMWJSONRequest().toString());
             } else {
                 if (onErrorListener != null) {
-                    onErrorListener.onError(new SmartAPIException(Constants.TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
+                    onErrorListener.onError(new SmartAPIException(TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
                 }
             }
         } else {
             if (onErrorListener != null) {
-                onErrorListener.onError(new SmartAPIException(Constants.TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
+                onErrorListener.onError(new SmartAPIException(TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
             }
         }
     }

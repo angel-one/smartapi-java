@@ -4,23 +4,24 @@ import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.*;
 import com.angelbroking.smartapi.utils.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
-public class Examples {
+import static com.angelbroking.smartapi.utils.Constants.*;
 
-    private static final Logger logger = LoggerFactory.getLogger(Examples.class);
+
+@Slf4j
+public class Examples {
 
     public void getProfile(SmartConnect smartConnect) throws SmartAPIException, IOException {
         User profile = smartConnect.getProfile();
-        logger.debug(profile.toString());
+        log.debug(profile.toString());
     }
 
     /** CONSTANT Details */
@@ -78,20 +79,20 @@ public class Examples {
     public Order placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         OrderParams orderParams = new OrderParams();
-        orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+        orderParams.setVariety(VARIETY_STOPLOSS);
         orderParams.setQuantity(323);
         orderParams.setSymbolToken("1660");
-        orderParams.setExchange(Constants.EXCHANGE_NSE);
-        orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+        orderParams.setExchange(EXCHANGE_NSE);
+        orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
         orderParams.setTradingSymbol("ITC-EQ");
-        orderParams.setProductType(Constants.PRODUCT_INTRADAY);
-        orderParams.setDuration(Constants.DURATION_DAY);
-        orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+        orderParams.setProductType(PRODUCT_INTRADAY);
+        orderParams.setDuration(DURATION_DAY);
+        orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
         orderParams.setPrice(122.2);
         orderParams.setSquareOff("0");
         orderParams.setStopLoss("0");
         Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
-        logger.debug("placeOrder: {}", order);
+        log.debug("placeOrder: {}", order);
 
         return order;
     }
@@ -103,20 +104,20 @@ public class Examples {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
-        orderParams.setVariety(Constants.VARIETY_STOPLOSS);
+        orderParams.setVariety(VARIETY_STOPLOSS);
         orderParams.setQuantity(324);
         orderParams.setSymbolToken("1660");
-        orderParams.setExchange(Constants.EXCHANGE_NSE);
-        orderParams.setOrderType(Constants.ORDER_TYPE_STOPLOSS_LIMIT);
+        orderParams.setExchange(EXCHANGE_NSE);
+        orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
         orderParams.setTradingSymbol("ITC-EQ");
-        orderParams.setProductType(Constants.PRODUCT_INTRADAY);
-        orderParams.setDuration(Constants.DURATION_DAY);
-        orderParams.setTransactionType(Constants.TRANSACTION_TYPE_BUY);
+        orderParams.setProductType(PRODUCT_INTRADAY);
+        orderParams.setDuration(DURATION_DAY);
+        orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
         orderParams.setPrice(122.2);
         orderParams.setTriggerPrice("209");
         Order order = smartConnect.modifyOrder(orderInput.getOrderId(), orderParams, "STOPLOSS");
 
-        logger.debug("modifyOrder {}", order);
+        log.debug("modifyOrder {}", order);
         return order;
 
     }
@@ -130,8 +131,8 @@ public class Examples {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
-        Order order = smartConnect.cancelOrder(modifyOrder.getOrderId(), Constants.VARIETY_STOPLOSS);
-        logger.debug("cancelOrder {}", order);
+        Order order = smartConnect.cancelOrder(modifyOrder.getOrderId(), VARIETY_STOPLOSS);
+        log.debug("cancelOrder {}", order);
         return order;
     }
 
@@ -140,7 +141,7 @@ public class Examples {
      */
     public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         JSONObject orders = smartConnect.getOrderHistory();
-        logger.debug("getOrder {}", orders);
+        log.debug("getOrder {}", orders);
     }
 
     /**
@@ -151,8 +152,8 @@ public class Examples {
     public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
         String exchange = "NSE";
         String symboltoken = "3045";
-        JSONObject ltpData = smartConnect.getLTP(exchange, Constants.SYMBOL_SBINEQ, symboltoken);
-        logger.debug("getLTP {}", ltpData);
+        JSONObject ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);
+        log.debug("getLTP {}", ltpData);
     }
 
     /**
@@ -162,7 +163,7 @@ public class Examples {
         // Returns tradebook.
         JSONObject trades = smartConnect.getTrades();
 
-        logger.debug("getTrades {}", trades);
+        log.debug("getTrades {}", trades);
 
     }
 
@@ -172,7 +173,7 @@ public class Examples {
     public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns RMS.
         JSONObject response = smartConnect.getRMS();
-        logger.debug("getRMS {}", response);
+        log.debug("getRMS {}", response);
     }
 
     /**
@@ -181,7 +182,7 @@ public class Examples {
     public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns Holding.
         JSONObject response = smartConnect.getHolding();
-        logger.debug("getHolding {}", response);
+        log.debug("getHolding {}", response);
     }
 
     /**
@@ -190,7 +191,7 @@ public class Examples {
     public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Returns Position.
         JSONObject response = smartConnect.getPosition();
-        logger.debug("getPosition {}", response);
+        log.debug("getPosition {}", response);
     }
 
     /**
@@ -201,14 +202,14 @@ public class Examples {
         JSONObject requestObejct = new JSONObject();
         requestObejct.put("exchange", "NSE");
         requestObejct.put("oldproducttype", "DELIVERY");
-        requestObejct.put("newproducttype", Constants.MARGIN);
-        requestObejct.put("tradingsymbol", Constants.SYMBOL_SBINEQ);
+        requestObejct.put("newproducttype", MARGIN);
+        requestObejct.put("tradingsymbol", SYMBOL_SBINEQ);
         requestObejct.put("transactiontype", "BUY");
         requestObejct.put("quantity", 1);
         requestObejct.put("type", "DAY");
 
         JSONObject response = smartConnect.convertPosition(requestObejct);
-        logger.debug("convertPosition {}", response);
+        log.debug("convertPosition {}", response);
     }
 
     /**
@@ -217,10 +218,10 @@ public class Examples {
     public String createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
 
-        gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+        gttParams.setTradingSymbol(SYMBOL_SBINEQ);
         gttParams.setSymbolToken("3045");
         gttParams.setExchange("NSE");
-        gttParams.setProductType(Constants.MARGIN);
+        gttParams.setProductType(MARGIN);
         gttParams.setTransactionType("BUY");
         gttParams.setPrice(100000.01);
         gttParams.setQty(10);
@@ -235,10 +236,10 @@ public class Examples {
      */
     public String modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
-        gttParams.setTradingSymbol(Constants.SYMBOL_SBINEQ);
+        gttParams.setTradingSymbol(SYMBOL_SBINEQ);
         gttParams.setSymbolToken("3045");
         gttParams.setExchange("NSE");
-        gttParams.setProductType(Constants.MARGIN);
+        gttParams.setProductType(MARGIN);
         gttParams.setTransactionType("BUY");
         gttParams.setPrice(100000.1);
         gttParams.setQty(11);
@@ -257,7 +258,7 @@ public class Examples {
         String exchange = "NSE";
 
         Gtt gtt = smartConnect.gttCancelRule(Integer.valueOf(modifyRuleID), symboltoken, exchange);
-        logger.debug("cancelRule {}", gtt);
+        log.debug("cancelRule {}", gtt);
 
     }
 
@@ -268,7 +269,7 @@ public class Examples {
 
 
         JSONObject gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
-        logger.debug("ruleDetails {}", gtt);
+        log.debug("ruleDetails {}", gtt);
     }
 
     /**
@@ -289,7 +290,7 @@ public class Examples {
         Integer count = 10;
 
         JSONArray gtt = smartConnect.gttRuleList(status, page, count);
-        logger.debug("ruleList {}", gtt);
+        log.debug("ruleList {}", gtt);
 
     }
 
@@ -306,7 +307,7 @@ public class Examples {
         obj.put("fromdate", "2021-03-08 09:00");
 
         String response = smartConnect.candleData(obj);
-        logger.debug("getCandleData {}", response);
+        log.debug("getCandleData {}", response);
     }
 
     /**
@@ -315,7 +316,7 @@ public class Examples {
     public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
         /** Logout user and kill session. */
         JSONObject jsonObject = smartConnect.logout();
-        logger.debug("logout {}", jsonObject);
+        log.debug("logout {}", jsonObject);
     }
 
 }

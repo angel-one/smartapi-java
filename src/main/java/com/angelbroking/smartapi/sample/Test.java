@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.TokenSet;
@@ -9,15 +10,16 @@ import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.lang.invoke.MethodHandles;
+import java.net.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 public class Test {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
 
     public static void main(String[] args) throws SmartAPIException {
         try {
@@ -27,6 +29,8 @@ public class Test {
             String clientPin = "";
             String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
+            SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
+
 
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
             /*
@@ -38,13 +42,13 @@ public class Test {
              * smartConnect.setSessionExpiryHook(new SessionExpiryHook() {
              * @Override
              * public void sessionExpired() {
-             * logger.info("session expired");
+             * log.info("session expired");
              * }
              * });
              */
 
             // Generate User Session
-            User user = smartConnect.generateSession(clientId, clientPin, tOTP);
+            User user = smartConnect.generateSession(smartAPIRequestHandler,clientId, clientPin, tOTP);
             smartConnect.setAccessToken(user.getAccessToken());
             smartConnect.setUserId(user.getUserId());
 
@@ -54,66 +58,66 @@ public class Test {
             ticker.connect();
             ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
 
-            logger.info("DONE");
+            log.info("DONE");
 
             Examples examples = new Examples();
-            logger.info("getProfile");
+            log.info("getProfile");
             examples.getProfile(smartConnect);
 
-            logger.info("placeOrder");
+            log.info("placeOrder");
             Order placeOrder = examples.placeOrder(smartConnect);
 
-//            logger.info("modifyOrder");
+//            log.info("modifyOrder");
 //           examples.modifyOrder(smartConnect, placeOrder);
 
-            logger.info("cancelOrder");
+            log.info("cancelOrder");
             examples.cancelOrder(smartConnect, placeOrder);
 
-            logger.info("getOrder");
+            log.info("getOrder");
             examples.getOrder(smartConnect);
 
 
-            logger.info("getLTP");
+            log.info("getLTP");
             examples.getLTP(smartConnect);
 
-            logger.info("getTrades");
+            log.info("getTrades");
             examples.getTrades(smartConnect);
 
-            logger.info("getRMS");
+            log.info("getRMS");
             examples.getRMS(smartConnect);
 
-            logger.info("getHolding");
+            log.info("getHolding");
             examples.getHolding(smartConnect);
 
-            logger.info("getPosition");
+            log.info("getPosition");
             examples.getPosition(smartConnect);
 
-            logger.info("convertPosition");
+            log.info("convertPosition");
             examples.convertPosition(smartConnect);
 
-            logger.info("createRule");
+            log.info("createRule");
             String createRuleID = examples.createRule(smartConnect);
 
-            logger.info("ModifyRule");
+            log.info("ModifyRule");
             String modifyRuleID = examples.modifyRule(smartConnect, createRuleID);
 
-			logger.info("cancelRule");
+			log.info("cancelRule");
 			examples.cancelRule(smartConnect,modifyRuleID);
 
-            logger.info("Rule Details");
+            log.info("Rule Details");
             examples.ruleDetails(smartConnect, modifyRuleID);
 
-            logger.info("Rule List");
+            log.info("Rule List");
             examples.ruleList(smartConnect);
 
-            logger.info("Historic candle Data");
+            log.info("Historic candle Data");
             examples.getCandleData(smartConnect);
 
-            logger.info("logout");
+            log.info("logout");
             examples.logout(smartConnect);
 
         } catch (Exception e) {
-            logger.info("Exception: {}", e.getMessage());
+            log.info("Exception: {}", e.getMessage());
         }
 
     }

@@ -4,19 +4,18 @@ import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.smartstream.models.Quote;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import com.angelbroking.smartapi.smartstream.models.SnapQuote;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+
+@Slf4j
 public class SmartStreamListenerImplTest {
 
     public static final ZoneId TZ_UTC = ZoneId.of("UTC");
     public static final ZoneId TZ_IST = ZoneId.of("Asia/Kolkata");
-    private static final Logger logger = LoggerFactory.getLogger(SmartStreamListenerImplTest.class);
-
     public void onLTPArrival(LTP ltp) {
         String ltpData = String.format("token: %s sequenceNumber: %d ltp: %.2f exchangeTime: %s exchangeToClientLatency: %s",
                 ltp.getToken().toString(),
@@ -24,7 +23,7 @@ public class SmartStreamListenerImplTest {
                 (ltp.getLastTradedPrice() / 100.0),
                 getExchangeTime(ltp.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - ltp.getExchangeFeedTimeEpochMillis());
-        logger.info(ltpData);
+        log.info(ltpData);
     }
 
     private ZonedDateTime getExchangeTime(long exchangeFeedTimeEpochMillis) {
@@ -42,7 +41,7 @@ public class SmartStreamListenerImplTest {
                 (quote.getClosePrice() / 100.0),
                 getExchangeTime(quote.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - quote.getExchangeFeedTimeEpochMillis());
-        logger.info(quoteData);
+        log.info(quoteData);
 
     }
 
@@ -57,20 +56,20 @@ public class SmartStreamListenerImplTest {
                 (snapQuote.getClosePrice() / 100.0),
                 getExchangeTime(snapQuote.getExchangeFeedTimeEpochMillis()),
                 Instant.now().toEpochMilli() - snapQuote.getExchangeFeedTimeEpochMillis());
-        logger.info(snapQuoteData);
+        log.info(snapQuoteData);
     }
 
     public void onConnected() {
-        logger.info("web socket connected");
+        log.info("web socket connected");
 
     }
 
     public void onError(SmartStreamError error) {
-        logger.error("An error occurred while processing the SmartStream: {}", error.getException().getMessage());
+        log.error("An error occurred while processing the SmartStream: {}", error.getException().getMessage());
     }
 
     public void onPong() {
-        logger.info("pong received");
+        log.info("pong received");
     }
 
 
