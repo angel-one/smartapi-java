@@ -8,12 +8,10 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +30,7 @@ import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TASK;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TOKEN;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_USER;
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
-
+@Slf4j
 public class SmartAPITicker {
 
     private final SmartApiTickerParams params;
@@ -44,7 +42,6 @@ public class SmartAPITicker {
 
     private final SmartApiTickerScheduler scheduler;
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartAPITicker.class);
 
 
     /**
@@ -155,7 +152,7 @@ public class SmartAPITicker {
                 try {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    log.error(e.getMessage());
                     if (onErrorListener != null) {
                         onErrorListener.onError(e);
                     }
@@ -208,7 +205,7 @@ public class SmartAPITicker {
         try {
             ws.connect();
         } catch (WebSocketException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }

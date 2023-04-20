@@ -1,12 +1,12 @@
 package com.angelbroking.smartapi.smartticker;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SmartWSOnDisconnectImpl  implements SmartWSOnDisconnect {
-    private static final Logger logger = LoggerFactory.getLogger(SmartWSOnDisconnectImpl.class);
+
     @Override
     public void onDisconnected() {
-        logger.info("Disconnected from server.");
+        log.info("Disconnected from server.");
     }
 }

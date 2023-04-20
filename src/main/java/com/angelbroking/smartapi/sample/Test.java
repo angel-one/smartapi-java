@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.User;
@@ -10,6 +11,7 @@ import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +26,7 @@ public class Test {
             String clientPin = "";
             String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
+            SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
 
 
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN

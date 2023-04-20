@@ -13,12 +13,11 @@ import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.ResponseParser;
 import com.angelbroking.smartapi.utils.Validators;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -26,10 +25,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
+@Slf4j
 public class SmartConnect {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmartConnect.class);
-    private static final Routes routes = new Routes();
+   private static final Routes routes = new Routes();
     private static final Proxy proxy = Proxy.NO_PROXY;
     public static SessionExpiryHook sessionExpiryHook = null;
     public static boolean enableLogging = false;
@@ -138,13 +137,13 @@ public class SmartConnect {
             loginResultObject = smartAPIRequestHandler.postRequest(this.apiKey, routes.getLoginUrl(), createLoginParams(clientCode, password, totp));
 
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
         String jwtToken = loginResultObject.optJSONObject(Constants.SMART_CONNECT_DATA).optString(Constants.SMART_CONNECT_JWT_TOKEN);
@@ -154,13 +153,13 @@ public class SmartConnect {
         try {
             user = ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, jwtToken));
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
         user.setAccessToken(jwtToken);
@@ -206,13 +205,13 @@ public class SmartConnect {
             return ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken));
 
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -244,23 +243,23 @@ public class SmartConnect {
             params.put(Constants.STOP_LOSS, orderParams.getStopLoss());
             params.put(Constants.VARIETY, variety);
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(jsonObject));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(jsonObject));
             }
             Order order = new Order();
             order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(order));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(order));
             }
             return order;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -295,20 +294,20 @@ public class SmartConnect {
 
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(jsonObject));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(jsonObject));
             }
             Order order = new Order();
             order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
             return order;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -329,21 +328,21 @@ public class SmartConnect {
             params.put(Constants.ORDER_ID, orderId);
 
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(jsonObject));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(jsonObject));
             }
 
             Order order = new Order();
             order.setOrderId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getString(orderID));
             return order;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -359,18 +358,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_BOOK);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -392,18 +391,18 @@ public class SmartConnect {
 
             String url = routes.get(Constants.SMART_CONNECT_API_LTP_DATA);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response.getJSONObject(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -417,18 +416,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_TRADE_BOOK);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -446,18 +445,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_DATA);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response.getJSONObject(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -471,18 +470,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_HOLDING);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -496,18 +495,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_POSITION);
             JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -526,13 +525,13 @@ public class SmartConnect {
             String url = routes.get(Constants.SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT);
             return smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -566,18 +565,18 @@ public class SmartConnect {
             params.put(Constants.TIME_PERIOD, gttParams.getTimePeriod());
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             int gttId = jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id");
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(gttId));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(gttId));
             }
             return String.valueOf(gttId);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
 
@@ -611,18 +610,18 @@ public class SmartConnect {
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 
             int gttId = jsonObject.optJSONObject(Constants.SMART_CONNECT_DATA).optInt("id");
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(gttId));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(gttId));
             }
             return String.valueOf(gttId);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
 
@@ -646,18 +645,18 @@ public class SmartConnect {
             JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
             Gtt gtt = new Gtt();
             gtt.setId(jsonObject.getJSONObject(Constants.SMART_CONNECT_DATA).getInt("id"));
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(gtt));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(gtt));
             }
             return gtt;
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -677,19 +676,19 @@ public class SmartConnect {
 
             String url = routes.get(Constants.SMART_CONNECT_API_GTT_DETAILS);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
 
             return response.getJSONObject(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
 
@@ -712,18 +711,18 @@ public class SmartConnect {
 
             String url = routes.get(Constants.SMART_CONNECT_API_GTT_LIST);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response.getJSONArray(Constants.SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
 
@@ -739,18 +738,18 @@ public class SmartConnect {
         try {
             String url = routes.get(Constants.SMART_CONNECT_API_CANDLE_DATA);
             JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.valueOf(response));
+            if (log.isDebugEnabled()) {
+                log.debug(String.valueOf(response));
             }
             return response.getJSONArray(Constants.SMART_CONNECT_DATA).toString();
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
@@ -768,13 +767,13 @@ public class SmartConnect {
             params.put(Constants.SMART_CONNECT_CLIENT_CODE, this.userId);
             return smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
         } catch (SmartAPIException ex) {
-            logger.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}", Constants.SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException("Failed to perform the operation due to an SmartAPIException error.");
         } catch (IOException ex) {
-            logger.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException("Failed to perform the operation due to an IO error.");
         } catch (JSONException ex) {
-            logger.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            log.error("{} {}",Constants.JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException("Failed to perform the operation due to a JSON error.");
         }
     }
