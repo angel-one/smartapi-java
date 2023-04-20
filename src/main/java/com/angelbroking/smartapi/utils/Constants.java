@@ -147,6 +147,8 @@ public class Constants {
     public static final String SMART_CONNECT_API_USER_PROFILE = "api.user.profile";
     public static final String NULL_URL_MESSAGE =  "url cannot be null";
     public static final String INVALID_URL =  "Invalid URL: ";
+    public static final String API_REQUEST_FAILED_MSG = "Failed to create API request";
+
 
     public static final String ID = "id";
     public static final String QTY = "qty";

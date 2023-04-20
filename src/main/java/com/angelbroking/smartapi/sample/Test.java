@@ -21,10 +21,10 @@ public class Test {
     public static void main(String[] args) throws SmartAPIException {
         try {
 
-            String apiKey = "";
-            String clientId = "";
-            String clientPin = "";
-            String tOTP = "";
+            String apiKey = "zkWvUuLx";
+            String clientId = "D541276";
+            String clientPin = "1501";
+            String tOTP = "589528";
             SmartConnect smartConnect = new SmartConnect(apiKey);
             SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
 
