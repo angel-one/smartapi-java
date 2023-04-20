@@ -8,7 +8,7 @@ public enum ExchangeType {
 
 	private int val;
 
-	private ExchangeType(int val) {
+	ExchangeType(int val) {
 		this.val = val;
 	}
 

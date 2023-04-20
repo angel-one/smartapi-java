@@ -14,7 +14,7 @@ public enum SmartStreamAction {
 	private int val;
 
 
-	private SmartStreamAction(int val) {
+	SmartStreamAction(int val) {
 		this.val = val;
 	}
 	

@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.http;
 
 
+import com.angelbroking.smartapi.models.ApiHeaders;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -14,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.Proxy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SmartAPIRequestHandlerTest {
 
@@ -27,7 +30,7 @@ public class SmartAPIRequestHandlerTest {
         server = new MockWebServer();
         server.start();
 
-        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
+        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
     }
 
     @AfterAll
@@ -68,18 +71,18 @@ public class SmartAPIRequestHandlerTest {
 
     @Test
      void testApiHeaders() throws JSONException {
-        JSONObject headers = requestHandler.apiHeaders();
+        ApiHeaders headers = requestHandler.apiHeaders();
         assertNotNull(headers);
-        assertEquals("USER", headers.getString("userType"));
-        assertEquals("WEB", headers.getString("sourceID"));
-        assertNotNull(headers.getString("clientLocalIP"));
-        assertNotNull(headers.getString("clientPublicIP"));
-        assertNotNull(headers.getString("macAddress"));
-        assertEquals("application/json", headers.getString("accept"));
+        assertEquals("USER",headers.getUserType());
+        assertEquals("WEB", headers.getSourceID());
+        assertNotNull(headers.getHeaderClientLocalIP() );
+        assertNotNull(headers.getHeaderClientPublicIP());
+        assertNotNull(headers.getMacAddress());
+        assertEquals("application/json", headers.getAccept());
     }
 
     @Test
-    void testPostRequest() throws IOException, JSONException, SmartAPIException, InterruptedException {
+    void testPostRequest() throws JSONException, SmartAPIException, InterruptedException {
         // set the response for the server
         JSONObject response = new JSONObject();
         response.put("success", true);

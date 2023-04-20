@@ -9,13 +9,15 @@ public class SmartWSOnErrorImpl   implements SmartWSOnError{
     @Override
     public void onError(Exception exception) {
 
-        log.error("Error: %s", exception.getMessage());
+        log.error("Error: {}", exception.getMessage());
+
 
     }
 
     @Override
     public void onError(SmartAPIException smartAPIException) {
-        log.error("Error: %s", smartAPIException.getMessage());
+        log.error("Error: {}", smartAPIException.getMessage());
+
 
     }
 }

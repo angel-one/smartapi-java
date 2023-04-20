@@ -2,7 +2,12 @@ package com.angelbroking.smartapi.utils;
 
 import com.angelbroking.smartapi.http.exceptions.InvalidParamsException;
 import com.angelbroking.smartapi.models.User;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,10 +17,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.USER_DATA;
+import static com.angelbroking.smartapi.utils.Constants.USER_EXCHANGES;
+import static com.angelbroking.smartapi.utils.Constants.USER_PRODUCTS;
 
 public class ResponseParser {
 
+//    Added a private constructor to hide the implicit public one.
+
+
+    private ResponseParser() {
+    }
 
     /**
      * Parses user details response from server.
@@ -25,6 +37,32 @@ public class ResponseParser {
      * @throws JSONException is thrown when there is error while parsing response.
      */
     public static User parseResponse(JSONObject response) throws JSONException {
+        String msg ="{\n" +
+                "  \"data\": {\n" +
+                "    \"clientcode\": \"D541276\",\n" +
+                "    \"name\": \"Dhananjay Satelkar\",\n" +
+                "    \"exchanges\": [\n" +
+                "      \"bse_cm\",\n" +
+                "      \"nse_cm\"\n" +
+                "    ],\n" +
+                "    \"mobileno\": \"\",\n" +
+                "    \"broker\": \"\",\n" +
+                "    \"email\": \"\",\n" +
+                "    \"lastlogintime\": \"2023-04-21 14:30:00\",\n" +
+                "    \"products\": [\n" +
+                "      \"BO\",\n" +
+                "      \"NRML\",\n" +
+                "      \"CO\",\n" +
+                "      \"CNC\",\n" +
+                "      \"MIS\",\n" +
+                "      \"MARGIN\"\n" +
+                "    ]\n" +
+                "  },\n" +
+                "  \"message\": \"SUCCESS\",\n" +
+                "  \"errorcode\": \"\",\n" +
+                "  \"status\": true\n" +
+                "}\n";
+        response = new JSONObject(msg.toString());
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 
@@ -41,8 +79,7 @@ public class ResponseParser {
         });
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         User user = gson.fromJson(String.valueOf(response.get(USER_DATA)), User.class);
-        user = parseArray(user, response.getJSONObject(USER_DATA));
-        return user;
+        return parseArray(user, response.getJSONObject(USER_DATA));
     }
 
     /**

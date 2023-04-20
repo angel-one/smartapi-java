@@ -2,29 +2,37 @@ package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.*;
-import com.angelbroking.smartapi.utils.Constants;
+import com.angelbroking.smartapi.models.Gtt;
+import com.angelbroking.smartapi.models.GttParams;
+import com.angelbroking.smartapi.models.Order;
+import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.DURATION_DAY;
+import static com.angelbroking.smartapi.utils.Constants.EXCHANGE_NSE;
+import static com.angelbroking.smartapi.utils.Constants.MARGIN;
+import static com.angelbroking.smartapi.utils.Constants.ORDER_TYPE_STOPLOSS_LIMIT;
+import static com.angelbroking.smartapi.utils.Constants.PRODUCT_INTRADAY;
+import static com.angelbroking.smartapi.utils.Constants.SYMBOL_SBINEQ;
+import static com.angelbroking.smartapi.utils.Constants.TRANSACTION_TYPE_BUY;
+import static com.angelbroking.smartapi.utils.Constants.VARIETY_STOPLOSS;
 
 
 @Slf4j
 public class Examples {
 
     public void getProfile(SmartConnect smartConnect) throws SmartAPIException, IOException {
+
         User profile = smartConnect.getProfile();
         log.debug(profile.toString());
     }
-
-    /** CONSTANT Details */
 
     /* VARIETY */
     /*
@@ -125,7 +133,7 @@ public class Examples {
     /**
      * Cancel an order
      *
-     * @return
+     * @return order
      */
     public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
@@ -275,7 +283,6 @@ public class Examples {
     /**
      * Gtt Rule Lists
      */
-    @SuppressWarnings("serial")
     public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         List<String> status = new ArrayList<>();
@@ -314,7 +321,6 @@ public class Examples {
      * Logout user.
      */
     public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        /** Logout user and kill session. */
         JSONObject jsonObject = smartConnect.logout();
         log.debug("logout {}", jsonObject);
     }

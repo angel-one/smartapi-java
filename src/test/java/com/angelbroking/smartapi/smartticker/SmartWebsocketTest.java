@@ -1,6 +1,5 @@
 package com.angelbroking.smartapi.smartticker;
 
-import com.angelbroking.smartapi.smartticker.ticker.OnTicks;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import org.junit.jupiter.api.Assertions;
@@ -8,14 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify ;
 
 
  class SmartWebsocketTest {
@@ -29,17 +25,13 @@ import static org.mockito.Mockito.verify ;
     @Mock
     private SmartWebsocket smartWebsocket;
 
-    @Mock
-    private OnTicks smartWSOnTicks;
-
     private SmartWSOnTicks onTicksListener;
-    private SmartWSOnError onErrorListener;
 
     @BeforeEach
      void setUp() {
         smartWebsocket = new SmartWebsocket(CLIENT_ID, JWT_TOKEN, API_KEY, ACTION_TYPE, FEED_TYPE);
         onTicksListener = mock(SmartWSOnTicks.class);
-        onErrorListener = mock(SmartWSOnError.class);
+       SmartWSOnError  onErrorListener = mock(SmartWSOnError.class);
         smartWebsocket.setOnTickerArrivalListener(onTicksListener);
         smartWebsocket.setOnErrorListener(onErrorListener);
     }

@@ -1,4 +1,5 @@
 package com.angelbroking.smartapi.http;
+
 import com.angelbroking.smartapi.http.exceptions.InputException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import okhttp3.MediaType;
@@ -9,10 +10,10 @@ import okhttp3.ResponseBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 public class SmartAPIResponseHandlerTest {
 

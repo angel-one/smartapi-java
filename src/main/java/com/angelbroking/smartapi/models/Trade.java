@@ -1,7 +1,5 @@
 package com.angelbroking.smartapi.models;
 
-import java.util.Date;
-
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;

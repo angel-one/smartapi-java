@@ -1,10 +1,14 @@
 package com.angelbroking.smartapi.utils;
 
-import com.angelbroking.smartapi.smartstream.models.*;
+import com.angelbroking.smartapi.smartstream.models.ExchangeType;
+import com.angelbroking.smartapi.smartstream.models.LTP;
+import com.angelbroking.smartapi.smartstream.models.Quote;
+import com.angelbroking.smartapi.smartstream.models.SnapQuote;
+import com.angelbroking.smartapi.smartstream.models.TokenID;
+import lombok.Data;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import lombok.Data;
 
 @Data
 public class ByteUtils {

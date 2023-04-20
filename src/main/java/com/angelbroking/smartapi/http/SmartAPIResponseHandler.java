@@ -1,14 +1,21 @@
 package com.angelbroking.smartapi.http;
 
-import com.angelbroking.smartapi.SmartConnect;
-import com.angelbroking.smartapi.http.exceptions.*;
-import com.angelbroking.smartapi.utils.Constants;
+import com.angelbroking.smartapi.http.exceptions.DataSmartAPIException;
+import com.angelbroking.smartapi.http.exceptions.GeneralException;
+import com.angelbroking.smartapi.http.exceptions.InputException;
+import com.angelbroking.smartapi.http.exceptions.NetworkException;
+import com.angelbroking.smartapi.http.exceptions.OrderException;
+import com.angelbroking.smartapi.http.exceptions.PermissionException;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.exceptions.TokenException;
+import com.angelbroking.smartapi.models.SmartConnectParams;
 import okhttp3.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
+import static com.angelbroking.smartapi.utils.Constants.CONTENT_TYPE;
 import static com.angelbroking.smartapi.utils.Constants.MESSAGE;
 
 /**
@@ -19,7 +26,7 @@ public class SmartAPIResponseHandler {
 
 
     public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
-        if (response.header("Content-Type").contains("json")) {
+        if (response.header(CONTENT_TYPE) != null && response.header(CONTENT_TYPE).contains("json")) {
             JSONObject jsonObject = new JSONObject(body);
 
             if (!jsonObject.has("status") || jsonObject.has("success")) {
@@ -32,20 +39,20 @@ public class SmartAPIResponseHandler {
             }
             return jsonObject;
         } else {
-            throw new DataSmartAPIException(String.format("Unexpected content type received from server: %s %s", response.header("Content-Type"), response.body().string()), "AG8001");
+            throw new DataSmartAPIException(String.format("Unexpected content type received from server: %s %s", response.header(CONTENT_TYPE), response.body().string()), "AG8001");
         }
     }
 
     private SmartAPIException dealWithException(JSONObject jsonObject, String code) throws JSONException {
 
         switch (code) {
-            // if there is a token exception, generate a signal to logout the user.
+            // if there is a token exception, generate a signal to log out the user.
             case "AG8003":
             case "AB8050":
             case "AB8051":
             case "AB1010":
-                if (SmartConnect.getSessionExpiryHook() != null) {
-                    SmartConnect.getSessionExpiryHook().sessionExpired();
+                if (SmartConnectParams.getSessionExpiryHook() != null) {
+                    SmartConnectParams.getSessionExpiryHook().sessionExpired();
                 }
                 return new TokenException(jsonObject.getString(MESSAGE), code);
 

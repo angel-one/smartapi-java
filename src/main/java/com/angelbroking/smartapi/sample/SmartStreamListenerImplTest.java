@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.sample;
 
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.smartstream.models.Quote;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
@@ -13,8 +14,6 @@ import java.time.ZonedDateTime;
 
 @Slf4j
 public class SmartStreamListenerImplTest {
-
-    public static final ZoneId TZ_UTC = ZoneId.of("UTC");
     public static final ZoneId TZ_IST = ZoneId.of("Asia/Kolkata");
     public void onLTPArrival(LTP ltp) {
         String ltpData = String.format("token: %s sequenceNumber: %d ltp: %.2f exchangeTime: %s exchangeToClientLatency: %s",
@@ -66,6 +65,7 @@ public class SmartStreamListenerImplTest {
 
     public void onError(SmartStreamError error) {
         log.error("An error occurred while processing the SmartStream: {}", error.getException().getMessage());
+        throw new SmartConnectException("An error occurred while processing the SmartStream");
     }
 
     public void onPong() {

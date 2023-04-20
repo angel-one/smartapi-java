@@ -7,7 +7,7 @@ public enum SmartStreamSubsMode {
 	
 	private int val;
 	
-	private SmartStreamSubsMode(int val) {
+	SmartStreamSubsMode(int val) {
 		this.val = val;
 	}
 	
@@ -17,9 +17,7 @@ public enum SmartStreamSubsMode {
 				return entry;
 			}
 		}
-		StringBuilder messageBuilder = new StringBuilder();
-		messageBuilder.append("No SmartStreamSubsMode found with value ").append(val);
-		throw new IllegalArgumentException(messageBuilder.toString());
+		throw new IllegalArgumentException(String.format("No SmartStreamSubsMode found with value %s", val));
 
 	}
 	

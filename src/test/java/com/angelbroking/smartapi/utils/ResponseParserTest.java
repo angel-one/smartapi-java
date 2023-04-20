@@ -6,8 +6,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
-import static org.junit.Assert.*;
+import static com.angelbroking.smartapi.utils.Constants.USER_DATA;
+import static com.angelbroking.smartapi.utils.Constants.USER_EXCHANGES;
+import static com.angelbroking.smartapi.utils.Constants.USER_PRODUCTS;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ResponseParserTest {
 

@@ -47,7 +47,7 @@ public class SmartAPIRequestHandler {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        if (SmartConnect.isEnableLogging()) {
+        if (SmartConnect.enableLogging) {
             client = builder.addInterceptor(logging).build();
         } else {
             client = builder.build();
@@ -296,7 +296,7 @@ public class SmartAPIRequestHandler {
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
             log.error("Failed to create API request", e.getMessage());
-            throw new APIRequestCreationException("Failed to create API request", e);
+            throw new APIRequestCreationException("Failed to create API request");
         }
     }
 
@@ -319,7 +319,7 @@ public class SmartAPIRequestHandler {
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, String.format("Bearer %s", accessToken)).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new APIRequestCreationException("Failed to create API request", e);
+            throw new APIRequestCreationException("Failed to create API request");
         }
     }
 

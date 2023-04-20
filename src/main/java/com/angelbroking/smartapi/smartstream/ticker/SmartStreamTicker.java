@@ -3,14 +3,25 @@ package com.angelbroking.smartapi.smartstream.ticker;
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.sample.SmartStreamListenerImplTest;
-import com.angelbroking.smartapi.smartstream.models.*;
+import com.angelbroking.smartapi.smartstream.models.ExchangeType;
+import com.angelbroking.smartapi.smartstream.models.LTP;
+import com.angelbroking.smartapi.smartstream.models.Quote;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamAction;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
+import com.angelbroking.smartapi.smartstream.models.SnapQuote;
+import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.utils.ByteUtils;
-import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.Utils;
-import com.neovisionaries.ws.client.*;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -19,7 +30,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_ID_HEADER;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER;
+import static com.angelbroking.smartapi.utils.Constants.FEED_TOKEN_HEADER;
+import static com.angelbroking.smartapi.utils.Constants.PARAM_ACTION;
+import static com.angelbroking.smartapi.utils.Constants.PARAM_MODE;
+import static com.angelbroking.smartapi.utils.Constants.PARAM_PARAMS;
+import static com.angelbroking.smartapi.utils.Constants.PARAM_TOKEN_LIST;
+import static com.angelbroking.smartapi.utils.Constants.PING_INTERVAL;
+import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
+import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_NULL_CONNECTED;
 
 @Slf4j
 public class SmartStreamTicker {
@@ -82,7 +102,7 @@ public class SmartStreamTicker {
         return new WebSocketAdapter() {
 
             @Override
-            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
+            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 smartStreamListenerImplTest.onConnected();
             }
 
@@ -135,7 +155,7 @@ public class SmartStreamTicker {
 
 
             @Override
-            public void onPongFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
+            public void onPongFrame(WebSocket websocket, WebSocketFrame frame) {
                 try {
                     smartStreamListenerImplTest.onPong();
                 } catch (Exception e) {
@@ -210,7 +230,6 @@ public class SmartStreamTicker {
      *
      * @param mode   the subscription mode, indicating the level of data required.
      * @param tokens the set of tokens to subscribe to.
-     * @throws SmartAPIException if an error occurs while attempting to subscribe.
      */
     public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
         if (webSocket != null) {

@@ -4,9 +4,21 @@ import com.angelbroking.smartapi.http.exceptions.InvalidParamsException;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.OrderParams;
 
-import java.util.Objects;
-
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.DISCLOSED_QTY;
+import static com.angelbroking.smartapi.utils.Constants.DURATION;
+import static com.angelbroking.smartapi.utils.Constants.EXCHANGE;
+import static com.angelbroking.smartapi.utils.Constants.ORDER_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.PRICE;
+import static com.angelbroking.smartapi.utils.Constants.PRODUCT_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.QTY;
+import static com.angelbroking.smartapi.utils.Constants.QUANTITY;
+import static com.angelbroking.smartapi.utils.Constants.SQUARE_OFF;
+import static com.angelbroking.smartapi.utils.Constants.STOP_LOSS;
+import static com.angelbroking.smartapi.utils.Constants.SYMBOL_TOKEN;
+import static com.angelbroking.smartapi.utils.Constants.TIME_PERIOD;
+import static com.angelbroking.smartapi.utils.Constants.TRADING_SYMBOL;
+import static com.angelbroking.smartapi.utils.Constants.TRANSACTION_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.TRIGGER_PRICE;
 
 public class Validators {
 

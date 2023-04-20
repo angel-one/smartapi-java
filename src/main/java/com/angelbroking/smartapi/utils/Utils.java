@@ -1,13 +1,20 @@
 package com.angelbroking.smartapi.utils;
 
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
 import org.json.JSONObject;
 
+import java.net.NetworkInterface;
 import java.util.Arrays;
+import java.util.Enumeration;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_CLIENT_CODE;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_PASSWORD;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_TOTP;
 
+@Slf4j
 public class Utils {
 
     // Private constructor to prevent instantiation from outside the class
@@ -74,4 +81,36 @@ public class Utils {
             sb.append(String.format("%02x", b));
         return sb.toString();
     }
+
+    public static String getMacAddress() throws SmartConnectException {
+        try {
+            // get all network interfaces of the current system
+            Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();
+            // iterate over all interfaces
+            while (networkInterface.hasMoreElements()) {
+                // get an interface
+                NetworkInterface network = networkInterface.nextElement();
+                // get its hardware or mac address
+                byte[] macAddressBytes = network.getHardwareAddress();
+                if (macAddressBytes != null) {
+                    // initialize a string builder to hold mac address
+                    StringBuilder macAddressStr = new StringBuilder();
+                    // iterate over the bytes of mac address
+                    for (int i = 0; i < macAddressBytes.length; i++) {
+                        // convert byte to string in hexadecimal form
+                        macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
+                    }
+                    String macAddress = macAddressStr.toString();
+                    if (macAddress != null) {
+                        return macAddress;
+                    }
+                }
+            }
+            throw new SmartConnectException("MAC address not found");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new SmartConnectException("Failed to retrieve MAC address", e);
+        }
+    }
+
 }

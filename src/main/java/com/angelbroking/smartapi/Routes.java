@@ -1,32 +1,35 @@
 package com.angelbroking.smartapi;
 
 import com.angelbroking.smartapi.routes.ApiRoutes;
-import com.angelbroking.smartapi.utils.Constants;
 
 import java.util.Map;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.LOGIN_URL;
+import static com.angelbroking.smartapi.utils.Constants.ROOT_URL;
+import static com.angelbroking.smartapi.utils.Constants.SMARTSTREAM_WSURI;
+import static com.angelbroking.smartapi.utils.Constants.SWSURI;
+import static com.angelbroking.smartapi.utils.Constants.WSURI;
+
 
 /**
- This class generates end-points for all smart API calls by translating all the routes into a Java Map.
+ * This class generates end-points for all smart API calls by translating all the routes into a Java Map.
  */
 
 public class Routes {
 
-    public Map<String, String> routes;
+    public final Map<String, String> apiRoutes;
 
 
     // Initialize all routes,
-    @SuppressWarnings("serial")
     public Routes() {
-        routes = ApiRoutes.ROUTES;
+        apiRoutes = ApiRoutes.ROUTES;
     }
 
 
     public String get(String key) {
         StringBuilder sb = new StringBuilder();
         sb.append(ROOT_URL);
-        sb.append(routes.get(key));
+        sb.append(apiRoutes.get(key));
         return sb.toString();
     }
 

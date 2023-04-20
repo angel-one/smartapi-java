@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApiRoutes {
-
+//    Add a private constructor to hide the implicit public one.
+    private ApiRoutes() {
+    }
     public static final String SECURE_COMMON_PATH = "/rest/secure/angelbroking";
     public static final String AUTH_COMMON_PATH = "/rest/auth/angelbroking/jwt/v1";
     public static final String GTT_SERVICE_COMMON_PATH = "/gtt-service/rest/secure/angelbroking/gtt/v1";

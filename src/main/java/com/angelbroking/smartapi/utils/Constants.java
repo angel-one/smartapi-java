@@ -14,20 +14,17 @@ public class Constants {
     /**
      * Product types.
      */
-    public static final String PRODUCT_DELIVERY = "DELIVERY";
     public static final String PRODUCT_INTRADAY = "INTRADAY";
 
 
     /**
      * Order types.
      */
-    public static final String ORDER_TYPE_LIMIT = "LIMIT";
     public static final String ORDER_TYPE_STOPLOSS_LIMIT = "STOPLOSS_LIMIT";
 
     /**
      * Variety types.
      */
-    public static final String VARIETY_NORMAL = "NORMAL";
     public static final String VARIETY_STOPLOSS = "STOPLOSS";
 
     /**
@@ -144,13 +141,12 @@ public class Constants {
     public static final String SMART_CONNECT_PASSWORD = "password";
     public static final String SMART_CONNECT_TOTP = "totp";
     public static final String SMART_CONNECT_DATA = "data";
-    public static final String SMART_CONNECT_API_REFRESH = "api.refresh";
     public static final String SMART_CONNECT_JWT_TOKEN = "jwtToken";
     public static final String SMART_CONNECT_REFRESH_TOKEN = "refreshToken";
     public static final String SMART_CONNECT_FEED_TOKEN = "feedToken";
     public static final String SMART_CONNECT_API_USER_PROFILE = "api.user.profile";
-    public static final String SMART_CONNECT_CHECKSUM = "checksum";
-    private String orderID = "orderid";
+    public static final String NULL_URL_MESSAGE =  "url cannot be null";
+    public static final String INVALID_URL =  "Invalid URL: ";
 
     public static final String ID = "id";
     public static final String QTY = "qty";

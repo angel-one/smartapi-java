@@ -2,13 +2,17 @@ package com.angelbroking.smartapi.smartticker;
 
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
-import com.neovisionaries.ws.client.*;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,10 +25,13 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.DataFormatException;
 import java.util.zip.InflaterOutputStream;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.ACTION_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.API_KEY;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_CODE;
+import static com.angelbroking.smartapi.utils.Constants.FEEED_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.JWT_TOKEN;
 
 /**
  * The `SmartWebsocket` class provides a websocket client for connecting to a financial data feed provided by SmartAPI.
@@ -45,7 +52,7 @@ public class SmartWebsocket {
     private final String apiKey;
     private final String actionType;
     private final String feedType;
-    private final Routes routes = new Routes();
+
     private SmartWSOnTicks onTickerArrivalListener;
     private SmartWSOnConnect onConnectedListener;
     private SmartWSOnDisconnect onDisconnectedListener;
@@ -62,7 +69,7 @@ public class SmartWebsocket {
         this.apiKey = apiKey;
         this.actionType = actionType;
         this.feedType = feedType;
-
+        Routes routes = new Routes();
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(routes.getSWsuri())
@@ -83,8 +90,10 @@ public class SmartWebsocket {
             log.error(e.getMessage());
         }
 
-        webSocket.addListener(getWebsocketAdapter());
-
+        WebSocketAdapter adapter = getWebsocketAdapter();
+        if (adapter != null) {
+            webSocket.addListener(adapter);
+        }
     }
 
     public static byte[] decompress(byte[] compressedTxt) throws IOException {
@@ -142,7 +151,7 @@ public class SmartWebsocket {
         return new WebSocketAdapter() {
 
             @Override
-            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws WebSocketException {
+            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 onConnectedListener.onConnected();
                 Runnable runnable = () -> {
                     JSONObject wsMWJSONRequest = new JSONObject();
@@ -159,7 +168,7 @@ public class SmartWebsocket {
             }
 
             @Override
-            public void onTextMessage(WebSocket websocket, String message) throws IOException, DataFormatException {
+            public void onTextMessage(WebSocket websocket, String message) throws IOException {
                 byte[] decoded = Base64.getDecoder().decode(message);
                 byte[] result = decompress(decoded);
                 String str = new String(result, StandardCharsets.UTF_8);
@@ -184,13 +193,13 @@ public class SmartWebsocket {
             }
 
             /**
-             * On disconnection, return statement ensures that the thread ends.
+             * Callback method that is called when the WebSocket is disconnected.
              *
-             * @param websocket
-             * @param serverCloseFrame
-             * @param clientCloseFrame
-             * @param closedByServer
-             * @throws Exception
+             * @param websocket          the WebSocket that was disconnected
+             * @param serverCloseFrame   the WebSocket frame sent by the server to close the connection
+             * @param clientCloseFrame   the WebSocket frame sent by the client to close the connection
+             * @param closedByServer     a boolean indicating whether the connection was closed by the server
+             * @throws NullPointerException if the onDisconnectedListener is null
              */
             @Override
             public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,

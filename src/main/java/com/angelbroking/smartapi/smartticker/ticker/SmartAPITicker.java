@@ -1,9 +1,8 @@
 package com.angelbroking.smartapi.smartticker.ticker;
 
 import com.angelbroking.smartapi.Routes;
-import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.utils.Constants;
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
@@ -27,18 +26,22 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_ACCTID;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_CHANNEL;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TASK;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TOKEN;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_USER;
+import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
 
 public class SmartAPITicker {
 
     private final SmartApiTickerParams params;
-    private final Routes routes = new Routes();
-    private final String wsuri = routes.getWsuri();
+
     private OnTicks onTickerArrivalListener;
     private OnConnect onConnectedListener;
     private final OnError onErrorListener;
     private final WebSocket ws;
-    private final SSLContext context;
+
     private final SmartApiTickerScheduler scheduler;
 
     private static final Logger logger = LoggerFactory.getLogger(SmartAPITicker.class);
@@ -53,17 +56,17 @@ public class SmartAPITicker {
         this.onTickerArrivalListener = onTickerArrivalListener;
         this.onConnectedListener = onConnectedListener;
         this.onErrorListener = onErrorListener;
+        Routes routes = new Routes();
         try {
-            context = NaiveSSLContext.getInstance("TLS");
-            ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(wsuri);
+            SSLContext context = NaiveSSLContext.getInstance("TLS");
+            ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(routes.getWsuri());
         } catch (IOException e) {
             if (onErrorListener != null) {
                 onErrorListener.onError(e);
             }
-            throw new SmartConnectException("Could not create WebSocket instance.", e);
+            throw new SmartConnectException("Could not create WebSocket instance.");
         } catch (NoSuchAlgorithmException e) {
-            logger.error(e.getMessage());
-            throw new NoSuchAlgorithmException("Could not create SSL context.", e);
+            throw new NoSuchAlgorithmException("Could not create SSL context.");
         }
         ws.addListener(getWebsocketAdapter());
         scheduler = new SmartApiTickerScheduler();
@@ -119,8 +122,8 @@ public class SmartAPITicker {
                 wsCNJSONRequest.put(SMART_API_TICKER_TASK, "cn");
                 wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
                 wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, params.getFeedToken());
-                wsCNJSONRequest.put(SMART_API_TICKER_USER, params.getClientId() );
-                wsCNJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId() );
+                wsCNJSONRequest.put(SMART_API_TICKER_USER, params.getClientId());
+                wsCNJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId());
                 return wsCNJSONRequest;
             }
 
@@ -128,9 +131,9 @@ public class SmartAPITicker {
                 JSONObject wsMWJSONRequest = new JSONObject();
                 wsMWJSONRequest.put(SMART_API_TICKER_TASK, "hb");
                 wsMWJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
-                wsMWJSONRequest.put(SMART_API_TICKER_TOKEN,params.getFeedToken() );
-                wsMWJSONRequest.put(SMART_API_TICKER_USER,params.getClientId() );
-                wsMWJSONRequest.put(SMART_API_TICKER_ACCTID,params.getClientId() );
+                wsMWJSONRequest.put(SMART_API_TICKER_TOKEN, params.getFeedToken());
+                wsMWJSONRequest.put(SMART_API_TICKER_USER, params.getClientId());
+                wsMWJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId());
                 return wsMWJSONRequest;
             }
 
@@ -196,7 +199,7 @@ public class SmartAPITicker {
         wsMWJSONRequest.put("task", this.params.getTask());
         wsMWJSONRequest.put("channel", this.params.getScript());
         wsMWJSONRequest.put("token", this.params.getFeedToken());
-        wsMWJSONRequest.put("user", this.params.getClientId() );
+        wsMWJSONRequest.put("user", this.params.getClientId());
         wsMWJSONRequest.put("acctid", this.params.getClientId());
         return wsMWJSONRequest;
     }
