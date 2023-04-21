@@ -23,7 +23,7 @@ public class OrderParams {
 	/**
 	 * Symbol Token is unique identifier.
 	 */
-	@SerializedName("symbolToken")
+	@SerializedName("symboltoken")
 	private String symbolToken;
 
 	/**

@@ -6,12 +6,17 @@ import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.models.Gtt;
 import com.angelbroking.smartapi.models.GttParams;
+import com.angelbroking.smartapi.models.GttRuleParams;
 import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.smartstream.models.LTPParams;
+import com.angelbroking.smartapi.utils.ApiResponse;
 import com.angelbroking.smartapi.utils.ResponseParser;
 import com.angelbroking.smartapi.utils.Utils;
 import com.angelbroking.smartapi.utils.Validators;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -23,22 +28,12 @@ import java.net.Proxy;
 import java.util.List;
 import java.util.Optional;
 
-import static com.angelbroking.smartapi.utils.Constants.COUNT;
-import static com.angelbroking.smartapi.utils.Constants.DISCLOSED_QTY;
-import static com.angelbroking.smartapi.utils.Constants.DURATION;
-import static com.angelbroking.smartapi.utils.Constants.EXCHANGE;
 import static com.angelbroking.smartapi.utils.Constants.ID;
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.ORDER_ID;
-import static com.angelbroking.smartapi.utils.Constants.ORDER_TYPE;
-import static com.angelbroking.smartapi.utils.Constants.PAGE;
-import static com.angelbroking.smartapi.utils.Constants.PRICE;
-import static com.angelbroking.smartapi.utils.Constants.PRODUCT_TYPE;
-import static com.angelbroking.smartapi.utils.Constants.QTY;
-import static com.angelbroking.smartapi.utils.Constants.QUANTITY;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_CANDLE_DATA;
@@ -59,20 +54,10 @@ import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_TRADE_BOOK;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_LOGOUT;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_PROFILE;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_CLIENT_CODE;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_DATA;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_FEED_TOKEN;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_JWT_TOKEN;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_REFRESH_TOKEN;
-import static com.angelbroking.smartapi.utils.Constants.SQUARE_OFF;
-import static com.angelbroking.smartapi.utils.Constants.STATUS;
-import static com.angelbroking.smartapi.utils.Constants.STOP_LOSS;
-import static com.angelbroking.smartapi.utils.Constants.SYMBOL_TOKEN;
-import static com.angelbroking.smartapi.utils.Constants.TIME_PERIOD;
-import static com.angelbroking.smartapi.utils.Constants.TRADING_SYMBOL;
-import static com.angelbroking.smartapi.utils.Constants.TRANSACTION_TYPE;
-import static com.angelbroking.smartapi.utils.Constants.TRIGGER_PRICE;
-import static com.angelbroking.smartapi.utils.Constants.VARIETY;
 
 
 @Data
@@ -267,28 +252,16 @@ public class SmartConnect {
      *                    regular.
      * @return Order contains only orderId.
      */
-    public Order placeOrder(OrderParams orderParams, String variety) throws SmartAPIException, IOException {
+    public ApiResponse placeOrder(OrderParams orderParams, String variety) throws SmartAPIException, IOException {
         try {
             Validators validator = new Validators();
+            orderParams.setVariety(variety);
             validator.orderValidator(orderParams);
             String url = routes.get(SMART_CONNECT_API_ORDER_PLACE);
-            JSONObject params = new JSONObject();
-            params.put(EXCHANGE, orderParams.getExchange());
-            params.put(TRADING_SYMBOL, orderParams.getTradingSymbol());
-            params.put(TRANSACTION_TYPE, orderParams.getTransactionType());
-            params.put(QUANTITY, orderParams.getQuantity());
-            params.put(PRICE, orderParams.getPrice());
-            params.put(PRODUCT_TYPE, orderParams.getProductType());
-            params.put(ORDER_TYPE, orderParams.getOrderType());
-            params.put(DURATION, orderParams.getDuration());
-            params.put(SYMBOL_TOKEN, orderParams.getSymbolToken());
-            params.put(SQUARE_OFF, orderParams.getSquareOff());
-            params.put(STOP_LOSS, orderParams.getStopLoss());
-            params.put(VARIETY, variety);
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-            Order order = new Order();
-            order.setOrderId(jsonObject.getJSONObject(SMART_CONNECT_DATA).getString(ORDER_ID));
-            return order;
+            Gson gson = new Gson();
+            String json = gson.toJson(orderParams);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
+            return new ObjectMapper().readValue(jsonObject.toString(), ApiResponse.class);
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(SMART_API_EXCEPTION_ERROR_MSG);
@@ -312,25 +285,14 @@ public class SmartConnect {
      */
     public Order modifyOrder(String orderId, OrderParams orderParams, String variety) throws SmartAPIException, IOException {
         try {
+            orderParams.setVariety(variety);
+            orderParams.setOrderId(orderId);
             Validators validator = new Validators();
             validator.modifyOrderValidator(orderParams);
-
             String url = routes.get(SMART_CONNECT_API_ORDER_MODIFY);
-
-            JSONObject params = new JSONObject();
-            params.put(EXCHANGE, orderParams.getExchange());
-            params.put(TRADING_SYMBOL, orderParams.getTradingSymbol());
-            params.put(SYMBOL_TOKEN, orderParams.getSymbolToken());
-            params.put(QUANTITY, orderParams.getQuantity());
-            params.put(PRICE, orderParams.getPrice());
-            params.put(PRODUCT_TYPE, orderParams.getProductType());
-            params.put(ORDER_TYPE, orderParams.getOrderType());
-            params.put(DURATION, orderParams.getDuration());
-            params.put(VARIETY, variety);
-            params.put(ORDER_ID, orderId);
-
-
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            Gson gson = new Gson();
+            String json = gson.toJson(orderParams);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             Order order = new Order();
             order.setOrderId(jsonObject.getJSONObject(SMART_CONNECT_DATA).getString(ORDER_ID));
             return order;
@@ -357,11 +319,12 @@ public class SmartConnect {
     public Order cancelOrder(String orderId, String variety) throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_ORDER_CANCEL);
-            JSONObject params = new JSONObject();
-            params.put(VARIETY, variety);
-            params.put(ORDER_ID, orderId);
-
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            OrderParams orderParams = new OrderParams();
+            orderParams.setVariety(variety);
+            orderParams.setOrderId(orderId);
+            Gson gson = new Gson();
+            String json = gson.toJson(orderParams);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             Order order = new Order();
             order.setOrderId(jsonObject.getJSONObject(SMART_CONNECT_DATA).getString(ORDER_ID));
             return order;
@@ -409,14 +372,14 @@ public class SmartConnect {
      */
     public JSONObject getLTP(String exchange, String tradingSymbol, String symboltoken) throws SmartAPIException, IOException {
         try {
-            JSONObject params = new JSONObject();
-            params.put(EXCHANGE, exchange);
-            params.put(TRADING_SYMBOL, tradingSymbol);
-            params.put(SYMBOL_TOKEN, symboltoken);
-
-
+            LTPParams ltpParams = new LTPParams();
+            ltpParams.setExchange(exchange);
+            ltpParams.setTradingSymbol(tradingSymbol);
+            ltpParams.setSymbolToken(symboltoken);
+            Gson gson = new Gson();
+            String json = gson.toJson(ltpParams);
             String url = routes.get(SMART_CONNECT_API_LTP_DATA);
-            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             return response.getJSONObject(SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
@@ -553,25 +516,12 @@ public class SmartConnect {
 
     public String gttCreateRule(GttParams gttParams) throws SmartAPIException, IOException {
         try {
-
             Validators validator = new Validators();
-
             validator.gttParamsValidator(gttParams);
-
             String url = routes.get(SMART_CONNECT_API_GTT_CREATE);
-
-            JSONObject params = new JSONObject();
-            params.put(TRADING_SYMBOL, gttParams.getTradingSymbol());
-            params.put(SYMBOL_TOKEN, gttParams.getSymbolToken());
-            params.put(EXCHANGE, gttParams.getExchange());
-            params.put(TRANSACTION_TYPE, gttParams.getTransactionType());
-            params.put(PRODUCT_TYPE, gttParams.getProductType());
-            params.put(PRICE, gttParams.getPrice());
-            params.put(QTY, gttParams.getQty());
-            params.put(TRIGGER_PRICE, gttParams.getTriggerPrice());
-            params.put(DISCLOSED_QTY, gttParams.getDisclosedQty());
-            params.put(TIME_PERIOD, gttParams.getTimePeriod());
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            Gson gson = new Gson();
+            String json = gson.toJson(gttParams);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             int gttId = jsonObject.getJSONObject(SMART_CONNECT_DATA).getInt(ID);
             return String.valueOf(gttId);
         } catch (SmartAPIException ex) {
@@ -597,22 +547,12 @@ public class SmartConnect {
     public String gttModifyRule(Integer id, GttParams gttParams) throws SmartAPIException, IOException {
         try {
             Validators validator = new Validators();
+            gttParams.setId(id);
             validator.gttModifyRuleValidator(gttParams);
-
-
             String url = routes.get(SMART_CONNECT_API_GTT_MODIFY);
-
-            JSONObject params = new JSONObject();
-            params.put(SYMBOL_TOKEN, gttParams.getSymbolToken());
-            params.put(EXCHANGE, gttParams.getExchange());
-            params.put(PRICE, gttParams.getPrice());
-            params.put(QTY, gttParams.getQty());
-            params.put(TRIGGER_PRICE, gttParams.getTriggerPrice());
-            params.put(DISCLOSED_QTY, gttParams.getDisclosedQty());
-            params.put(TIME_PERIOD, gttParams.getTimePeriod());
-            params.put(ID, id);
-
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            Gson gson = new Gson();
+            String json = gson.toJson(gttParams);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
 
             int gttId = jsonObject.optJSONObject(SMART_CONNECT_DATA).optInt(ID);
             return String.valueOf(gttId);
@@ -639,12 +579,14 @@ public class SmartConnect {
 
     public Gtt gttCancelRule(Integer id, String symboltoken, String exchange) throws SmartAPIException, IOException {
         try {
-            JSONObject params = new JSONObject();
-            params.put(ID, id);
-            params.put(SYMBOL_TOKEN, symboltoken);
-            params.put(EXCHANGE, exchange);
+            GttParams gttParams =new GttParams();
+            gttParams.setId(id);
+            gttParams.setSymbolToken(symboltoken);
+            gttParams.setExchange(exchange);
+            Gson gson = new Gson();
+            String json = gson.toJson(gttParams);
             String url = routes.get(SMART_CONNECT_API_GTT_CANCEL);
-            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             Gtt gtt = new Gtt();
             gtt.setId(jsonObject.getJSONObject(SMART_CONNECT_DATA).getInt(ID));
             return gtt;
@@ -670,11 +612,13 @@ public class SmartConnect {
     public JSONObject gttRuleDetails(Integer id) throws SmartAPIException, IOException {
         try {
 
-            JSONObject params = new JSONObject();
-            params.put(ID, id);
+            GttParams gttParams = new GttParams();
+            gttParams.setId(id);
 
             String url = routes.get(SMART_CONNECT_API_GTT_DETAILS);
-            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            Gson gson = new Gson();
+            String json = gson.toJson(gttParams);
+            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url,new JSONObject(json), accessToken);
             return response.getJSONObject(SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
@@ -699,13 +643,14 @@ public class SmartConnect {
      */
     public JSONArray gttRuleList(List<String> status, Integer page, Integer count) throws SmartAPIException, IOException {
         try {
-            JSONObject params = new JSONObject();
-            params.put(STATUS, status);
-            params.put(PAGE, page);
-            params.put(COUNT, count);
-
+            GttRuleParams gttRuleParams = new GttRuleParams();
+            gttRuleParams.setStatus(status);
+            gttRuleParams.setPage(page);
+            gttRuleParams.setCount(count);
+            Gson gson = new Gson();
+            String json = gson.toJson(gttRuleParams);
             String url = routes.get(SMART_CONNECT_API_GTT_LIST);
-            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
             return response.getJSONArray(SMART_CONNECT_DATA);
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
@@ -752,9 +697,11 @@ public class SmartConnect {
     public JSONObject logout() throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_USER_LOGOUT);
-            JSONObject params = new JSONObject();
-            params.put(SMART_CONNECT_CLIENT_CODE, this.userId);
-            return smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+            User user =new User();
+            user.setUserId(this.userId);
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            return smartAPIRequestHandler.postRequest(this.apiKey, url, new JSONObject(json), accessToken);
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(SMART_API_EXCEPTION_ERROR_MSG);

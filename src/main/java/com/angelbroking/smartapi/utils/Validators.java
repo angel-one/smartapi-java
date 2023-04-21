@@ -12,8 +12,6 @@ import static com.angelbroking.smartapi.utils.Constants.PRICE;
 import static com.angelbroking.smartapi.utils.Constants.PRODUCT_TYPE;
 import static com.angelbroking.smartapi.utils.Constants.QTY;
 import static com.angelbroking.smartapi.utils.Constants.QUANTITY;
-import static com.angelbroking.smartapi.utils.Constants.SQUARE_OFF;
-import static com.angelbroking.smartapi.utils.Constants.STOP_LOSS;
 import static com.angelbroking.smartapi.utils.Constants.SYMBOL_TOKEN;
 import static com.angelbroking.smartapi.utils.Constants.TIME_PERIOD;
 import static com.angelbroking.smartapi.utils.Constants.TRADING_SYMBOL;
@@ -32,8 +30,6 @@ public class Validators {
         validateNotEmpty(orderParams.getOrderType(), ORDER_TYPE);
         validateNotEmpty(orderParams.getDuration(), DURATION);
         validateNotEmpty(orderParams.getSymbolToken(), SYMBOL_TOKEN);
-        validateNotEmpty(orderParams.getSquareOff(), SQUARE_OFF);
-        validateNotEmpty(orderParams.getStopLoss(), STOP_LOSS);
         return true;
     }
 

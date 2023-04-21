@@ -7,6 +7,7 @@ import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.utils.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,14 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.angelbroking.smartapi.utils.Constants.DURATION_DAY;
-import static com.angelbroking.smartapi.utils.Constants.EXCHANGE_NSE;
 import static com.angelbroking.smartapi.utils.Constants.MARGIN;
-import static com.angelbroking.smartapi.utils.Constants.ORDER_TYPE_STOPLOSS_LIMIT;
-import static com.angelbroking.smartapi.utils.Constants.PRODUCT_INTRADAY;
 import static com.angelbroking.smartapi.utils.Constants.SYMBOL_SBINEQ;
-import static com.angelbroking.smartapi.utils.Constants.TRANSACTION_TYPE_BUY;
-import static com.angelbroking.smartapi.utils.Constants.VARIETY_STOPLOSS;
 
 
 @Slf4j
@@ -84,23 +79,21 @@ public class Examples {
     /**
      * Place order.
      */
-    public Order placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public ApiResponse placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
         OrderParams orderParams = new OrderParams();
-        orderParams.setVariety(VARIETY_STOPLOSS);
-        orderParams.setQuantity(323);
-        orderParams.setSymbolToken("1660");
-        orderParams.setExchange(EXCHANGE_NSE);
-        orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
-        orderParams.setTradingSymbol("ITC-EQ");
-        orderParams.setProductType(PRODUCT_INTRADAY);
-        orderParams.setDuration(DURATION_DAY);
-        orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
-        orderParams.setPrice(122.2);
-        orderParams.setSquareOff("0");
-        orderParams.setStopLoss("0");
-        Order order = smartConnect.placeOrder(orderParams, "STOPLOSS");
-        log.info("placeOrder: {}", order);
+        orderParams.setDuration("DAY");
+        orderParams.setQuantity(1);
+        orderParams.setVariety("NORMAL");
+        orderParams.setPrice(19500.0);
+        orderParams.setTradingSymbol("SBIN-EQ");
+        orderParams.setExchange("NSE");
+        orderParams.setTransactionType("BUY");
+        orderParams.setSymbolToken("3045");
+        orderParams.setProductType("INTRADAY");
+        orderParams.setOrderType("LIMIT");
+        ApiResponse order = smartConnect.placeOrder(orderParams, "NORMAL");
+        log.info("placeOrder: {}", order.toString());
 
         return order;
     }
@@ -108,22 +101,21 @@ public class Examples {
     /**
      * Modify order.
      */
-    public Order modifyOrder(SmartConnect smartConnect, Order orderInput) throws SmartAPIException, IOException {
+    public Order modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
-        orderParams.setVariety(VARIETY_STOPLOSS);
-        orderParams.setQuantity(324);
-        orderParams.setSymbolToken("1660");
-        orderParams.setExchange(EXCHANGE_NSE);
-        orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
-        orderParams.setTradingSymbol("ITC-EQ");
-        orderParams.setProductType(PRODUCT_INTRADAY);
-        orderParams.setDuration(DURATION_DAY);
-        orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
-        orderParams.setPrice(122.2);
-        orderParams.setTriggerPrice("209");
-        Order order = smartConnect.modifyOrder(orderInput.getOrderId(), orderParams, "STOPLOSS");
+        orderParams.setDuration("DAY");
+        orderParams.setQuantity(2);
+        orderParams.setVariety("NORMAL");
+        orderParams.setPrice(19500.0);
+        orderParams.setTradingSymbol("SBIN-EQ");
+        orderParams.setExchange("NSE");
+        orderParams.setTransactionType("BUY");
+        orderParams.setSymbolToken("3045");
+        orderParams.setProductType("INTRADAY");
+        orderParams.setOrderType("LIMIT");
+        Order order = smartConnect.modifyOrder("230421000601184", orderParams, "NORMAL");
 
         log.info("modifyOrder {}", order);
         return order;
@@ -135,11 +127,11 @@ public class Examples {
      *
      * @return order
      */
-    public Order cancelOrder(SmartConnect smartConnect, Order modifyOrder) throws SmartAPIException, IOException {
+    public Order cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
-        Order order = smartConnect.cancelOrder(modifyOrder.getOrderId(), VARIETY_STOPLOSS);
+        Order order = smartConnect.cancelOrder("230421000601184", "NORMAL");
         log.info("cancelOrder {}", order);
         return order;
     }
@@ -158,6 +150,7 @@ public class Examples {
      * 50, BSE:SENSEX} or {256265, 265}
      */
     public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
+
         String exchange = "NSE";
         String symboltoken = "3045";
         JSONObject ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);

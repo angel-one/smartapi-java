@@ -3,7 +3,6 @@ package com.angelbroking.smartapi.sample;
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
@@ -24,7 +23,7 @@ public class Test {
             String apiKey = "zkWvUuLx";
             String clientId = "D541276";
             String clientPin = "1501";
-            String tOTP = "183542";
+            String tOTP = "363911";
             SmartConnect smartConnect = new SmartConnect(apiKey);
             SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
 
@@ -62,13 +61,13 @@ public class Test {
             examples.getProfile(smartConnect);
 
             log.info("placeOrder");
-            Order placeOrder = examples.placeOrder(smartConnect);
+           examples.placeOrder(smartConnect);
 
-//            log.info("modifyOrder");
-//           examples.modifyOrder(smartConnect, placeOrder);
+            log.info("modifyOrder");
+            examples.modifyOrder(smartConnect);
 
             log.info("cancelOrder");
-            examples.cancelOrder(smartConnect, placeOrder);
+            examples.cancelOrder(smartConnect);
 
             log.info("getOrder");
             examples.getOrder(smartConnect);
