@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.Proxy;
 
+import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +31,7 @@ public class SmartAPIRequestHandlerTest {
         server = new MockWebServer();
         server.start();
 
-        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
+        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,TIME_OUT_IN_MILLIS);
     }
 
     @AfterAll

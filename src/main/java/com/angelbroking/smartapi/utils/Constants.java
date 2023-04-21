@@ -137,6 +137,7 @@ public class Constants {
     /**
      * SmartConnect Constants
      */
+    public static final int TIME_OUT_IN_MILLIS = 10000; // 10 seconds
     public static final String SMART_CONNECT_CLIENT_CODE = "clientcode";
     public static final String SMART_CONNECT_PASSWORD = "password";
     public static final String SMART_CONNECT_TOTP = "totp";
@@ -194,6 +195,8 @@ public class Constants {
 
 
     public static final String SMARTAPIREQUESTHANDLER_USER_AGENT = "javasmartapiconnect/3.0.0";
+    public static final String PUBLIC_IP_CHECK_URL = "http://checkip.amazonaws.com";
+
 
 
 }

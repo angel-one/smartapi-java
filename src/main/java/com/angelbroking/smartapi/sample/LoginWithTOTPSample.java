@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.Proxy;
+
+import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
+
 @Slf4j
 public class LoginWithTOTPSample {
 
@@ -18,7 +21,8 @@ public class LoginWithTOTPSample {
 		String apiKey = System.getProperty("apiKey");
 		String totp = System.getProperty("totp");
 		SmartConnect smartConnect = new SmartConnect(apiKey);
-		SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
+		Proxy proxy = Proxy.NO_PROXY;
+		SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(proxy,TIME_OUT_IN_MILLIS);;
 		User user = smartConnect.generateSession(clientID, clientPass, totp);
 		String feedToken = user.getFeedToken();
 		log.info(feedToken);

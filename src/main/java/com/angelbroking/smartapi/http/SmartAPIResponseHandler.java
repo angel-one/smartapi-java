@@ -1,6 +1,5 @@
 package com.angelbroking.smartapi.http;
 
-import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.DataSmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.GeneralException;
 import com.angelbroking.smartapi.http.exceptions.InputException;
@@ -9,6 +8,7 @@ import com.angelbroking.smartapi.http.exceptions.OrderException;
 import com.angelbroking.smartapi.http.exceptions.PermissionException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.TokenException;
+import com.angelbroking.smartapi.models.SmartConnectParams;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.json.JSONException;
@@ -55,8 +55,8 @@ public class SmartAPIResponseHandler {
         switch (code) {
             // if there is a token exception, generate a signal to log out the user.
             case "AB1010":
-                if (SmartConnect.getSessionExpiryHook() != null) {
-                    SmartConnect.getSessionExpiryHook().sessionExpired();
+                if (SmartConnectParams.getSessionExpiryHook() != null) {
+                    SmartConnectParams.getSessionExpiryHook().sessionExpired();
                 }
                 return new TokenException(jsonObject.getString(MESSAGE), code);
             case "AG8002":

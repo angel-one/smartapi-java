@@ -1,7 +1,6 @@
 package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
-import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
@@ -13,7 +12,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
-import java.net.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,14 +21,11 @@ public class Test {
     public static void main(String[] args) throws SmartAPIException {
         try {
 
-            String apiKey = "zkWvUuLx";
-            String clientId = "D541276";
-            String clientPin = "1501";
-            String tOTP = "590097";
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
+            String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
-            SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
-
-
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
             /*
              * SmartConnect smartConnect = new martConnect("<api_key>", "<YOUR_ACCESS_TOKEN>", "<YOUR_REFRESH_TOKEN>");
@@ -46,7 +41,7 @@ public class Test {
              * });
              */
 
-            // Generate User Session
+            // Generate User Session smartConnectParams
             User user = smartConnect.generateSession(clientId, clientPin, tOTP);
             smartConnect.setAccessToken(user.getAccessToken());
             smartConnect.setUserId(user.getUserId());

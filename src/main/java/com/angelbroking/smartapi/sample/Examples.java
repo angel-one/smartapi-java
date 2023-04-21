@@ -221,7 +221,10 @@ public class Examples {
         gttParams.setDisclosedQty(10);
         gttParams.setTriggerPrice(20000.1);
         gttParams.setTimePeriod(300);
-        return smartConnect.gttCreateRule(gttParams);
+
+        ApiResponse response = smartConnect.gttCreateRule(gttParams);
+        log.info("createRule {}", response);
+        return response;
     }
 
     /**
@@ -239,7 +242,10 @@ public class Examples {
         gttParams.setDisclosedQty(11);
         gttParams.setTriggerPrice(20000.1);
         gttParams.setTimePeriod(300);
-        return smartConnect.gttModifyRule(Integer.valueOf(ruleID), gttParams);
+
+        ApiResponse response = smartConnect.gttModifyRule(Integer.valueOf(ruleID), gttParams);
+        log.info("modifyRule {}", response);
+        return response;
     }
 
     /**

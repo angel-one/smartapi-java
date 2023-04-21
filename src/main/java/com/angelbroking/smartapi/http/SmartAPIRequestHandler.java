@@ -1,10 +1,10 @@
 package com.angelbroking.smartapi.http;
 
-import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.APIRequestCreationException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.models.ApiHeaders;
+import com.angelbroking.smartapi.models.SmartConnectParams;
 import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,7 @@ import static com.angelbroking.smartapi.utils.Constants.CONTENT_TYPE;
 import static com.angelbroking.smartapi.utils.Constants.INVALID_URL;
 import static com.angelbroking.smartapi.utils.Constants.NULL_URL_MESSAGE;
 import static com.angelbroking.smartapi.utils.Constants.PRIVATE_KEY;
+import static com.angelbroking.smartapi.utils.Constants.PUBLIC_IP_CHECK_URL;
 import static com.angelbroking.smartapi.utils.Constants.SMARTAPIREQUESTHANDLER_USER_AGENT;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_VERSION;
 import static com.angelbroking.smartapi.utils.Constants.TOKEN;
@@ -57,7 +58,7 @@ public class SmartAPIRequestHandler {
     private final OkHttpClient client;
     ApiHeaders apiheader = apiHeaders();
 
-    public SmartAPIRequestHandler(Proxy proxy,long timeOutInMillis) {
+    public SmartAPIRequestHandler(Proxy proxy, long timeOutInMillis) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(timeOutInMillis, TimeUnit.MILLISECONDS);
         if (proxy != null) {
@@ -66,7 +67,7 @@ public class SmartAPIRequestHandler {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        if (SmartConnect.isEnableLogging()) {
+        if (SmartConnectParams.isEnableLogging()) {
             client = builder.addInterceptor(logging).build();
         } else {
             client = builder.build();
@@ -75,10 +76,11 @@ public class SmartAPIRequestHandler {
 
     public ApiHeaders apiHeaders() {
         try {
+
             ApiHeaders headers = new ApiHeaders();
             InetAddress localHost = InetAddress.getLocalHost();
             String clientLocalIP = localHost.getHostAddress();
-            String clientPublicIP = getPublicIPAddress();
+            String clientPublicIP = getPublicIPAddress(PUBLIC_IP_CHECK_URL);
             headers.setHeaderClientLocalIP(clientLocalIP);
             headers.setHeaderClientPublicIP(clientPublicIP);
             headers.setMacAddress(Utils.getMacAddress());
@@ -93,11 +95,11 @@ public class SmartAPIRequestHandler {
         }
     }
 
-    private String getPublicIPAddress() throws IOException {
+    private String getPublicIPAddress(String url) throws IOException {
         String clientPublicIP;
-        URL urlName = new URL("http://checkip.amazonaws.com");
-        try (BufferedReader sc = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
-            clientPublicIP = sc.readLine().trim();
+        URL urlName = new URL(url);
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
+            clientPublicIP = bufferedReader.readLine().trim();
         } catch (IOException e) {
             log.error("Error reading public IP address: {}", e.getMessage());
             throw new IOException("Failed to get public ip address");
@@ -124,8 +126,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         log.info("Body {}", body);
         return new SmartAPIResponseHandler().handle(response, body);
@@ -152,8 +154,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         return new SmartAPIResponseHandler().handle(response, body);
     }
@@ -178,8 +180,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         return new SmartAPIResponseHandler().handle(response, body);
     }
@@ -204,8 +206,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         return new SmartAPIResponseHandler().handle(response, body);
     }
@@ -231,8 +233,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         return new SmartAPIResponseHandler().handle(response, body);
     }
@@ -256,8 +258,8 @@ public class SmartAPIRequestHandler {
         if (response.isSuccessful()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
-                 body = responseBody.string();
-                }
+                body = responseBody.string();
+            }
         }
         return new SmartAPIResponseHandler().handle(response, body);
     }
@@ -266,7 +268,7 @@ public class SmartAPIRequestHandler {
      * Creates a GET request.
      *
      * @param url         is the endpoint to which request has to be done.
-     * @param privateKey      is the api key of the Smart API Connect app.
+     * @param privateKey  is the api key of the Smart API Connect app.
      * @param accessToken is the access token obtained after successful login
      */
     public Request createGetRequest(String privateKey, String url, String accessToken) {
@@ -284,7 +286,7 @@ public class SmartAPIRequestHandler {
         StringBuilder authHeader = new StringBuilder();
         authHeader.append("Bearer ");
         authHeader.append(accessToken);
-        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(X_MAC_ADDRESS, apiheader.getMacAddress()).header(ACCEPT,apiheader.getAccept()).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getUserType()).header(X_SOURCE_ID, apiheader.getSourceID() ).build();
+        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(X_MAC_ADDRESS, apiheader.getMacAddress()).header(ACCEPT, apiheader.getAccept()).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getUserType()).header(X_SOURCE_ID, apiheader.getSourceID()).build();
     }
 
     /**
@@ -318,8 +320,8 @@ public class SmartAPIRequestHandler {
      * Creates a POST request with the specified API key, URL and parameters in JSON format.
      *
      * @param privateKey The API key to use for the request.
-     * @param url    The URL to send the request to.
-     * @param params The JSON object containing the parameters for the request.
+     * @param url        The URL to send the request to.
+     * @param params     The JSON object containing the parameters for the request.
      * @return A Request object representing the POST request, with the specified API key, URL and parameters.
      */
     public Request createPostRequest(String privateKey, String url, JSONObject params) {
@@ -329,7 +331,7 @@ public class SmartAPIRequestHandler {
             RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(Constants.CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(Constants.X_MAC_ADDRESS, apiheader.getMacAddress()).header(Constants.ACCEPT, apiheader.getAccept()).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getUserType()).header(Constants.X_SOURCE_ID, apiheader.getSourceID()).build();
         } catch (Exception e) {
-            log.error("{} {}",API_REQUEST_FAILED_MSG, e.getMessage());
+            log.error("{} {}", API_REQUEST_FAILED_MSG, e.getMessage());
             throw new APIRequestCreationException(API_REQUEST_FAILED_MSG);
         }
     }
@@ -338,7 +340,7 @@ public class SmartAPIRequestHandler {
      * Creates a POST request.
      *
      * @param url         is the endpoint to which request has to be done.
-     * @param privateKey      is the api key of the Smart API Connect app.
+     * @param privateKey  is the api key of the Smart API Connect app.
      * @param accessToken is the access token obtained after successful login
      *                    process.
      * @param params      is the map of data that has to be sent in the body.
