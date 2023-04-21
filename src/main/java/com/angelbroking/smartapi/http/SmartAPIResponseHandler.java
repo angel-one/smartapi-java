@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.http;
 
+import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.DataSmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.GeneralException;
 import com.angelbroking.smartapi.http.exceptions.InputException;
@@ -8,7 +9,6 @@ import com.angelbroking.smartapi.http.exceptions.OrderException;
 import com.angelbroking.smartapi.http.exceptions.PermissionException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.TokenException;
-import com.angelbroking.smartapi.models.SmartConnectParams;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.json.JSONException;
@@ -27,16 +27,18 @@ public class SmartAPIResponseHandler {
 
 
     public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
+
         if (response.header(CONTENT_TYPE) != null && response.header(CONTENT_TYPE).contains("json")) {
             JSONObject jsonObject = new JSONObject(body);
 
-            if (!jsonObject.has("status") || jsonObject.has("success")) {
-                if (jsonObject.has("errorcode")) {
-                    throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
-                } else if (jsonObject.has("errorCode")) {
+            if (jsonObject.has("status") || !jsonObject.has("success")) {
+                return jsonObject;
+            }
 
-                    throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
-                }
+            if (jsonObject.has("errorcode")) {
+                throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
+            } else if (jsonObject.has("errorCode")) {
+                throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
             }
             return jsonObject;
         } else {
@@ -54,8 +56,8 @@ public class SmartAPIResponseHandler {
         switch (code) {
             // if there is a token exception, generate a signal to log out the user.
             case "AB1010":
-                if (SmartConnectParams.getSessionExpiryHook() != null) {
-                    SmartConnectParams.getSessionExpiryHook().sessionExpired();
+                if (SmartConnect.getSessionExpiryHook() != null) {
+                    SmartConnect.getSessionExpiryHook().sessionExpired();
                 }
                 return new TokenException(jsonObject.getString(MESSAGE), code);
             case "AG8002":

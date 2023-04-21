@@ -145,9 +145,13 @@ public class Constants {
     public static final String SMART_CONNECT_REFRESH_TOKEN = "refreshToken";
     public static final String SMART_CONNECT_FEED_TOKEN = "feedToken";
     public static final String SMART_CONNECT_API_USER_PROFILE = "api.user.profile";
-    public static final String NULL_URL_MESSAGE =  "url cannot be null";
-    public static final String INVALID_URL =  "Invalid URL: ";
+    public static final String NULL_URL_MESSAGE = "url cannot be null";
+    public static final String INVALID_URL = "Invalid URL: ";
     public static final String API_REQUEST_FAILED_MSG = "Failed to create API request";
+
+    public static final String SMART_API_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to an SmartAPIException error.";
+    public static final String IO_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to an IO error.";
+    public static final String JSON_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to a JSON error.";
 
 
     public static final String ID = "id";

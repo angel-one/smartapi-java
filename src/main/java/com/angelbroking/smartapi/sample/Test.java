@@ -24,7 +24,7 @@ public class Test {
             String apiKey = "zkWvUuLx";
             String clientId = "D541276";
             String clientPin = "1501";
-            String tOTP = "765320";
+            String tOTP = "183542";
             SmartConnect smartConnect = new SmartConnect(apiKey);
             SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
 

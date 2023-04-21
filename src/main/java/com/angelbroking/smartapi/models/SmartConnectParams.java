@@ -17,40 +17,6 @@ public class SmartConnectParams {
     private String refreshToken;
     private String userId;
 
-    public Routes getRoutes() {
-        return routes;
-    }
-
-    public void setRoutes(Routes routes) {
-        this.routes = routes;
-    }
-
-    public Proxy getProxy() {
-        return proxy;
-    }
-
-    public void setProxy(Proxy proxy) {
-        this.proxy = proxy;
-    }
-
-    public static SessionExpiryHook getSessionExpiryHook() {
-        return sessionExpiryHook;
-    }
-
-    public void setSessionExpiryHook(SessionExpiryHook sessionExpiryHook) {
-        this.sessionExpiryHook = sessionExpiryHook;
-    }
-
-    public static boolean isEnableLogging() {
-        return enableLogging;
-    }
-
-    public void setEnableLogging(boolean enableLogging) {
-        this.enableLogging = enableLogging;
-    }
-
-
-
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }

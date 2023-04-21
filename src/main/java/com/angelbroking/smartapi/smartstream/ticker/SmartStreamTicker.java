@@ -119,7 +119,6 @@ public class SmartStreamTicker {
                     sb.append(binary[0]);
                     sb.append(" in the response binary packet");
                     smartStreamListenerImpl.onError(getErrorHolder(new SmartAPIException(sb.toString())));
-
                 }
                 try {
                     switch (mode) {

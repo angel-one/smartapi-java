@@ -257,7 +257,6 @@ public class SmartAPIRequestHandler {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                  body = responseBody.string();
-                System.out.println("Body: "+body);
                 }
         }
         return new SmartAPIResponseHandler().handle(response, body);
