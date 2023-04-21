@@ -152,7 +152,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 	/** Get tradebook */
     public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
-            // Returns tradebook.
+            
             List<Trade> trades = smartConnect.getTrades();
             for (Trade trade : trades) {
             log.info("{} {}", trade.tradingSymbol, trades.size());
@@ -167,13 +167,11 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 	/** Get Holdings */
 	public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Returns Holding.
 		JSONObject response = smartConnect.getHolding();
 	}
 
 	/** Get Position */
 	public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Returns Position.
 		JSONObject response = smartConnect.getPosition();
 	}
 

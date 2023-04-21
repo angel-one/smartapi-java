@@ -37,32 +37,6 @@ public class ResponseParser {
      * @throws JSONException is thrown when there is error while parsing response.
      */
     public static User parseResponse(JSONObject response) throws JSONException {
-        String msg ="{\n" +
-                "  \"data\": {\n" +
-                "    \"clientcode\": \"D541276\",\n" +
-                "    \"name\": \"Dhananjay Satelkar\",\n" +
-                "    \"exchanges\": [\n" +
-                "      \"bse_cm\",\n" +
-                "      \"nse_cm\"\n" +
-                "    ],\n" +
-                "    \"mobileno\": \"\",\n" +
-                "    \"broker\": \"\",\n" +
-                "    \"email\": \"\",\n" +
-                "    \"lastlogintime\": \"2023-04-21 14:30:00\",\n" +
-                "    \"products\": [\n" +
-                "      \"BO\",\n" +
-                "      \"NRML\",\n" +
-                "      \"CO\",\n" +
-                "      \"CNC\",\n" +
-                "      \"MIS\",\n" +
-                "      \"MARGIN\"\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  \"message\": \"SUCCESS\",\n" +
-                "  \"errorcode\": \"\",\n" +
-                "  \"status\": true\n" +
-                "}\n";
-        response = new JSONObject(msg.toString());
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 

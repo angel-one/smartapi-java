@@ -8,7 +8,10 @@ import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
+import com.angelbroking.smartapi.utils.ApiResponse;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 
 import java.net.Proxy;
 import java.util.HashSet;
@@ -23,7 +26,7 @@ public class Test {
             String apiKey = "zkWvUuLx";
             String clientId = "D541276";
             String clientPin = "1501";
-            String tOTP = "363911";
+            String tOTP = "590097";
             SmartConnect smartConnect = new SmartConnect(apiKey);
             SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
 
@@ -72,7 +75,6 @@ public class Test {
             log.info("getOrder");
             examples.getOrder(smartConnect);
 
-
             log.info("getLTP");
             examples.getLTP(smartConnect);
 
@@ -92,16 +94,18 @@ public class Test {
             examples.convertPosition(smartConnect);
 
             log.info("createRule");
-            String createRuleID = examples.createRule(smartConnect);
-
+            ApiResponse createRuleID = examples.createRule(smartConnect);
+            Gson gson = new Gson();
+            String json = gson.toJson(createRuleID);
+            JSONObject jsonObject = new JSONObject(json);
+            JSONObject obj = jsonObject.getJSONObject("data");
             log.info("ModifyRule");
-            String modifyRuleID = examples.modifyRule(smartConnect, createRuleID);
-
+            ApiResponse modifyRuleID = examples.modifyRule(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
 			log.info("cancelRule");
-			examples.cancelRule(smartConnect,modifyRuleID);
+			examples.cancelRule(smartConnect,String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
 
             log.info("Rule Details");
-            examples.ruleDetails(smartConnect, modifyRuleID);
+            examples.ruleDetails(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
 
             log.info("Rule List");
             examples.ruleList(smartConnect);

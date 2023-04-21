@@ -2,14 +2,11 @@ package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.Gtt;
 import com.angelbroking.smartapi.models.GttParams;
-import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.utils.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -101,7 +98,7 @@ public class Examples {
     /**
      * Modify order.
      */
-    public Order modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public ApiResponse modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
@@ -115,7 +112,7 @@ public class Examples {
         orderParams.setSymbolToken("3045");
         orderParams.setProductType("INTRADAY");
         orderParams.setOrderType("LIMIT");
-        Order order = smartConnect.modifyOrder("230421000601184", orderParams, "NORMAL");
+        ApiResponse order = smartConnect.modifyOrder("230421000601184", orderParams, "NORMAL");
 
         log.info("modifyOrder {}", order);
         return order;
@@ -127,11 +124,11 @@ public class Examples {
      *
      * @return order
      */
-    public Order cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public ApiResponse cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
-        Order order = smartConnect.cancelOrder("230421000601184", "NORMAL");
+        ApiResponse order = smartConnect.cancelOrder("230421000601184", "NORMAL");
         log.info("cancelOrder {}", order);
         return order;
     }
@@ -153,7 +150,7 @@ public class Examples {
 
         String exchange = "NSE";
         String symboltoken = "3045";
-        JSONObject ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);
+        ApiResponse ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);
         log.info("getLTP {}", ltpData);
     }
 
@@ -161,9 +158,7 @@ public class Examples {
      * Get tradebook
      */
     public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        // Returns tradebook.
-        JSONObject trades = smartConnect.getTrades();
-
+        ApiResponse trades = smartConnect.getTrades();
         log.info("getTrades {}", trades);
 
     }
@@ -172,8 +167,7 @@ public class Examples {
      * Get RMS
      */
     public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        // Returns RMS.
-        JSONObject response = smartConnect.getRMS();
+        ApiResponse response = smartConnect.getRMS();
         log.info("getRMS {}", response);
     }
 
@@ -181,8 +175,7 @@ public class Examples {
      * Get Holdings
      */
     public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        // Returns Holding.
-        JSONObject response = smartConnect.getHolding();
+        ApiResponse response = smartConnect.getHolding();
         log.info("getHolding {}", response);
     }
 
@@ -190,8 +183,7 @@ public class Examples {
      * Get Position
      */
     public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        // Returns Position.
-        JSONObject response = smartConnect.getPosition();
+        ApiResponse response = smartConnect.getPosition();
         log.info("getPosition {}", response);
     }
 
@@ -209,14 +201,14 @@ public class Examples {
         requestObejct.put("quantity", 1);
         requestObejct.put("type", "DAY");
 
-        JSONObject response = smartConnect.convertPosition(requestObejct);
+        ApiResponse response = smartConnect.convertPosition(requestObejct);
         log.info("convertPosition {}", response);
     }
 
     /**
      * Create Gtt Rule
      */
-    public String createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public ApiResponse createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
 
         gttParams.setTradingSymbol(SYMBOL_SBINEQ);
@@ -235,7 +227,7 @@ public class Examples {
     /**
      * Modify Gtt Rule
      */
-    public String modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
+    public ApiResponse modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
         GttParams gttParams = new GttParams();
         gttParams.setTradingSymbol(SYMBOL_SBINEQ);
         gttParams.setSymbolToken("3045");
@@ -258,7 +250,7 @@ public class Examples {
         String symboltoken = "3045";
         String exchange = "NSE";
 
-        Gtt gtt = smartConnect.gttCancelRule(Integer.valueOf(modifyRuleID), symboltoken, exchange);
+        ApiResponse gtt = smartConnect.gttCancelRule(Integer.valueOf(modifyRuleID), symboltoken, exchange);
         log.info("cancelRule {}", gtt);
 
     }
@@ -269,7 +261,7 @@ public class Examples {
     public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
 
 
-        JSONObject gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
+        ApiResponse gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
         log.info("ruleDetails {}", gtt);
     }
 
@@ -289,7 +281,7 @@ public class Examples {
         Integer page = 1;
         Integer count = 10;
 
-        JSONArray gtt = smartConnect.gttRuleList(status, page, count);
+        ApiResponse gtt = smartConnect.gttRuleList(status, page, count);
         log.info("ruleList {}", gtt);
 
     }
@@ -306,7 +298,7 @@ public class Examples {
         obj.put("symboltoken", "3045");
         obj.put("fromdate", "2021-03-08 09:00");
 
-        String response = smartConnect.candleData(obj);
+        ApiResponse response = smartConnect.candleData(obj);
         log.info("getCandleData {}", response);
     }
 
@@ -314,7 +306,7 @@ public class Examples {
      * Logout user.
      */
     public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        JSONObject jsonObject = smartConnect.logout();
+        ApiResponse jsonObject = smartConnect.logout();
         log.info("logout {}", jsonObject);
     }
 
