@@ -82,7 +82,7 @@ public class SmartAPIRequestHandlerTest {
     }
 
     @Test
-    void testPostRequest() throws JSONException, SmartAPIException, InterruptedException {
+    void testPostRequest() throws JSONException, SmartAPIException, InterruptedException, IOException {
         // set the response for the server
         JSONObject response = new JSONObject();
         response.put("success", true);

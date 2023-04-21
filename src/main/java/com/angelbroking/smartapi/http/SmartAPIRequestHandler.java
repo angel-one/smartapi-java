@@ -2,27 +2,51 @@ package com.angelbroking.smartapi.http;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.APIRequestCreationException;
-import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import com.angelbroking.smartapi.models.ApiHeaders;
 import com.angelbroking.smartapi.utils.Constants;
+import com.angelbroking.smartapi.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.angelbroking.smartapi.utils.Constants.*;
+import static com.angelbroking.smartapi.utils.Constants.ACCEPT;
+import static com.angelbroking.smartapi.utils.Constants.API_REQUEST_FAILED_MSG;
+import static com.angelbroking.smartapi.utils.Constants.APPLICATION_JSON;
+import static com.angelbroking.smartapi.utils.Constants.APPLICATION_JSON_UTF8;
+import static com.angelbroking.smartapi.utils.Constants.AUTHORIZATION;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_LOCAL_IP;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_PUBLIC_IP;
+import static com.angelbroking.smartapi.utils.Constants.CONTENT_TYPE;
+import static com.angelbroking.smartapi.utils.Constants.INVALID_URL;
+import static com.angelbroking.smartapi.utils.Constants.NULL_URL_MESSAGE;
+import static com.angelbroking.smartapi.utils.Constants.PRIVATE_KEY;
+import static com.angelbroking.smartapi.utils.Constants.SMARTAPIREQUESTHANDLER_USER_AGENT;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_VERSION;
+import static com.angelbroking.smartapi.utils.Constants.TOKEN;
+import static com.angelbroking.smartapi.utils.Constants.X_MAC_ADDRESS;
+import static com.angelbroking.smartapi.utils.Constants.X_SOURCE_ID;
+import static com.angelbroking.smartapi.utils.Constants.X_USER_TYPE;
 
 /**
  * Request handler for all Http requests
@@ -31,78 +55,42 @@ import static com.angelbroking.smartapi.utils.Constants.*;
 public class SmartAPIRequestHandler {
 
     private final OkHttpClient client;
-    JSONObject apiheader = apiHeaders();
+    ApiHeaders apiheader = apiHeaders();
 
-    /**
-     * Initialize request handler.
-     *
-     * @param proxy to be set for making requests.
-     */
-    public SmartAPIRequestHandler(Proxy proxy) {
+    public SmartAPIRequestHandler(Proxy proxy,long timeOutInMillis) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(10000, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(timeOutInMillis, TimeUnit.MILLISECONDS);
         if (proxy != null) {
             builder.proxy(proxy);
         }
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        if (SmartConnect.enableLogging) {
+        if (SmartConnect.isEnableLogging()) {
             client = builder.addInterceptor(logging).build();
         } else {
             client = builder.build();
         }
     }
 
-    public JSONObject apiHeaders() {
+    public ApiHeaders apiHeaders() {
         try {
-            JSONObject headers = new JSONObject();
-            // Local IP Address
+            ApiHeaders headers = new ApiHeaders();
             InetAddress localHost = InetAddress.getLocalHost();
             String clientLocalIP = localHost.getHostAddress();
-            headers.put(HEADER_CLIENT_LOCAL_IP, clientLocalIP);
-
-            // Public IP Address
             String clientPublicIP = getPublicIPAddress();
-            headers.put(HEADER_CLIENT_PUBLIC_IP, clientPublicIP);
-            String macAddress = null;
-            // MAC Address
-            // get all network interfaces of the current system
-            Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();
-            // iterate over all interfaces
-            while (networkInterface.hasMoreElements()) {
-                // get an interface
-                NetworkInterface network = networkInterface.nextElement();
-                // get its hardware or mac address
-                byte[] macAddressBytes = network.getHardwareAddress();
-                if (macAddressBytes != null) {
-                    // initialize a string builder to hold mac address
-                    StringBuilder macAddressStr = new StringBuilder();
-                    // iterate over the bytes of mac address
-                    for (int i = 0; i < macAddressBytes.length; i++) {
-                        // convert byte to string in hexadecimal form
-                        macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
-                    }
-                    macAddress = macAddressStr.toString();
-                    if (macAddress != null) {
-                        break;
-                    }
-                }
-            }
-            headers.put(MAC_ADDRESS, macAddress);
-            String accept = "application/json";
-            headers.put(ACCEPT, accept);
-            String userType = "USER";
-            headers.put(USER_TYPE, userType);
-            String sourceID = "WEB";
-            headers.put(SOURCE_ID, sourceID);
-            log.debug("Headers {}", headers);
+            headers.setHeaderClientLocalIP(clientLocalIP);
+            headers.setHeaderClientPublicIP(clientPublicIP);
+            headers.setMacAddress(Utils.getMacAddress());
+            headers.setAccept("application/json");
+            headers.setUserType("USER");
+            headers.setSourceID("WEB");
+            log.info("Headers {}", headers);
             return headers;
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new SmartConnectException("Failed to generate API headers");
         }
-
     }
 
     private String getPublicIPAddress() throws IOException {
@@ -139,7 +127,7 @@ public class SmartAPIRequestHandler {
                  body = responseBody.string();
                 }
         }
-        log.debug("Body {}", body);
+        log.info("Body {}", body);
         return new SmartAPIResponseHandler().handle(response, body);
 
     }
@@ -269,6 +257,7 @@ public class SmartAPIRequestHandler {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                  body = responseBody.string();
+                System.out.println("Body: "+body);
                 }
         }
         return new SmartAPIResponseHandler().handle(response, body);
@@ -296,7 +285,7 @@ public class SmartAPIRequestHandler {
         StringBuilder authHeader = new StringBuilder();
         authHeader.append("Bearer ");
         authHeader.append(accessToken);
-        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(ACCEPT, apiheader.getString(ACCEPT)).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getString(USER_TYPE)).header(X_SOURCE_ID, apiheader.getString(SOURCE_ID)).build();
+        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(X_MAC_ADDRESS, apiheader.getMacAddress()).header(ACCEPT,apiheader.getAccept()).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getUserType()).header(X_SOURCE_ID, apiheader.getSourceID() ).build();
     }
 
     /**
@@ -317,7 +306,7 @@ public class SmartAPIRequestHandler {
         }
         HttpUrl httpUrl = HttpUrl.parse(url);
         if (httpUrl == null) {
-            throw new IllegalArgumentException("Invalid URL: " + url);
+            throw new IllegalArgumentException(String.format("%s %s", INVALID_URL, url));
         }
         HttpUrl.Builder httpBuilder = httpUrl.newBuilder();
         for (String value : values) {
@@ -339,7 +328,7 @@ public class SmartAPIRequestHandler {
 
             MediaType jsonMediaType = MediaType.parse(APPLICATION_JSON_UTF8);
             RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
-            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
+            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(Constants.CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(Constants.X_MAC_ADDRESS, apiheader.getMacAddress()).header(Constants.ACCEPT, apiheader.getAccept()).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getUserType()).header(Constants.X_SOURCE_ID, apiheader.getSourceID()).build();
         } catch (Exception e) {
             log.error("{} {}",API_REQUEST_FAILED_MSG, e.getMessage());
             throw new APIRequestCreationException(API_REQUEST_FAILED_MSG);
@@ -360,7 +349,7 @@ public class SmartAPIRequestHandler {
 
             MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
             RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
-            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, String.format("Bearer %s", accessToken)).header(Constants.CLIENT_LOCAL_IP, apiheader.getString(HEADER_CLIENT_LOCAL_IP)).header(Constants.CLIENT_PUBLIC_IP, apiheader.getString(HEADER_CLIENT_PUBLIC_IP)).header(Constants.X_MAC_ADDRESS, apiheader.getString(MAC_ADDRESS)).header(Constants.ACCEPT, apiheader.getString(Constants.ACCEPT)).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getString(Constants.USER_TYPE)).header(Constants.X_SOURCE_ID, apiheader.getString(Constants.SOURCE_ID)).build();
+            return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, String.format("Bearer %s", accessToken)).header(Constants.CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(Constants.CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(Constants.X_MAC_ADDRESS, apiheader.getMacAddress()).header(Constants.ACCEPT, apiheader.getAccept()).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getUserType()).header(Constants.X_SOURCE_ID, apiheader.getSourceID()).build();
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new APIRequestCreationException(API_REQUEST_FAILED_MSG);
@@ -416,7 +405,7 @@ public class SmartAPIRequestHandler {
         }
         HttpUrl httpUrl = HttpUrl.parse(url);
         if (httpUrl == null) {
-            throw new IllegalArgumentException("Invalid URL: " + url);
+            throw new IllegalArgumentException(String.format("%s %s", INVALID_URL, url));
         }
         HttpUrl.Builder httpBuilder = httpUrl.newBuilder();
 

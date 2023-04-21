@@ -18,7 +18,7 @@ public class LoginWithTOTPSample {
 		String apiKey = System.getProperty("apiKey");
 		String totp = System.getProperty("totp");
 		SmartConnect smartConnect = new SmartConnect(apiKey);
-		SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
+		SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
 		User user = smartConnect.generateSession(clientID, clientPass, totp);
 		String feedToken = user.getFeedToken();
 		log.info(feedToken);

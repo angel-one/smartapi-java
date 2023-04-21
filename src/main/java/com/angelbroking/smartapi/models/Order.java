@@ -107,46 +107,5 @@ public class Order {
 	@SerializedName("filltime")
 	private String fillTime;
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Order [disclosedQuantity=").append(disclosedQuantity)
-				.append(", duration=").append(duration)
-				.append(", tradingSymbol=").append(tradingSymbol)
-				.append(", variety=").append(variety)
-				.append(", orderType=").append(orderType)
-				.append(", triggerPrice=").append(triggerPrice)
-				.append(", text=").append(text)
-				.append(", price=").append(price)
-				.append(", status=").append(status)
-				.append(", productType=").append(productType)
-				.append(", exchange=").append(exchange)
-				.append(", orderId=").append(orderId)
-				.append(", symbol=").append(symbol)
-				.append(", updateTime=").append(updateTime)
-				.append(", exchangeTimestamp=").append(exchangeTimestamp)
-				.append(", exchangeUpdateTimestamp=").append(exchangeUpdateTimestamp)
-				.append(", averagePrice=").append(averagePrice)
-				.append(", transactionType=").append(transactionType)
-				.append(", quantity=").append(quantity)
-				.append(", squareOff=").append(squareOff)
-				.append(", stopLoss=").append(stopLoss)
-				.append(", trailingStopLoss=").append(trailingStopLoss)
-				.append(", symbolToken=").append(symbolToken)
-				.append(", instrumentType=").append(instrumentType)
-				.append(", strikePrice=").append(strikePrice)
-				.append(", optionType=").append(optionType)
-				.append(", expiryDate=").append(expiryDate)
-				.append(", lotSize=").append(lotSize)
-				.append(", cancelSize=").append(cancelSize)
-				.append(", filledShares=").append(filledShares)
-				.append(", orderStatus=").append(orderStatus)
-				.append(", unfilledShares=").append(unfilledShares)
-				.append(", fillId=").append(fillId)
-				.append(", fillTime=").append(fillTime)
-				.append("]");
-		return sb.toString();
-	}
-
 
 }

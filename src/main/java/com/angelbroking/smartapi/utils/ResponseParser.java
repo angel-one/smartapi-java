@@ -37,6 +37,7 @@ public class ResponseParser {
      * @throws JSONException is thrown when there is error while parsing response.
      */
     public static User parseResponse(JSONObject response) throws JSONException {
+        System.out.println("api Resp: "+response);
         String msg ="{\n" +
                 "  \"data\": {\n" +
                 "    \"clientcode\": \"D541276\",\n" +

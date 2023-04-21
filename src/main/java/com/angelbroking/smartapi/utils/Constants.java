@@ -154,11 +154,7 @@ public class Constants {
     public static final String QTY = "qty";
     public static final String DISCLOSED_QTY = "disclosedqty";
     public static final String TIME_PERIOD = "timeperiod";
-
-    public static final String MAC_ADDRESS = "macAddress";
     public static final String ACCEPT = "accept";
-    public static final String USER_TYPE = "userType";
-    public static final String SOURCE_ID = "sourceID";
 
     public static final String USER_AGENT = "User-Agent";
     public static final String SMART_API_VERSION = "X-Smart API-Version";
@@ -175,10 +171,6 @@ public class Constants {
     public static final String X_USER_TYPE = "X-UserType";
     public static final String X_SOURCE_ID = "X-SourceID";
     public static final String MESSAGE = "message";
-
-
-    public static final String HEADER_CLIENT_LOCAL_IP = "clientLocalIP";
-    public static final String HEADER_CLIENT_PUBLIC_IP = "clientPublicIP";
 
     public static final String SMART_API_EXCEPTION_OCCURRED = "SmartAPIException occurred: ";
     public static final String IO_EXCEPTION_OCCURRED = "IOException occurred: ";

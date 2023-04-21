@@ -24,9 +24,9 @@ public class Test {
             String apiKey = "zkWvUuLx";
             String clientId = "D541276";
             String clientPin = "1501";
-            String tOTP = "589528";
+            String tOTP = "765320";
             SmartConnect smartConnect = new SmartConnect(apiKey);
-            SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY);
+            SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,10000);
 
 
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
@@ -51,7 +51,7 @@ public class Test {
 
             // SmartStreamTicker
             String feedToken = user.getFeedToken();
-            SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImplTest());
+            SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImpl());
             ticker.connect();
             ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
 
