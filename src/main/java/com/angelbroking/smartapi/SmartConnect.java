@@ -7,6 +7,7 @@ import com.angelbroking.smartapi.models.GttRuleParams;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.SmartConnectParams;
 import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.smartstream.models.LTPParams;
 import com.angelbroking.smartapi.utils.ApiResponse;
 import com.angelbroking.smartapi.utils.ResponseParser;
@@ -58,7 +59,7 @@ public class SmartConnect {
 
     private static final Routes routes = new Routes();
     private static final Proxy proxy = Proxy.NO_PROXY;
-    private SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(proxy, TIME_OUT_IN_MILLIS);
+    private final SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(proxy, TIME_OUT_IN_MILLIS);
     private SmartConnectParams smartConnectParams;
 
 

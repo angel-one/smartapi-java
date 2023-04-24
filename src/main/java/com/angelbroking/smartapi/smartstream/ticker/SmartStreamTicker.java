@@ -1,6 +1,6 @@
 package com.angelbroking.smartapi.smartstream.ticker;
 
-import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.sample.SmartStreamListenerImpl;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;

@@ -193,9 +193,7 @@ public class Constants {
     public static final String PARAM_ACTION = "action";
     public static final String PARAM_PARAMS = "params";
 
-
     public static final String SMARTAPIREQUESTHANDLER_USER_AGENT = "javasmartapiconnect/3.0.0";
-    public static final String PUBLIC_IP_CHECK_URL = "http://checkip.amazonaws.com";
 
 
 

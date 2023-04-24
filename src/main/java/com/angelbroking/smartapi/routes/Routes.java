@@ -1,6 +1,4 @@
-package com.angelbroking.smartapi;
-
-import com.angelbroking.smartapi.routes.ApiRoutes;
+package com.angelbroking.smartapi.routes;
 
 import java.util.Map;
 

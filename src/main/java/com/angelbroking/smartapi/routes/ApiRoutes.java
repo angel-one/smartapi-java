@@ -7,10 +7,10 @@ public class ApiRoutes {
 //    Add a private constructor to hide the implicit public one.
     private ApiRoutes() {
     }
-    public static final String SECURE_COMMON_PATH = "/rest/secure/angelbroking";
-    public static final String AUTH_COMMON_PATH = "/rest/auth/angelbroking/jwt/v1";
-    public static final String GTT_SERVICE_COMMON_PATH = "/gtt-service/rest/secure/angelbroking/gtt/v1";
-    public static final Map<String, String> ROUTES;
+    private static final String SECURE_COMMON_PATH = "/rest/secure/angelbroking";
+    private static final String AUTH_COMMON_PATH = "/rest/auth/angelbroking/jwt/v1";
+    private static final String GTT_SERVICE_COMMON_PATH = "/gtt-service/rest/secure/angelbroking/gtt/v1";
+    protected static final Map<String, String> ROUTES;
 
     static {
         ROUTES =  new HashMap<>();

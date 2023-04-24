@@ -23,11 +23,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static com.angelbroking.smartapi.utils.Constants.ACCEPT;
@@ -41,7 +43,6 @@ import static com.angelbroking.smartapi.utils.Constants.CONTENT_TYPE;
 import static com.angelbroking.smartapi.utils.Constants.INVALID_URL;
 import static com.angelbroking.smartapi.utils.Constants.NULL_URL_MESSAGE;
 import static com.angelbroking.smartapi.utils.Constants.PRIVATE_KEY;
-import static com.angelbroking.smartapi.utils.Constants.PUBLIC_IP_CHECK_URL;
 import static com.angelbroking.smartapi.utils.Constants.SMARTAPIREQUESTHANDLER_USER_AGENT;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_VERSION;
 import static com.angelbroking.smartapi.utils.Constants.TOKEN;
@@ -80,7 +81,7 @@ public class SmartAPIRequestHandler {
             ApiHeaders headers = new ApiHeaders();
             InetAddress localHost = InetAddress.getLocalHost();
             String clientLocalIP = localHost.getHostAddress();
-            String clientPublicIP = getPublicIPAddress(PUBLIC_IP_CHECK_URL);
+            String clientPublicIP = getPublicIPAddress();
             headers.setHeaderClientLocalIP(clientLocalIP);
             headers.setHeaderClientPublicIP(clientPublicIP);
             headers.setMacAddress(Utils.getMacAddress());
@@ -95,9 +96,19 @@ public class SmartAPIRequestHandler {
         }
     }
 
-    private String getPublicIPAddress(String url) throws IOException {
+    private String getPublicIPAddress() throws IOException {
         String clientPublicIP;
-        URL urlName = new URL(url);
+        Properties properties = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IOException("config.properties not found on the classpath");
+            }
+            properties.load(input);
+        } catch (IOException e) {
+            log.error("Error loading configuration file: {}", e.getMessage());
+            throw new IOException("Failed to load configuration file");
+        }
+        URL urlName = new URL(properties.getProperty("url"));
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
             clientPublicIP = bufferedReader.readLine().trim();
         } catch (IOException e) {

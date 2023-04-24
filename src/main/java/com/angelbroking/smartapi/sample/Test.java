@@ -26,6 +26,7 @@ public class Test {
             String clientPin = "";
             String tOTP = "";
             SmartConnect smartConnect = new SmartConnect(apiKey);
+
             // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
             /*
              * SmartConnect smartConnect = new martConnect("<api_key>", "<YOUR_ACCESS_TOKEN>", "<YOUR_REFRESH_TOKEN>");
@@ -95,7 +96,7 @@ public class Test {
             JSONObject jsonObject = new JSONObject(json);
             JSONObject obj = jsonObject.getJSONObject("data");
             log.info("ModifyRule");
-            ApiResponse modifyRuleID = examples.modifyRule(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
+            ApiResponse apiResponse = examples.modifyRule(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
 			log.info("cancelRule");
 			examples.cancelRule(smartConnect,String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
 

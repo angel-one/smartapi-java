@@ -1,6 +1,6 @@
 package com.angelbroking.smartapi.smartticker;
 
-import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.neovisionaries.ws.client.WebSocket;

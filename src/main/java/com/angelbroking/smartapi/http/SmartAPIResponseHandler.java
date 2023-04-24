@@ -25,28 +25,38 @@ import static com.angelbroking.smartapi.utils.Constants.MESSAGE;
 public class SmartAPIResponseHandler {
 
 
-
+    /**
+     * Parses the response body as a JSON object and returns it.
+     *
+     * @param response the HTTP response from the server
+     * @param body     the body of the response as a string
+     * @return the JSON object parsed from the response body
+     * @throws IOException       if there was an error reading the response body
+     * @throws SmartAPIException if the response indicates an error
+     */
     public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
-        if (response.header(CONTENT_TYPE) != null && response.header(CONTENT_TYPE).contains("json")) {
+        try {
+            String contentType = response.header(CONTENT_TYPE);
+            if (contentType == null || !contentType.contains("json")) {
+                ResponseBody responseBody = response.body();
+                if (responseBody != null) {
+                    throw new DataSmartAPIException(String.format("Unexpected content type received from server: %s %s", response.header(CONTENT_TYPE), responseBody.string()), "AG8001");
+                } else {
+                    throw new DataSmartAPIException("Response body is null", "AG8001");
+                }
+            }
             JSONObject jsonObject = new JSONObject(body);
-
-            if (jsonObject.has("status") || !jsonObject.has("success")) {
+            if (jsonObject.has("status") && !jsonObject.has("success")) {
                 return jsonObject;
             }
-
             if (jsonObject.has("errorcode")) {
                 throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
             } else if (jsonObject.has("errorCode")) {
                 throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
             }
             return jsonObject;
-        } else {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                throw new DataSmartAPIException(String.format("Unexpected content type received from server: %s %s", response.header(CONTENT_TYPE), responseBody.string()), "AG8001");
-            } else {
-                throw new DataSmartAPIException("Response body is null", "AG8001");
-            }
+        } catch (JSONException e) {
+            throw new JSONException("Error parsing JSON response", e);
         }
     }
 
