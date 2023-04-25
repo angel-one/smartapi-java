@@ -3,6 +3,7 @@ package com.angelbroking.smartapi.sample;
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.smartstream.SmartStreamListenerImpl;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;

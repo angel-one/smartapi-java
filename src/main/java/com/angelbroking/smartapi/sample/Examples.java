@@ -112,7 +112,7 @@ public class Examples {
         orderParams.setSymbolToken("3045");
         orderParams.setProductType("INTRADAY");
         orderParams.setOrderType("LIMIT");
-        ApiResponse order = smartConnect.modifyOrder("230421000601184", orderParams, "NORMAL");
+        ApiResponse order = smartConnect.modifyOrder("230425000323098", orderParams, "NORMAL");
 
         log.info("modifyOrder {}", order);
         return order;

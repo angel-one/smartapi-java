@@ -302,7 +302,7 @@ For more details, take a look at Examples.java in sample directory.
 	
 	// SmartStreamTicker
 	String feedToken = user.getFeedToken();
-	SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImpl());
+	SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListener());
 	ticker.connect();
 	ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
 	Thread.currentThread().join();

@@ -5,11 +5,14 @@ import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import lombok.Data;
 
 import java.util.Optional;
+
+import static com.angelbroking.smartapi.utils.Constants.ENABLE_LOGGING;
+
 @Data
 public class SmartConnectParams {
 
     private static SessionExpiryHook sessionExpiryHook = null;
-    private static boolean enableLogging = false;
+//    private static boolean enableLogging = false;
     private String apiKey;
     private String accessToken;
     private String refreshToken;
@@ -49,11 +52,11 @@ public class SmartConnectParams {
     }
 
     public static boolean isEnableLogging() {
-        return enableLogging;
+        return ENABLE_LOGGING;
     }
 
     public static void setEnableLogging(boolean enableLogging) {
-        SmartConnectParams.enableLogging = enableLogging;
+        ENABLE_LOGGING = enableLogging;
     }
 
     public SmartConnectParams() {

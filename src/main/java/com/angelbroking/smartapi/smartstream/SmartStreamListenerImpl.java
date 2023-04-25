@@ -1,10 +1,11 @@
-package com.angelbroking.smartapi.sample;
+package com.angelbroking.smartapi.smartstream;
 
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.smartstream.models.Quote;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import com.angelbroking.smartapi.smartstream.models.SnapQuote;
+import com.angelbroking.smartapi.smartstream.ticker.SmartStreamListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
@@ -13,7 +14,7 @@ import java.time.ZonedDateTime;
 
 
 @Slf4j
-public class SmartStreamListenerImpl {
+public class SmartStreamListenerImpl implements SmartStreamListener {
     public static final ZoneId TZ_IST = ZoneId.of("Asia/Kolkata");
     public void onLTPArrival(LTP ltp) {
         String ltpData = String.format("token: %s sequenceNumber: %d ltp: %.2f exchangeTime: %s exchangeToClientLatency: %s",
