@@ -1,8 +1,9 @@
 package com.angelbroking.smartapi.http;
 
 
-import com.angelbroking.smartapi.models.ApiHeaders;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
+import com.angelbroking.smartapi.models.ApiHeaders;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -18,7 +19,6 @@ import java.net.Proxy;
 import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SmartAPIRequestHandlerTest {
 
@@ -61,13 +61,13 @@ public class SmartAPIRequestHandlerTest {
         String apiKey = "test-api-key";
         String url = server.url("/test-url").toString();
         String accessToken = "test-access-token";
-        JSONObject responseJson = requestHandler.getRequest(apiKey, url, accessToken);
+        HttpResponse responseJson = requestHandler.getRequest(apiKey, url, accessToken);
         // verify the response
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
         assertEquals("/test-url", recordedRequest.getPath());
         assertEquals("Bearer test-access-token", recordedRequest.getHeader("Authorization"));
-        assertEquals(response.toString(), responseJson.toString());
+        assertEquals(response.toString(), responseJson.getBody().toString());
     }
 
     @Test
@@ -97,13 +97,11 @@ public class SmartAPIRequestHandlerTest {
         String apiKey = "test-api-key";
         String url = server.url("/test-url").toString();
         JSONObject params = new JSONObject().put("param1", "value1");
-        JSONObject responseJson = requestHandler.postRequest(apiKey, url, params);
+        HttpResponse responseJson = requestHandler.postRequest(apiKey, url, params);
 
         // verify the response
-        assertEquals(response.toString(), responseJson.toString());
+        assertEquals(response.toString(), responseJson.getBody().toString());
         assertNotNull(responseJson);
-        assertTrue(responseJson.getBoolean("success"));
-        assertEquals("message", responseJson.getString("status"));
 
         // verify the request
         RecordedRequest request  = server.takeRequest();

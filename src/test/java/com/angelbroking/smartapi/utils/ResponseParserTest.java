@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.utils;
 
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,9 +32,10 @@ public class ResponseParserTest {
         exchangesArray.put("Exchange 2");
         userData.put("exchanges", exchangesArray);
         response.put(USER_DATA, userData);
-
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setBody(response.toString());
         // Parse the response
-        User user = ResponseParser.parseResponse(response);
+        User user = ResponseParser.parseResponse(httpResponse);
 
         // Assert the results
         assertNotNull(user);

@@ -12,16 +12,10 @@ import static com.angelbroking.smartapi.utils.Constants.ENABLE_LOGGING;
 public class SmartConnectParams {
 
     private static SessionExpiryHook sessionExpiryHook = null;
-//    private static boolean enableLogging = false;
     private String apiKey;
     private String accessToken;
     private String refreshToken;
     private String userId;
-
-    public SmartConnectParams(String accessToken, String userId) {
-        this.userId = userId;
-        this.accessToken = accessToken;
-    }
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
@@ -43,23 +37,8 @@ public class SmartConnectParams {
         this.userId = userId;
     }
 
-    public static SessionExpiryHook getSessionExpiryHook() {
-        return sessionExpiryHook;
-    }
-
-    public static void setSessionExpiryHook(SessionExpiryHook sessionExpiryHook) {
-        SmartConnectParams.sessionExpiryHook = sessionExpiryHook;
-    }
-
     public static boolean isEnableLogging() {
         return ENABLE_LOGGING;
-    }
-
-    public static void setEnableLogging(boolean enableLogging) {
-        ENABLE_LOGGING = enableLogging;
-    }
-
-    public SmartConnectParams() {
     }
 
     public SmartConnectParams(String apiKey) {
@@ -85,14 +64,5 @@ public class SmartConnectParams {
     public String getUserId() {
         return Optional.ofNullable(userId).orElseThrow(() -> new SmartConnectException("The user ID is missing."));
     }
-
-    public String getPublicToken() throws SmartConnectException {
-        if (refreshToken != null) {
-            return refreshToken;
-        } else {
-            throw new SmartConnectException("The Public Token key is missing.");
-        }
-    }
-
 
 }

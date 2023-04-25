@@ -2,19 +2,21 @@ package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.smartstream.SmartStreamListenerImpl;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
-import com.angelbroking.smartapi.utils.ApiResponse;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
+import java.net.Proxy;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
 
 @Slf4j
 public class Test {
@@ -26,24 +28,11 @@ public class Test {
             String clientId = "";
             String clientPin = "";
             String tOTP = "";
-            SmartConnect smartConnect = new SmartConnect(apiKey);
-
-            // OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN
-            /*
-             * SmartConnect smartConnect = new martConnect("<api_key>", "<YOUR_ACCESS_TOKEN>", "<YOUR_REFRESH_TOKEN>");
-             */
-
-            // Set session expiry callback.
-            /*
-             * smartConnect.setSessionExpiryHook(new SessionExpiryHook() {
-             * @Override
-             * public void sessionExpired() {
-             * log.info("session expired");
-             * }
-             * });
-             */
+            Proxy proxy = Proxy.NO_PROXY;
+            SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 
             // Generate User Session smartConnectParams
+            log.info("Generate session");
             User user = smartConnect.generateSession(clientId, clientPin, tOTP);
             smartConnect.setAccessToken(user.getAccessToken());
             smartConnect.setUserId(user.getUserId());
@@ -91,18 +80,16 @@ public class Test {
             examples.convertPosition(smartConnect);
 
             log.info("createRule");
-            ApiResponse createRuleID = examples.createRule(smartConnect);
-            Gson gson = new Gson();
-            String json = gson.toJson(createRuleID);
-            JSONObject jsonObject = new JSONObject(json);
-            JSONObject obj = jsonObject.getJSONObject("data");
+            HttpResponse createRuleID = examples.createRule(smartConnect);
+            JSONObject loginResultObject = new JSONObject(createRuleID.getBody().toString());
+            JSONObject obj = loginResultObject.getJSONObject("data");
             log.info("ModifyRule");
-            ApiResponse apiResponse = examples.modifyRule(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
+            HttpResponse apiResponse = examples.modifyRule(smartConnect, String.valueOf(obj.getInt("id")));
 			log.info("cancelRule");
-			examples.cancelRule(smartConnect,String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
+			examples.cancelRule(smartConnect,String.valueOf(obj.getInt("id")));
 
             log.info("Rule Details");
-            examples.ruleDetails(smartConnect, String.valueOf(jsonObject.getJSONObject("data").getInt("id")));
+            examples.ruleDetails(smartConnect, String.valueOf(obj.getInt("id")));
 
             log.info("Rule List");
             examples.ruleList(smartConnect);

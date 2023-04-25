@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.utils;
 
 import com.angelbroking.smartapi.http.exceptions.InvalidParamsException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,11 +33,12 @@ public class ResponseParser {
     /**
      * Parses user details response from server.
      *
-     * @param response is the json response from server.
+     * @param httpResponse is the response from server.
      * @return User is the parsed data.
      * @throws JSONException is thrown when there is error while parsing response.
      */
-    public static User parseResponse(JSONObject response) throws JSONException {
+    public static User parseResponse(HttpResponse httpResponse) throws JSONException {
+      JSONObject  response = new JSONObject(httpResponse.getBody());
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 

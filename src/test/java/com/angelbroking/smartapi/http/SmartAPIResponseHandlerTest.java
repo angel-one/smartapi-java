@@ -2,6 +2,7 @@ package com.angelbroking.smartapi.http;
 
 import com.angelbroking.smartapi.http.exceptions.InputException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -34,15 +35,15 @@ public class SmartAPIResponseHandlerTest {
                 .body(responseBody)
                 .build();
 
-        JSONObject result = handler.handle(response, responseJson.toString());
+        HttpResponse result = handler.handle(response, responseJson.toString());
 
-        assertEquals(responseJson.toString(), result.toString());
+        assertEquals(responseJson.toString(), result.getBody().toString());
     }
 
     @Test(expected = InputException.class)
     public void testHandleError() throws IOException, SmartAPIException, JSONException {
         JSONObject responseJson = new JSONObject();
-        responseJson.put("errorCode", "AB1005");
+        responseJson.put("errorCode", "AB1002");
         responseJson.put("message", "Invalid input parameters");
 
         Response response = new Response.Builder()
@@ -53,6 +54,7 @@ public class SmartAPIResponseHandlerTest {
                 .message("")
                 .body(ResponseBody.create(MediaType.parse("application/json"), responseJson.toString()))
                 .build();
+
 
         handler.handle(response, responseJson.toString());
     }

@@ -84,20 +84,13 @@ public class Utils {
 
     public static String getMacAddress() throws SmartConnectException {
         try {
-            // get all network interfaces of the current system
             Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();
-            // iterate over all interfaces
             while (networkInterface.hasMoreElements()) {
-                // get an interface
                 NetworkInterface network = networkInterface.nextElement();
-                // get its hardware or mac address
                 byte[] macAddressBytes = network.getHardwareAddress();
                 if (macAddressBytes != null) {
-                    // initialize a string builder to hold mac address
                     StringBuilder macAddressStr = new StringBuilder();
-                    // iterate over the bytes of mac address
                     for (int i = 0; i < macAddressBytes.length; i++) {
-                        // convert byte to string in hexadecimal form
                         macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
                     }
                     String macAddress = macAddressStr.toString();

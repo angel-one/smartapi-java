@@ -3,6 +3,7 @@ package com.angelbroking.smartapi.http;
 import com.angelbroking.smartapi.http.exceptions.APIRequestCreationException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.ApiHeaders;
 import com.angelbroking.smartapi.models.SmartConnectParams;
 import com.angelbroking.smartapi.utils.Constants;
@@ -129,7 +130,7 @@ public class SmartAPIRequestHandler {
      * @throws JSONException     if there is an error while parsing the response as a JSON object
      * @throws SmartAPIException if the server returns an error response
      */
-    public JSONObject postRequest(String apiKey, String url, JSONObject params) throws IOException, JSONException, SmartAPIException {
+    public HttpResponse postRequest(String apiKey, String url, JSONObject params) throws IOException, JSONException, SmartAPIException {
 
         Request request = createPostRequest(apiKey, url, params);
         Response response = client.newCall(request).execute();
@@ -158,7 +159,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject postRequest(String apiKey, String url, JSONObject params, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse postRequest(String apiKey, String url, JSONObject params, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPostRequest(apiKey, url, params, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -184,7 +185,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createJsonPostRequest(url, jsonArray, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -210,7 +211,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPutRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -237,7 +238,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public JSONObject deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createDeleteRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -262,7 +263,7 @@ public class SmartAPIRequestHandler {
      * @throws JSONException     if there is an error while processing the JSON response from the SmartAPI service
      */
 
-    public JSONObject getRequest(String apiKey, String url, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse getRequest(String apiKey, String url, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createGetRequest(apiKey, url, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -297,7 +298,8 @@ public class SmartAPIRequestHandler {
         StringBuilder authHeader = new StringBuilder();
         authHeader.append("Bearer ");
         authHeader.append(accessToken);
-        return new Request.Builder().url(httpBuilder.build()).header(SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(X_MAC_ADDRESS, apiheader.getMacAddress()).header(ACCEPT, apiheader.getAccept()).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getUserType()).header(X_SOURCE_ID, apiheader.getSourceID()).build();
+        return new Request.Builder().url(httpBuilder.build()).header(
+                SMARTAPIREQUESTHANDLER_USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(AUTHORIZATION, authHeader.toString()).header(CONTENT_TYPE, APPLICATION_JSON).header(CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(X_MAC_ADDRESS, apiheader.getMacAddress()).header(ACCEPT, apiheader.getAccept()).header(PRIVATE_KEY, privateKey).header(X_USER_TYPE, apiheader.getUserType()).header(X_SOURCE_ID, apiheader.getSourceID()).build();
     }
 
     /**
