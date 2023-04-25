@@ -22,15 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Proxy;
-import java.net.URL;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static com.angelbroking.smartapi.utils.Constants.ACCEPT;
@@ -50,6 +45,7 @@ import static com.angelbroking.smartapi.utils.Constants.TOKEN;
 import static com.angelbroking.smartapi.utils.Constants.X_MAC_ADDRESS;
 import static com.angelbroking.smartapi.utils.Constants.X_SOURCE_ID;
 import static com.angelbroking.smartapi.utils.Constants.X_USER_TYPE;
+import static com.angelbroking.smartapi.utils.Utils.getPublicIPAddress;
 
 /**
  * Request handler for all Http requests
@@ -81,10 +77,8 @@ public class SmartAPIRequestHandler {
 
             ApiHeaders headers = new ApiHeaders();
             InetAddress localHost = InetAddress.getLocalHost();
-            String clientLocalIP = localHost.getHostAddress();
-            String clientPublicIP = getPublicIPAddress();
-            headers.setHeaderClientLocalIP(clientLocalIP);
-            headers.setHeaderClientPublicIP(clientPublicIP);
+            headers.setHeaderClientLocalIP(localHost.getHostAddress());
+            headers.setHeaderClientPublicIP(getPublicIPAddress());
             headers.setMacAddress(Utils.getMacAddress());
             headers.setAccept("application/json");
             headers.setUserType("USER");
@@ -97,27 +91,7 @@ public class SmartAPIRequestHandler {
         }
     }
 
-    private String getPublicIPAddress() throws IOException {
-        String clientPublicIP;
-        Properties properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                throw new IOException("config.properties not found on the classpath");
-            }
-            properties.load(input);
-        } catch (IOException e) {
-            log.error("Error loading configuration file: {}", e.getMessage());
-            throw new IOException("Failed to load configuration file");
-        }
-        URL urlName = new URL(properties.getProperty("url"));
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
-            clientPublicIP = bufferedReader.readLine().trim();
-        } catch (IOException e) {
-            log.error("Error reading public IP address: {}", e.getMessage());
-            throw new IOException("Failed to get public ip address");
-        }
-        return clientPublicIP;
-    }
+
 
     /**
      * Sends a POST request to the specified URL with the provided parameters and API key.

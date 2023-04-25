@@ -6,9 +6,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Properties;
 
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_CLIENT_CODE;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_PASSWORD;
@@ -106,4 +112,25 @@ public class Utils {
         }
     }
 
+    public static String getPublicIPAddress() throws IOException {
+        String clientPublicIP;
+        Properties properties = new Properties();
+        try (InputStream input = Utils.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IOException("config.properties not found on the classpath");
+            }
+            properties.load(input);
+        } catch (IOException e) {
+            log.error("Error loading configuration file: {}", e.getMessage());
+            throw new IOException("Failed to load configuration file");
+        }
+        URL urlName = new URL(properties.getProperty("url"));
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
+            clientPublicIP = bufferedReader.readLine().trim();
+        } catch (IOException e) {
+            log.error("Error reading public IP address: {}", e.getMessage());
+            throw new IOException("Failed to get public ip address");
+        }
+        return clientPublicIP;
+    }
 }

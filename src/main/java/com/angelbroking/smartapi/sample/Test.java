@@ -9,6 +9,7 @@ import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
@@ -24,10 +25,12 @@ public class Test {
     public static void main(String[] args) throws SmartAPIException {
         try {
 
-            String apiKey = "";
-            String clientId = "";
-            String clientPin = "";
-            String tOTP = "";
+            String apiKey = "zkWvUuLx";
+            String clientId = "D541276";
+            String clientPin = "1501";
+            GoogleAuthenticator gAuth = new GoogleAuthenticator();
+            String totp_key = "L6FMTTCWRVSK2PW6AF7A2YMO6Q";
+            String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
             Proxy proxy = Proxy.NO_PROXY;
             SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 
