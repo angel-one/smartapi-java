@@ -104,7 +104,7 @@ class SmartAPIRequestHandlerTest {
         String apiKey = "test-api-key";
         String url = server.url("/test-url").toString();
         JSONObject params = new JSONObject().put("param1", "value1");
-        HttpResponse responseJson = requestHandler.postRequest(apiKey, url, params);
+        HttpResponse responseJson = requestHandler.postRequest(apiKey, url, params.toString());
 
         // verify the response
         assertEquals(response.toString(), responseJson.getBody().toString());

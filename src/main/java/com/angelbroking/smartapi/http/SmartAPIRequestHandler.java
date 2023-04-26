@@ -20,7 +20,6 @@ import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -104,7 +103,7 @@ public class SmartAPIRequestHandler {
      * @throws JSONException     if there is an error while parsing the response as a JSON object
      * @throws SmartAPIException if the server returns an error response
      */
-    public HttpResponse postRequest(String apiKey, String url, JSONObject params) throws IOException, JSONException, SmartAPIException {
+    public HttpResponse postRequest(String apiKey, String url, String params) throws IOException, JSONException, SmartAPIException {
 
         Request request = createPostRequest(apiKey, url, params);
         Response response = client.newCall(request).execute();
@@ -133,7 +132,7 @@ public class SmartAPIRequestHandler {
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public HttpResponse postRequest(String apiKey, String url, JSONObject params, String accessToken) throws IOException, SmartAPIException, JSONException {
+    public HttpResponse postRequest(String apiKey, String url, String params, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPostRequest(apiKey, url, params, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -311,11 +310,11 @@ public class SmartAPIRequestHandler {
      * @param params     The JSON object containing the parameters for the request.
      * @return A Request object representing the POST request, with the specified API key, URL and parameters.
      */
-    public Request createPostRequest(String privateKey, String url, JSONObject params) {
+    public Request createPostRequest(String privateKey, String url, String params) {
         try {
 
             MediaType jsonMediaType = MediaType.parse(APPLICATION_JSON_UTF8);
-            RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
+            RequestBody body = RequestBody.create(params, jsonMediaType);
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(Constants.CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(Constants.X_MAC_ADDRESS, apiheader.getMacAddress()).header(Constants.ACCEPT, apiheader.getAccept()).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getUserType()).header(Constants.X_SOURCE_ID, apiheader.getSourceID()).build();
         } catch (Exception e) {
             log.error("{} {}", API_REQUEST_FAILED_MSG, e.getMessage());
@@ -332,11 +331,11 @@ public class SmartAPIRequestHandler {
      *                    process.
      * @param params      is the map of data that has to be sent in the body.
      */
-    public Request createPostRequest(String privateKey, String url, JSONObject params, String accessToken) {
+    public Request createPostRequest(String privateKey, String url, String params, String accessToken) {
         try {
 
             MediaType jsonMediaType = MediaType.parse(Constants.APPLICATION_JSON_UTF8);
-            RequestBody body = RequestBody.create(params.toString(), jsonMediaType);
+            RequestBody body = RequestBody.create(params, jsonMediaType);
             return new Request.Builder().url(url).post(body).header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).header(Constants.AUTHORIZATION, String.format("Bearer %s", accessToken)).header(Constants.CLIENT_LOCAL_IP, apiheader.getHeaderClientLocalIP()).header(Constants.CLIENT_PUBLIC_IP, apiheader.getHeaderClientPublicIP()).header(Constants.X_MAC_ADDRESS, apiheader.getMacAddress()).header(Constants.ACCEPT, apiheader.getAccept()).header(Constants.PRIVATE_KEY, privateKey).header(Constants.X_USER_TYPE, apiheader.getUserType()).header(Constants.X_SOURCE_ID, apiheader.getSourceID()).build();
         } catch (Exception e) {
             log.error(e.getMessage());

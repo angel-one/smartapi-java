@@ -1,6 +1,8 @@
 package com.angelbroking.smartapi.utils;
 
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import com.angelbroking.smartapi.models.SmartConnectAuthDTO;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
@@ -15,10 +17,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
-
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_CLIENT_CODE;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_PASSWORD;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_TOTP;
 
 @Slf4j
 public class Utils {
@@ -70,14 +68,12 @@ public class Utils {
         return Arrays.equals(firstArray, secondArray);
     }
 
-    public static JSONObject createLoginParams(String clientCode, String password, String totp) {
+    public static String createLoginParams(String clientCode, String password, String totp) {
         // Create JSON params object needed to be sent to api.
 
-        JSONObject params = new JSONObject();
-        params.put(SMART_CONNECT_CLIENT_CODE, clientCode);
-        params.put(SMART_CONNECT_PASSWORD, password);
-        params.put(SMART_CONNECT_TOTP, totp);
-        return params;
+        return new JSONObject(new Gson().toJson(new SmartConnectAuthDTO(clientCode, password, totp))).toString();
+
+
     }
 
     public static String sha256Hex(String str) {

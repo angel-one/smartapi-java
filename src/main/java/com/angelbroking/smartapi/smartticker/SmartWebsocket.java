@@ -1,8 +1,10 @@
 package com.angelbroking.smartapi.smartticker;
 
-import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.models.WsMWJSONRequestDTO;
+import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
+import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -27,12 +29,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
 
-import static com.angelbroking.smartapi.utils.Constants.ACTION_TYPE;
-import static com.angelbroking.smartapi.utils.Constants.API_KEY;
-import static com.angelbroking.smartapi.utils.Constants.CLIENT_CODE;
-import static com.angelbroking.smartapi.utils.Constants.FEEED_TYPE;
-import static com.angelbroking.smartapi.utils.Constants.JWT_TOKEN;
-
 /**
  * The `SmartWebsocket` class provides a websocket client for connecting to a financial data feed provided by SmartAPI.
  * It allows for receiving real-time market data and provides event listeners for various websocket events, such as
@@ -47,7 +43,7 @@ import static com.angelbroking.smartapi.utils.Constants.JWT_TOKEN;
 @Slf4j
 public class SmartWebsocket {
 
-   private final String clientId;
+    private final String clientId;
     private final String jwtToken;
     private final String apiKey;
     private final String actionType;
@@ -72,13 +68,7 @@ public class SmartWebsocket {
         Routes routes = new Routes();
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(routes.getSWsuri())
-                    .append("?jwttoken=")
-                    .append(this.jwtToken)
-                    .append("&&clientcode=")
-                    .append(this.clientId)
-                    .append("&&apikey=")
-                    .append(this.apiKey);
+            sb.append(routes.getSWsuri()).append("?jwttoken=").append(this.jwtToken).append("&&clientcode=").append(this.clientId).append("&&apikey=").append(this.apiKey);
             SSLContext context = NaiveSSLContext.getInstance("TLS");
             webSocket = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(sb.toString());
 
@@ -95,7 +85,6 @@ public class SmartWebsocket {
             webSocket.addListener(adapter);
         }
     }
-
 
 
     public static byte[] decompress(byte[] compressedTxt) throws IOException {
@@ -156,13 +145,7 @@ public class SmartWebsocket {
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 onConnectedListener.onConnected();
                 Runnable runnable = () -> {
-                    JSONObject wsMWJSONRequest = new JSONObject();
-                    wsMWJSONRequest.put(ACTION_TYPE, actionType);
-                    wsMWJSONRequest.put(FEEED_TYPE, feedType);
-                    wsMWJSONRequest.put(JWT_TOKEN, jwtToken);
-                    wsMWJSONRequest.put(CLIENT_CODE, clientId);
-                    wsMWJSONRequest.put(API_KEY, apiKey);
-                    webSocket.sendText(wsMWJSONRequest.toString());
+                    webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey))).toString());
                 };
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
@@ -204,8 +187,7 @@ public class SmartWebsocket {
              * @throws NullPointerException if the onDisconnectedListener is null
              */
             @Override
-            public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,
-                                       WebSocketFrame clientCloseFrame, boolean closedByServer) {
+            public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
                 if (onDisconnectedListener != null) {
                     onDisconnectedListener.onDisconnected();
                 }
@@ -252,15 +234,7 @@ public class SmartWebsocket {
 
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-
-                JSONObject wsMWJSONRequest = new JSONObject();
-                wsMWJSONRequest.put("actiontype", this.actionType);
-                wsMWJSONRequest.put("feedtype", this.feedType);
-                wsMWJSONRequest.put("jwttoken", this.jwtToken);
-                wsMWJSONRequest.put("clientcode", this.clientId);
-                wsMWJSONRequest.put("apikey", this.apiKey);
-
-                webSocket.sendText(wsMWJSONRequest.toString());
+                webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWJSONRequestDTO(this.actionType, this.feedType, this.jwtToken, this.clientId, this.apiKey))).toString());
 
             } else {
                 if (onErrorListener != null) {
