@@ -30,16 +30,16 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 public class SmartAPITicker {
 
-	private Routes routes = new Routes();
-	private final String wsuri = routes.getWsuri();;
+	private final Routes routes = new Routes();
+	private final String wsuri = routes.getWsuri();
 	private OnTicks onTickerArrivalListener;
 	private OnConnect onConnectedListener;
 	private OnError onErrorListener;
 	private WebSocket ws;
-	private String clientId;
-	private String feedToken;
-	private String script;
-	private String task;
+	private final String clientId;
+	private final String feedToken;
+	private final String script;
+	private final String task;
 	private SSLContext context;
 
 	/**
@@ -70,16 +70,6 @@ public class SmartAPITicker {
 
 	}
 
-//	/**
-//	 * Set error listener.
-//	 * 
-//	 * @param listener of type OnError which listens to all the type of errors that
-//	 *                 may arise in SmartAPITicker class.
-//	 */
-//	public void setOnErrorListener(OnError listener) {
-//		onErrorListener = listener;
-//	}
-
 	/**
 	 * Set listener for listening to ticks.
 	 * 
@@ -97,15 +87,6 @@ public class SmartAPITicker {
 	public void setOnConnectedListener(OnConnect listener) {
 		onConnectedListener = listener;
 	}
-
-//	/**
-//	 * Set listener for on connection is disconnected.
-//	 * 
-//	 * @param listener is used to listen to onDisconnected event.
-//	 */
-//	public void setOnDisconnectedListener(OnDisconnect listener) {
-//		onDisconnectedListener = listener;
-//	}
 
 	/** Returns a WebSocketAdapter to listen to ticker related events. */
 	public WebSocketAdapter getWebsocketAdapter() {
@@ -209,9 +190,7 @@ public class SmartAPITicker {
 	 */
 	public boolean isConnectionOpen() {
 		if (ws != null) {
-			if (ws.isOpen()) {
-				return true;
-			}
+			return ws.isOpen();
 		}
 		return false;
 	}
@@ -249,29 +228,7 @@ public class SmartAPITicker {
 	 * runSript script.
 	 */
 	public void resubscribe() {
-
-		if (ws != null) {
-			if (ws.isOpen()) {
-
-				JSONObject wsMWJSONRequest = new JSONObject();
-				wsMWJSONRequest.put("task", this.task);
-				wsMWJSONRequest.put("channel", this.script);
-				wsMWJSONRequest.put("token", this.feedToken);
-				wsMWJSONRequest.put("user", this.clientId);
-				wsMWJSONRequest.put("acctid", this.clientId);
-
-				ws.sendText(wsMWJSONRequest.toString());
-
-			} else {
-				if (onErrorListener != null) {
-					onErrorListener.onError(new SmartAPIException("ticker is not connected", "504"));
-				}
-			}
-		} else {
-			if (onErrorListener != null) {
-				onErrorListener.onError(new SmartAPIException("ticker is null not connected", "504"));
-			}
-		}
+		subscribe();
 	}
 
 	public static byte[] decompress(byte[] compressedTxt) throws IOException {

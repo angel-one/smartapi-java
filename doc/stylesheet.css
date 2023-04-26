@@ -83,12 +83,12 @@ Document title and Copyright styles
 */
 .clear {
     clear:both;
-    height:0px;
+    height:0;
     overflow:hidden;
 }
 .aboutLanguage {
     float:right;
-    padding:0px 21px;
+    padding:0 21px;
     font-size:11px;
     z-index:200;
     margin-top:-9px;
@@ -251,7 +251,7 @@ ul.blockList ul.blockList li.blockList h3 {
     margin:15px 0;
 }
 ul.blockList li.blockList h2 {
-    padding:0px 0 20px 0;
+    padding:0 0 20px 0;
 }
 /*
 Page layout container styles
@@ -285,7 +285,7 @@ Page layout container styles
     color:#4E4E4E;
 }
 .contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd {
-    margin:5px 0 10px 0px;
+    margin:5px 0 10px 0;
     font-size:14px;
     font-family:'DejaVu Sans Mono',monospace;
 }
@@ -330,7 +330,7 @@ ul.blockList li.blockList, ul.blockListLast li.blockList {
     line-height:1.4;
 }
 ul.blockList ul.blockList li.blockList, ul.blockList ul.blockListLast li.blockList {
-    padding:0px 20px 5px 10px;
+    padding:0 20px 5px 10px;
     border:1px solid #ededed; 
     background-color:#f8f8f8;
 }
@@ -364,7 +364,7 @@ Table styles
     border-bottom:1px solid #EEE; 
 }
 .overviewSummary, .memberSummary  {
-    padding:0px;
+    padding:0;
 }
 .overviewSummary caption, .memberSummary caption, .typeSummary caption,
 .useSummary caption, .constantsSummary caption, .deprecatedSummary caption {
@@ -375,10 +375,10 @@ Table styles
     font-weight:bold;
     clear:none;
     overflow:hidden;
-    padding:0px;
+    padding:0;
     padding-top:10px;
     padding-left:1px;
-    margin:0px;
+    margin:0;
     white-space:pre;
 }
 .overviewSummary caption a:link, .memberSummary caption a:link, .typeSummary caption a:link,
@@ -427,9 +427,9 @@ Table styles
     height:16px;
 }
 .memberSummary caption span.tableTab, .memberSummary caption span.activeTableTab {
-    padding-top:0px;
-    padding-left:0px;
-    padding-right:0px;
+    padding-top:0;
+    padding-left:0;
+    padding-right:0;
     background-image:none;
     float:none;
     display:inline;
@@ -462,12 +462,12 @@ Table styles
 .overviewSummary td, .memberSummary td, .typeSummary td,
 .useSummary td, .constantsSummary td, .deprecatedSummary td {
     text-align:left;
-    padding:0px 0px 12px 10px;
+    padding:0 0 12px 10px;
 }
 th.colOne, th.colFirst, th.colLast, .useSummary th, .constantsSummary th,
 td.colOne, td.colFirst, td.colLast, .useSummary td, .constantsSummary td{
     vertical-align:top;
-    padding-right:0px;
+    padding-right:0;
     padding-top:8px;
     padding-bottom:3px;
 }
@@ -531,7 +531,7 @@ div.block {
 }
 
 td.colLast div {
-    padding-top:0px;
+    padding-top:0;
 }
 
 
@@ -552,7 +552,7 @@ h1.hidden {
 }
 .block {
     display:block;
-    margin:3px 10px 2px 0px;
+    margin:3px 10px 2px 0;
     color:#474747;
 }
 .deprecatedLabel, .descfrmTypeLabel, .memberNameLabel, .memberNameLink,
@@ -570,5 +570,5 @@ div.block div.block span.interfaceName {
 }
 
 div.contentContainer ul.blockList li.blockList h2{
-    padding-bottom:0px;
+    padding-bottom:0;
 }
