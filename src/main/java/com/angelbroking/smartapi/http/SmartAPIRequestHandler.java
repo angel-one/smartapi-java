@@ -32,8 +32,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
  */
 public class SmartAPIRequestHandler {
 
-	private OkHttpClient client;
-	private String USER_AGENT = "javasmartapiconnect/3.0.0";
+	private final OkHttpClient client;
+	private final String USER_AGENT = "javasmartapiconnect/3.0.0";
 	JSONObject apiheader = apiHeaders();
 
 	/**
@@ -67,7 +67,7 @@ public class SmartAPIRequestHandler {
 			headers.put("clientLocalIP", clientLocalIP);
 
 			// Public IP Address
-			URL urlName = new URL("http://checkip.amazonaws.com");
+			URL urlName = new URL("https://checkip.amazonaws.com");
 			BufferedReader sc = new BufferedReader(new InputStreamReader(urlName.openStream()));
 			String clientPublicIP = sc.readLine().trim();
 			headers.put("clientPublicIP", clientPublicIP);
@@ -119,8 +119,6 @@ public class SmartAPIRequestHandler {
 	 * 
 	 * @return JSONObject which is received by Smart API.
 	 * @param url         is the endpoint to which request has to be sent.
-	 * @param accessToken is the access token obtained after successful login
-	 *                    process.
 	 * @param params      is the map of params which has to be sent in the body.
 	 * @throws IOException       is thrown when there is a connection related error.
 	 * @throws SmartAPIException is thrown for all Smart API Trade related errors.
@@ -229,10 +227,6 @@ public class SmartAPIRequestHandler {
 	 * @param apiKey      is the api key of the Smart API Connect app.
 	 * @param accessToken is the access token obtained after successful login
 	 *                    process.
-	 * @param commonKey   is the key that has to be sent in query param for quote
-	 *                    calls.
-	 * @param values      is the values that has to be sent in query param like 265,
-	 *                    256265, NSE:INFY.
 	 * @throws IOException       is thrown when there is a connection related error.
 	 * @throws SmartAPIException is thrown for all Smart API Trade related errors.
 	 * @throws JSONException     is thrown for parsing errors.
@@ -297,8 +291,6 @@ public class SmartAPIRequestHandler {
 	 * 
 	 * @param url         is the endpoint to which request has to be done.
 	 * @param apiKey      is the api key of the Smart API Connect app.
-	 * @param accessToken is the access token obtained after successful login
-	 *                    process.
 	 * @param params      is the map of data that has to be sent in the body.
 	 */
 	public Request createPostRequest(String apiKey, String url, JSONObject params) {

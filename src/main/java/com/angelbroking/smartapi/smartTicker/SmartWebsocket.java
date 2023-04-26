@@ -30,18 +30,16 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 public class SmartWebsocket {
 
-	private Routes routes = new Routes();
-	private final String wsuri = routes.getSWsuri();
 	private SmartWSOnTicks onTickerArrivalListener;
 	private SmartWSOnConnect onConnectedListener;
 	private SmartWSOnDisconnect onDisconnectedListener;
 	private SmartWSOnError onErrorListener;
 	private WebSocket ws;
-	private String clientId;
-	private String jwtToken;
-	private String apiKey;
-	private String actionType;
-	private String feedType;
+	private final String clientId;
+	private final String jwtToken;
+	private final String apiKey;
+	private final String actionType;
+	private final String feedType;
 
 	/**
 	 * Initialize SmartAPITicker.
@@ -55,21 +53,21 @@ public class SmartWebsocket {
 		this.feedType = feedType;
 
 		try {
+			Routes routes = new Routes();
+			String wsuri = routes.getSWsuri();
 			String swsuri = wsuri + "?jwttoken=" + this.jwtToken + "&&clientcode=" + this.clientId + "&&apikey="
 					+ this.apiKey;
 			SSLContext context = NaiveSSLContext.getInstance("TLS");
 			ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(swsuri);
 
+			ws.addListener(getWebsocketAdapter());
 		} catch (IOException e) {
 			if (onErrorListener != null) {
 				onErrorListener.onError(e);
 			}
-			return;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-
-		ws.addListener(getWebsocketAdapter());
 
 	}
 
@@ -174,7 +172,6 @@ public class SmartWebsocket {
 				if (onDisconnectedListener != null) {
 					onDisconnectedListener.onDisconnected();
 				}
-				return;
 			}
 
 			@Override
@@ -207,9 +204,7 @@ public class SmartWebsocket {
 	 */
 	public boolean isConnectionOpen() {
 		if (ws != null) {
-			if (ws.isOpen()) {
-				return true;
-			}
+			return ws.isOpen();
 		}
 		return false;
 	}

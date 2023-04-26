@@ -101,12 +101,6 @@ public class User {
 			user.exchanges[j] = exchangesArray.getString(j);
 		}
 
-//		JSONArray orderTypeArray = response.getJSONArray("order_types");
-//		user.orderTypes = new String[orderTypeArray.length()];
-//		for (int k = 0; k < orderTypeArray.length(); k++) {
-//			user.orderTypes[k] = orderTypeArray.getString(k);
-//		}
-
 		return user;
 	}
 

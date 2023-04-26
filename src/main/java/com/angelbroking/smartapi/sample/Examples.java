@@ -130,9 +130,6 @@ public class Examples {
 	public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		JSONObject orders = smartConnect.getOrderHistory(smartConnect.getUserId());
 		System.out.print(orders);
-//		for (int i = 0; i < orders.size(); i++) {
-//			System.out.println(orders.get(i).orderId + " " + orders.get(i).status);
-//		}
 	}
 
 	/**

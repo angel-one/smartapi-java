@@ -22,11 +22,11 @@ import com.angelbroking.smartapi.models.User;
 public class SmartConnect {
 	public static SessionExpiryHook sessionExpiryHook = null;
 	public static boolean ENABLE_LOGGING = false;
-	private Proxy proxy = null;
+	private final Proxy proxy = null;
 	private String apiKey;
 	private String accessToken;
 	private String refreshToken;
-	private Routes routes = new Routes();
+	private final Routes routes = new Routes();
 	private String userId;
 	private SmartAPIRequestHandler smartAPIRequestHandler;
 
@@ -132,9 +132,7 @@ public class SmartConnect {
 
 	/**
 	 * Set publicToken.
-	 * 
-	 * @param publicToken is the public token received after sending request token
-	 *                    and api secret.
+	 *
 	 */
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
@@ -154,8 +152,6 @@ public class SmartConnect {
 	 * Do the token exchange with the `request_token` obtained after the login flow,
 	 * and retrieve the `access_token` required for all subsequent requests.
 	 * 
-	 * @param requestToken received from login process.
-	 * @param apiSecret    which is unique for each aap.
 	 * @return User is the user model which contains user and session details.
 	 * 
 	 */
@@ -193,7 +189,6 @@ public class SmartConnect {
 	 * Get a new access token using refresh token.
 	 * 
 	 * @param refreshToken is the refresh token obtained after generateSession.
-	 * @param apiSecret    is unique for each app.
 	 * @return TokenSet contains user id, refresh token, api secret.
 	 * 
 	 */
@@ -387,7 +382,6 @@ public class SmartConnect {
 	 * 
 	 * @return List of multiple stages an order has gone through in the system.
 	 * @throws SmartAPIException is thrown for all Smart API trade related errors.
-	 * @param orderId is the order id which is obtained from orderbook.
 	 * 
 	 */
 	@SuppressWarnings({})
@@ -612,7 +606,6 @@ public class SmartConnect {
 	/**
 	 * Cancel a Gtt Rule.
 	 * 
-	 * @param gttParams is gtt Params.
 	 * @return Gtt contains only orderId.
 	 */
 

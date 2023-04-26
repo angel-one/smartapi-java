@@ -6,5 +6,5 @@ package com.angelbroking.smartapi.http;
 public interface SessionExpiryHook {
 
 
-    public void sessionExpired();
+    void sessionExpired();
 }

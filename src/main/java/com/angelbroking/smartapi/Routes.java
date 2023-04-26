@@ -13,10 +13,6 @@ import java.util.Map;
 public class Routes {
 
 	public Map<String, String> routes;
-	private static String _rootUrl = "https://apiconnect.angelbroking.com";
-	private static String _loginUrl = "https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword";
-	private static String _wsuri = "wss://wsfeeds.angelbroking.com/NestHtml5Mobile/socket/stream";
-	private static String _swsuri = "wss://smartapisocket.angelbroking.com/websocket";
 
 	// Initialize all routes,
 	@SuppressWarnings("serial")
@@ -49,18 +45,19 @@ public class Routes {
 	}
 
 	public String get(String key) {
+		String _rootUrl = "https://apiconnect.angelbroking.com";
 		return _rootUrl + routes.get(key);
 	}
 
 	public String getLoginUrl() {
-		return _loginUrl;
+		return "https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword";
 	}
 
 	public String getWsuri() {
-		return _wsuri;
+		return "wss://wsfeeds.angelbroking.com/NestHtml5Mobile/socket/stream";
 	}
 
 	public String getSWsuri() {
-		return _swsuri;
+		return "wss://smartapisocket.angelbroking.com/websocket";
 	}
 }
