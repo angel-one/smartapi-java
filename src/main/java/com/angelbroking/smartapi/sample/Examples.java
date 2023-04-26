@@ -314,8 +314,8 @@ public class Examples {
      * Logout user.
      */
     public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        HttpResponse jsonObject = smartConnect.logout();
-        log.info("logout {}", jsonObject);
+        HttpResponse httpResponse = smartConnect.logout();
+        log.info("logout {}", httpResponse);
     }
 
 }

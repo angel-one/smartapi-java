@@ -144,50 +144,45 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
      * 50, BSE:SENSEX} or {256265, 265}
      */
 	public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		String exchange = "NSE";
-		String tradingSymbol = "SBIN-EQ";
-		String symboltoken = "3045";
-		JSONObject ltpData = smartConnect.getLTP(exchange, tradingSymbol, symboltoken);
-	}
+            String exchange = "NSE";
+            String symboltoken = "3045";
+            HttpResponse ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);
+    }
 
 	/** Get tradebook */
     public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
-            
-            List<Trade> trades = smartConnect.getTrades();
-            for (Trade trade : trades) {
-            log.info("{} {}", trade.tradingSymbol, trades.size());
+            HttpResponse trades = smartConnect.getTrades();
             }
-            }
+           
 
 
     /** Get RMS */
 	public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		JSONObject response = smartConnect.getRMS();
+            HttpResponse response = smartConnect.getRMS();
 	}
 
 	/** Get Holdings */
 	public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		JSONObject response = smartConnect.getHolding();
+            HttpResponse response = smartConnect.getHolding();
 	}
 
 	/** Get Position */
 	public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		JSONObject response = smartConnect.getPosition();
+            HttpResponse response = smartConnect.getPosition();
 	}
 
 	/** convert Position */
 	public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		
-        JSONObject requestObejct = new JSONObject();
-		requestObejct.put("exchange", "NSE");
-		requestObejct.put("oldproducttype", "DELIVERY");
-		requestObejct.put("newproducttype", "MARGIN");
-		requestObejct.put("tradingsymbol", "SBIN-EQ");
-		requestObejct.put("transactiontype", "BUY");
-		requestObejct.put("quantity", 1);
-		requestObejct.put("type", "DAY");
 
-		JSONObject response = smartConnect.convertPosition(requestObejct);
+            TradeRequestDTO requestDTO = new TradeRequestDTO();
+            requestDTO.setExchange("NSE");
+            requestDTO.setOldProductType("DELIVERY");
+            requestDTO.setNewProductType("MARGIN");
+            requestDTO.setTradingSymbol(SYMBOL_SBINEQ);
+            requestDTO.setTransactionType("BUY");
+            requestDTO.setQuantity(1);
+            requestDTO.setType("DAY");
+            HttpResponse response = smartConnect.convertPosition(requestDTO);
 	}
 	
 	/** Create Gtt Rule*/
@@ -242,8 +237,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	/** Gtt Rule Details */
 	public void ruleDetails(SmartConnect smartConnect)throws SmartAPIException, IOException{
 		Integer id=1000051;
-	
-		JSONObject gtt = smartConnect.gttRuleDetails(id);
+            HttpResponse gtt = smartConnect.gttRuleDetails(id);
 	}
 	
 	/** Gtt Rule Lists */
@@ -265,20 +259,19 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	/** Historic Data */
 	public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-		JSONObject requestObejct = new JSONObject();
-		requestObejct.put("exchange", "NSE");
-		requestObejct.put("symboltoken", "3045");
-		requestObejct.put("interval", "ONE_MINUTE");
-		requestObejct.put("fromdate", "2021-03-08 09:00");
-		requestObejct.put("todate", "2021-03-09 09:20");
+            StockHistoryRequestDTO requestDTO = new StockHistoryRequestDTO();
+            requestDTO.setToDate("2021-03-09 09:20");
+            requestDTO.setExchange("NSE");
+            requestDTO.setInterval("ONE_MINUTE");
+            requestDTO.setSymbolToken("3045");
+            requestDTO.setFromDate("2021-03-08 09:00");
 
-		String response = smartConnect.candleData(requestObejct);
+            HttpResponse response = smartConnect.candleData(requestDTO);
 	}
 	
 	/** Logout user. */
 	public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		/** Logout user and kill session. */
-		JSONObject jsonObject = smartConnect.logout();
+            HttpResponse httpResponse = smartConnect.logout();
 	}
 	
 ```
@@ -294,8 +287,9 @@ For more details, take a look at Examples.java in sample directory.
 	String clientPin = "<clientPin>"; // PROVIDE YOUR Client PIN HERE
 	String tOTP = "<tOTP>"; // PROVIDE THE CODE DISPLAYED ON YOUR AUTHENTICATOR APP - https://smartapi.angelbroking.com/enable-totp
 
-	SmartConnect smartConnect = new SmartConnect(apiKey);
-	// Generate User Session
+    Proxy proxy = Proxy.NO_PROXY;
+    SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
+    // Generate User Session
 	User user = smartConnect.generateSession(clientId, clientPin, tOTP);
 	smartConnect.setAccessToken(user.getAccessToken());
 	smartConnect.setUserId(user.getUserId());

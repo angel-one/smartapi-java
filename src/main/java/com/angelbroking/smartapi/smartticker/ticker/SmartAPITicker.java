@@ -1,9 +1,11 @@
 package com.angelbroking.smartapi.smartticker.ticker;
 
-import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import com.angelbroking.smartapi.models.WsMWRequest;
+import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
+import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,11 +27,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
 
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_ACCTID;
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_CHANNEL;
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TASK;
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_TOKEN;
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_TICKER_USER;
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
 @Slf4j
 public class SmartAPITicker {
@@ -114,24 +112,12 @@ public class SmartAPITicker {
 
             }
 
-            private JSONObject createWsCNJSONRequest() {
-                JSONObject wsCNJSONRequest = new JSONObject();
-                wsCNJSONRequest.put(SMART_API_TICKER_TASK, "cn");
-                wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
-                wsCNJSONRequest.put(SMART_API_TICKER_CHANNEL, params.getFeedToken());
-                wsCNJSONRequest.put(SMART_API_TICKER_USER, params.getClientId());
-                wsCNJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId());
-                return wsCNJSONRequest;
+            private String createWsCNJSONRequest() {
+                return new JSONObject(new Gson().toJson(new WsMWRequest(null,params.getClientId(),params.getClientId(),"cn",""))).toString();
             }
 
-            private JSONObject createWsMWJSONRequest() {
-                JSONObject wsMWJSONRequest = new JSONObject();
-                wsMWJSONRequest.put(SMART_API_TICKER_TASK, "hb");
-                wsMWJSONRequest.put(SMART_API_TICKER_CHANNEL, "");
-                wsMWJSONRequest.put(SMART_API_TICKER_TOKEN, params.getFeedToken());
-                wsMWJSONRequest.put(SMART_API_TICKER_USER, params.getClientId());
-                wsMWJSONRequest.put(SMART_API_TICKER_ACCTID, params.getClientId());
-                return wsMWJSONRequest;
+            private String createWsMWJSONRequest() {
+                return new JSONObject(new Gson().toJson(new WsMWRequest(params.getFeedToken(),params.getClientId(),params.getClientId(),"hb",""))).toString();
             }
 
             @Override
@@ -191,14 +177,8 @@ public class SmartAPITicker {
         }
     }
 
-    private JSONObject createWsMWJSONRequest() {
-        JSONObject wsMWJSONRequest = new JSONObject();
-        wsMWJSONRequest.put("task", this.params.getTask());
-        wsMWJSONRequest.put("channel", this.params.getScript());
-        wsMWJSONRequest.put("token", this.params.getFeedToken());
-        wsMWJSONRequest.put("user", this.params.getClientId());
-        wsMWJSONRequest.put("acctid", this.params.getClientId());
-        return wsMWJSONRequest;
+    private String createWsMWJSONRequest() {
+        return new JSONObject(new Gson().toJson(new WsMWRequest(this.params.getFeedToken(),this.params.getClientId(),this.params.getClientId(),this.params.getTask(),this.params.getScript()))).toString();
     }
 
     public void connect() {

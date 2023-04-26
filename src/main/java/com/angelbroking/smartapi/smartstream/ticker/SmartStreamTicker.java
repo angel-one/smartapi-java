@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi.smartstream.ticker;
 
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.models.WsMWRequest;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.LTP;
@@ -12,6 +13,7 @@ import com.angelbroking.smartapi.smartstream.models.SnapQuote;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.utils.ByteUtils;
 import com.angelbroking.smartapi.utils.Utils;
+import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -279,14 +281,7 @@ public class SmartStreamTicker {
     public void resubscribe() {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-
-                JSONObject wsMWJSONRequest = new JSONObject();
-                wsMWJSONRequest.put("token", this.feedToken);
-                wsMWJSONRequest.put("user", this.clientId);
-                wsMWJSONRequest.put("acctid", this.clientId);
-
-                webSocket.sendText(wsMWJSONRequest.toString());
-
+                webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWRequest(this.feedToken,this.clientId,this.clientId))).toString());
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }

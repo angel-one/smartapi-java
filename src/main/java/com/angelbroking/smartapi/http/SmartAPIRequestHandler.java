@@ -99,7 +99,7 @@ public class SmartAPIRequestHandler {
      * @param apiKey the API key to use for the request
      * @param url    the URL to send the request to
      * @param params the parameters to include in the request body
-     * @return a JSONObject containing the response from the server
+     * @return a HttpResponse containing the response from the server
      * @throws IOException       if there is an I/O error while sending the request or receiving the response
      * @throws JSONException     if there is an error while parsing the response as a JSON object
      * @throws SmartAPIException if the server returns an error response
@@ -128,7 +128,7 @@ public class SmartAPIRequestHandler {
      * @param accessToken is the access token obtained after successful login
      *                    process.
      * @param params      is the map of params which has to be sent in the body.
-     * @return JSONObject which is received by Smart API Trade.
+     * @return HttpResponse which is received by Smart API Trade.
      * @throws IOException       is thrown when there is a connection related error.
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
@@ -180,7 +180,7 @@ public class SmartAPIRequestHandler {
      * @param accessToken is the access token obtained after successful login
      *                    process.
      * @param params      is the map of params which has to be sent in the body.
-     * @return JSONObject which is received by Smart API Trade.
+     * @return HttpResponse which is received by Smart API Trade.
      * @throws IOException       is thrown when there is a connection related error.
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
@@ -207,7 +207,7 @@ public class SmartAPIRequestHandler {
      *                    process.
      * @param params      is the map of params which has to be sent in the query
      *                    params.
-     * @return JSONObject which is received by Smart API Trade.
+     * @return HttpResponse which is received by Smart API Trade.
      * @throws IOException       is thrown when there is a connection related error.
      * @throws SmartAPIException is thrown for all Smart API Trade related errors.
      * @throws JSONException     is thrown for parsing errors.
