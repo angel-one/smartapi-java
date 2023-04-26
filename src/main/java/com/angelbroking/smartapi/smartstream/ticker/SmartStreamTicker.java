@@ -231,8 +231,7 @@ public class SmartStreamTicker {
     public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-                JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
-                webSocket.sendText(wsMWJSONRequest.toString());
+                webSocket.sendText(getApiRequest(SmartStreamAction.SUBS, mode, tokens).toString());
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException(TICKER_NOT_CONNECTED, "504")));
             }

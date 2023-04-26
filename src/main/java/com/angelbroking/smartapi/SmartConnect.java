@@ -3,16 +3,20 @@ package com.angelbroking.smartapi;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
+import com.angelbroking.smartapi.http.response.UserResponseDTO;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.GttRuleParams;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.SmartConnectParams;
+import com.angelbroking.smartapi.models.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.models.TradeRequestDTO;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.smartstream.models.LTPParams;
 import com.angelbroking.smartapi.utils.ResponseParser;
 import com.angelbroking.smartapi.utils.Utils;
 import com.angelbroking.smartapi.utils.Validators;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -46,10 +50,6 @@ import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_TRADE_BOOK;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_LOGOUT;
 import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_PROFILE;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_DATA;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_FEED_TOKEN;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_JWT_TOKEN;
-import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_REFRESH_TOKEN;
 
 
 @Slf4j
@@ -99,13 +99,10 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
            throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         }
-        JSONObject loginResultObject = new JSONObject(httpResponse.getBody());
-        String jwtToken = loginResultObject.optJSONObject(SMART_CONNECT_DATA).optString(SMART_CONNECT_JWT_TOKEN);
-        String refreshTokenLocal = loginResultObject.optJSONObject(SMART_CONNECT_DATA).optString(SMART_CONNECT_REFRESH_TOKEN);
-        String feedToken = loginResultObject.optJSONObject(SMART_CONNECT_DATA).optString(SMART_CONNECT_FEED_TOKEN);
+        UserResponseDTO responseDTO = new ObjectMapper().readValue(httpResponse.getBody(), UserResponseDTO.class);
         String url = routes.get(SMART_CONNECT_API_USER_PROFILE);
         try {
-            user = ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, jwtToken));
+            user = ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url,responseDTO.getData().getJwtToken()));
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -117,10 +114,9 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
            throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         }
-        user.setAccessToken(jwtToken);
-        user.setRefreshToken(refreshTokenLocal);
-        user.setFeedToken(feedToken);
-
+        user.setAccessToken(responseDTO.getData().getJwtToken());
+        user.setRefreshToken(responseDTO.getData().getRefreshToken());
+        user.setFeedToken(responseDTO.getData().getFeedToken());
         return user;
 
     }
@@ -394,10 +390,10 @@ public class SmartConnect {
      *                           response.
      * @throws IOException       is thrown when there is connection error.
      */
-    public HttpResponse convertPosition(JSONObject params) throws SmartAPIException, IOException {
+    public HttpResponse convertPosition(TradeRequestDTO params) throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, params, smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(params)), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -570,10 +566,10 @@ public class SmartConnect {
      * @param params is historic data params.
      * @return returns the details of historic data.
      */
-    public HttpResponse candleData(JSONObject params) throws SmartAPIException, IOException {
+    public HttpResponse candleData(StockHistoryRequestDTO params) throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_CANDLE_DATA);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, params, smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url,  new JSONObject(new Gson().toJson(params)), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -590,7 +586,7 @@ public class SmartConnect {
     /**
      * Logs out user by invalidating the access token.
      *
-     * @return JSONObject which contains status
+     * @return HttpResponse which contains status
      */
 
     public HttpResponse logout() throws SmartAPIException, IOException {

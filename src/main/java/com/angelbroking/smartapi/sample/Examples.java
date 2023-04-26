@@ -5,9 +5,10 @@ import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.models.TradeRequestDTO;
 import com.angelbroking.smartapi.models.User;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class Examples {
     /**
      * Modify order.
      */
-    public HttpResponse modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public HttpResponse modifyOrder(SmartConnect smartConnect, String orderid) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
 
         OrderParams orderParams = new OrderParams();
@@ -112,7 +113,7 @@ public class Examples {
         orderParams.setSymbolToken("3045");
         orderParams.setProductType("INTRADAY");
         orderParams.setOrderType("LIMIT");
-        HttpResponse order = smartConnect.modifyOrder("230426000445029", orderParams, "NORMAL");
+        HttpResponse order = smartConnect.modifyOrder(orderid, orderParams, "NORMAL");
 
         log.info("modifyOrder {}", order);
         return order;
@@ -124,11 +125,11 @@ public class Examples {
      *
      * @return order
      */
-    public HttpResponse cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public HttpResponse cancelOrder(SmartConnect smartConnect, String orderid) throws SmartAPIException, IOException {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
-        HttpResponse order = smartConnect.cancelOrder("230426000445029", "NORMAL");
+        HttpResponse order = smartConnect.cancelOrder(orderid, "NORMAL");
         log.info("cancelOrder {}", order);
         return order;
     }
@@ -192,16 +193,17 @@ public class Examples {
      */
     public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-        JSONObject requestObejct = new JSONObject();
-        requestObejct.put("exchange", "NSE");
-        requestObejct.put("oldproducttype", "DELIVERY");
-        requestObejct.put("newproducttype", MARGIN);
-        requestObejct.put("tradingsymbol", SYMBOL_SBINEQ);
-        requestObejct.put("transactiontype", "BUY");
-        requestObejct.put("quantity", 1);
-        requestObejct.put("type", "DAY");
+        TradeRequestDTO requestDTO = new TradeRequestDTO();
+        requestDTO.setExchange("NSE");
+        requestDTO.setOldProductType("DELIVERY");
+        requestDTO.setNewProductType("MARGIN");
+        requestDTO.setTradingSymbol(SYMBOL_SBINEQ);
+        requestDTO.setTransactionType("BUY");
+        requestDTO.setQuantity(1);
+        requestDTO.setType("DAY");
 
-        HttpResponse response = smartConnect.convertPosition(requestObejct);
+
+        HttpResponse response = smartConnect.convertPosition(requestDTO);
         log.info("convertPosition {}", response);
     }
 
@@ -297,14 +299,14 @@ public class Examples {
      */
     public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-        JSONObject obj = new JSONObject();
-        obj.put("todate", "2021-03-09 09:20");
-        obj.put("exchange", "NSE");
-        obj.put("interval", "ONE_MINUTE");
-        obj.put("symboltoken", "3045");
-        obj.put("fromdate", "2021-03-08 09:00");
+        StockHistoryRequestDTO requestDTO = new StockHistoryRequestDTO();
+        requestDTO.setToDate("2021-03-09 09:20");
+        requestDTO.setExchange("NSE");
+        requestDTO.setInterval("ONE_MINUTE");
+        requestDTO.setSymbolToken("3045");
+        requestDTO.setFromDate("2021-03-08 09:00");
 
-        HttpResponse response = smartConnect.candleData(obj);
+        HttpResponse response = smartConnect.candleData(requestDTO);
         log.info("getCandleData {}", response);
     }
 
