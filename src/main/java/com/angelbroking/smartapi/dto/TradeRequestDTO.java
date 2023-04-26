@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.models;
+package com.angelbroking.smartapi.dto;
 
 import lombok.Data;
 

@@ -5,8 +5,8 @@ import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.OrderParams;
-import com.angelbroking.smartapi.models.StockHistoryRequestDTO;
-import com.angelbroking.smartapi.models.TradeRequestDTO;
+import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.dto.TradeRequestDTO;
 import com.angelbroking.smartapi.models.User;
 import lombok.extern.slf4j.Slf4j;
 

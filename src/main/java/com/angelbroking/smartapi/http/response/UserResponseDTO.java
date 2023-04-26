@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.http.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO {
     private boolean status;
     private String message;
-    private String errorcode;
+    @JsonProperty("errorcode")
+    private String errorCode;
     private ObjectData data;
 }

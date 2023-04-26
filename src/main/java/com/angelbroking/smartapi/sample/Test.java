@@ -24,11 +24,11 @@ public class Test {
 
     public static void main(String[] args) throws SmartAPIException {
         try {
-            String apiKey = "zkWvUuLx";
-            String clientId = "D541276";
-            String clientPin = "1501";
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
             GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            String totp_key = "L6FMTTCWRVSK2PW6AF7A2YMO6Q";
+            String totp_key = "";
             String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
             Proxy proxy = Proxy.NO_PROXY;
             SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);

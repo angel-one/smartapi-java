@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.models;
+package com.angelbroking.smartapi.dto;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WsMWRequest {
+public class WsMWRequestDTO {
     private String token;
     private String user;
     @SerializedName("acctid")
@@ -14,13 +14,13 @@ public class WsMWRequest {
     private String task;
     private String channel;
 
-    public WsMWRequest(String token, String user, String acctId) {
+    public WsMWRequestDTO(String token, String user, String acctId) {
         this.token = token;
         this.user = user;
         this.acctId = acctId;
     }
 
-    public WsMWRequest(String token, String user, String acctId, String task, String channel) {
+    public WsMWRequestDTO(String token, String user, String acctId, String task, String channel) {
         this.token = token;
         this.user = user;
         this.acctId = acctId;

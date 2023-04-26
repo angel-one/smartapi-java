@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi.models;
+package com.angelbroking.smartapi.dto;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;

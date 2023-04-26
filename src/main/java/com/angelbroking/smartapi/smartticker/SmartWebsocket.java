@@ -1,7 +1,7 @@
 package com.angelbroking.smartapi.smartticker;
 
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.WsMWJSONRequestDTO;
+import com.angelbroking.smartapi.dto.WsMWJSONRequestDTO;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.google.gson.Gson;
@@ -144,9 +144,8 @@ public class SmartWebsocket {
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 onConnectedListener.onConnected();
-                Runnable runnable = () -> {
+                Runnable runnable = () ->
                     webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey))).toString());
-                };
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
 

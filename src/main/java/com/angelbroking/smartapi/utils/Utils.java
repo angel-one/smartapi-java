@@ -1,7 +1,7 @@
 package com.angelbroking.smartapi.utils;
 
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
-import com.angelbroking.smartapi.models.SmartConnectAuthDTO;
+import com.angelbroking.smartapi.dto.SmartConnectAuthDTO;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;

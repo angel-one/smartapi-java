@@ -2,7 +2,7 @@ package com.angelbroking.smartapi.smartticker.ticker;
 
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
-import com.angelbroking.smartapi.models.WsMWRequest;
+import com.angelbroking.smartapi.dto.WsMWRequestDTO;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.google.gson.Gson;
@@ -104,20 +104,20 @@ public class SmartAPITicker {
 
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-                ws.sendText(createWsCNJSONRequest().toString());
+                ws.sendText(createWsCNJSONRequest());
                 onConnectedListener.onConnected();
 
-                Runnable runnable = () -> ws.sendText(createWsMWJSONRequest().toString());
+                Runnable runnable = () -> ws.sendText(createWsMWJSONRequest());
                 scheduler.schedule(runnable, 0, 1, TimeUnit.MINUTES);
 
             }
 
             private String createWsCNJSONRequest() {
-                return new JSONObject(new Gson().toJson(new WsMWRequest(null,params.getClientId(),params.getClientId(),"cn",""))).toString();
+                return new JSONObject(new Gson().toJson(new WsMWRequestDTO(null,params.getClientId(),params.getClientId(),"cn",""))).toString();
             }
 
             private String createWsMWJSONRequest() {
-                return new JSONObject(new Gson().toJson(new WsMWRequest(params.getFeedToken(),params.getClientId(),params.getClientId(),"hb",""))).toString();
+                return new JSONObject(new Gson().toJson(new WsMWRequestDTO(params.getFeedToken(),params.getClientId(),params.getClientId(),"hb",""))).toString();
             }
 
             @Override
@@ -164,7 +164,7 @@ public class SmartAPITicker {
 
         if (ws != null) {
             if (ws.isOpen()) {
-                ws.sendText(createWsMWJSONRequest().toString());
+                ws.sendText(createWsMWJSONRequest());
             } else {
                 if (onErrorListener != null) {
                     onErrorListener.onError(new SmartAPIException(TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
@@ -178,7 +178,7 @@ public class SmartAPITicker {
     }
 
     private String createWsMWJSONRequest() {
-        return new JSONObject(new Gson().toJson(new WsMWRequest(this.params.getFeedToken(),this.params.getClientId(),this.params.getClientId(),this.params.getTask(),this.params.getScript()))).toString();
+        return new JSONObject(new Gson().toJson(new WsMWRequestDTO(this.params.getFeedToken(),this.params.getClientId(),this.params.getClientId(),this.params.getTask(),this.params.getScript()))).toString();
     }
 
     public void connect() {
