@@ -71,19 +71,19 @@ public class Validators {
         return true;
     }
 
-    private void validateGreaterThanZero(Integer value, String fieldName) throws InvalidParamsException {
+    public void validateGreaterThanZero(Integer value, String fieldName) throws InvalidParamsException {
         if (value == null || value <= 0) {
             throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
-    private void validateGreaterThanZeroDouble(Double value, String fieldName) throws InvalidParamsException {
+    public void validateGreaterThanZeroDouble(Double value, String fieldName) throws InvalidParamsException {
         if (value == null || value <= 0) {
             throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
-    private void validateNotEmpty(String value, String fieldName) throws InvalidParamsException {
+    public void validateNotEmpty(String value, String fieldName) throws InvalidParamsException {
         if (value == null || value.isEmpty()) {
             throw new InvalidParamsException(String.format("%s is required", fieldName));
         }

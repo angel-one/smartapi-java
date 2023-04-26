@@ -96,6 +96,8 @@ public class SmartWebsocket {
         }
     }
 
+
+
     public static byte[] decompress(byte[] compressedTxt) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try (OutputStream ios = new InflaterOutputStream(os)) {

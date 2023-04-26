@@ -112,7 +112,7 @@ public class Examples {
         orderParams.setSymbolToken("3045");
         orderParams.setProductType("INTRADAY");
         orderParams.setOrderType("LIMIT");
-        HttpResponse order = smartConnect.modifyOrder("230425000323098", orderParams, "NORMAL");
+        HttpResponse order = smartConnect.modifyOrder("230426000445029", orderParams, "NORMAL");
 
         log.info("modifyOrder {}", order);
         return order;
@@ -128,7 +128,7 @@ public class Examples {
         // Order modify request will return order model which will contain only
         // order_id.
         // Cancel order will return order model which will only have orderId.
-        HttpResponse order = smartConnect.cancelOrder("230425000342638", "NORMAL");
+        HttpResponse order = smartConnect.cancelOrder("230426000445029", "NORMAL");
         log.info("cancelOrder {}", order);
         return order;
     }

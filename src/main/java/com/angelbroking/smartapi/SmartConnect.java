@@ -623,4 +623,5 @@ public class SmartConnect {
     public void setUserId(String userId) {
         smartConnectParams.setUserId(userId);
     }
+
 }

@@ -43,7 +43,8 @@
         <junit.version>4.12</junit.version>
         <mockito-junit-jupiter.version>4.4.0</mockito-junit-jupiter.version>
         <okhttp.mockwebserver.version>4.4.0</okhttp.mockwebserver.version>
-
+        <google-auth.version>1.4.0</google-auth.version>
+        <wiremock.version>2.27.2</wiremock.version>
     </properties>
 
     <build>
@@ -168,12 +169,17 @@
             <version>${okhttp.mockwebserver.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.warrenstrange</groupId>
             <artifactId>googleauth</artifactId>
-            <version>1.4.0</version>
+            <version>${google-auth.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

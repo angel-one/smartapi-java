@@ -11,7 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -20,18 +24,21 @@ import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SmartAPIRequestHandlerTest {
+@ExtendWith(MockitoExtension.class)
+class SmartAPIRequestHandlerTest {
 
     private static MockWebServer server;
-    private static SmartAPIRequestHandler requestHandler;
+
+    @Mock
+    private ApiHeaders mockApiHeaders;
+
+    private SmartAPIRequestHandler requestHandler;
 
     @BeforeAll
     public static void setUp() throws IOException {
         // Start a mock web server
         server = new MockWebServer();
         server.start();
-
-        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY,TIME_OUT_IN_MILLIS);
     }
 
     @AfterAll
@@ -40,13 +47,14 @@ public class SmartAPIRequestHandlerTest {
         server.shutdown();
     }
 
+    @BeforeEach
+    void init() {
+        requestHandler = new SmartAPIRequestHandler(Proxy.NO_PROXY, TIME_OUT_IN_MILLIS);
+    }
 
     @Test
     void testGetRequest() throws IOException, SmartAPIException, JSONException, InterruptedException {
-        // create a mock web server
-        MockWebServer server = new MockWebServer();
-
-        // set the response for the server
+        // Set up the mock web server response
         JSONObject response = new JSONObject();
         response.put("key1", "value1");
         response.put("key2", "value2");
@@ -56,20 +64,19 @@ public class SmartAPIRequestHandlerTest {
                 .setBody(response.toString());
         server.enqueue(mockResponse);
 
-
-        // send a GET request to the server
+        // Send a GET request to the server
         String apiKey = "test-api-key";
         String url = server.url("/test-url").toString();
         String accessToken = "test-access-token";
         HttpResponse responseJson = requestHandler.getRequest(apiKey, url, accessToken);
-        // verify the response
+
+        // Verify the response
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
         assertEquals("/test-url", recordedRequest.getPath());
         assertEquals("Bearer test-access-token", recordedRequest.getHeader("Authorization"));
         assertEquals(response.toString(), responseJson.getBody().toString());
     }
-
     @Test
      void testApiHeaders() throws JSONException {
         ApiHeaders headers = requestHandler.apiHeaders();

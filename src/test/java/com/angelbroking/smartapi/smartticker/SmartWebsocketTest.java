@@ -2,7 +2,6 @@ package com.angelbroking.smartapi.smartticker;
 
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -10,11 +9,13 @@ import org.mockito.Mock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 
- class SmartWebsocketTest {
+class SmartWebsocketTest {
 
     private static final String CLIENT_ID = "clientId";
     private static final String JWT_TOKEN = "jwtToken";
@@ -23,6 +24,14 @@ import static org.mockito.Mockito.mock;
     private static final String FEED_TYPE = "feedType";
 
     @Mock
+    private SmartWSOnConnect onConnectedListener;
+
+    @Mock
+    private WebSocket webSocket;
+
+    @Mock
+    private ScheduledExecutorService service;
+
     private SmartWebsocket smartWebsocket;
 
     private SmartWSOnTicks onTicksListener;
@@ -34,12 +43,12 @@ import static org.mockito.Mockito.mock;
        SmartWSOnError  onErrorListener = mock(SmartWSOnError.class);
         smartWebsocket.setOnTickerArrivalListener(onTicksListener);
         smartWebsocket.setOnErrorListener(onErrorListener);
-    }
+}
 
     @Test
      void testConstructor() {
-        Assertions.assertNotNull(smartWebsocket);
-        Assertions.assertNotNull(smartWebsocket.getWebsocketAdapter());
+        assertNotNull(smartWebsocket);
+        assertNotNull(smartWebsocket.getWebsocketAdapter());
     }
 
     @Test
@@ -51,7 +60,11 @@ import static org.mockito.Mockito.mock;
         // set mock implementation of SmartWSOnConnect
         smartWebsocket.setOnConnectedListener(mock(SmartWSOnConnect.class));
         adapter.onConnected(webSocket, headers);
-        Assertions.assertNotNull(onTicksListener);
+        assertNotNull(onTicksListener);
     }
-
+    @Test
+    void testGetWebsocketAdapter() {
+        assertNotNull(smartWebsocket.getWebsocketAdapter());
+    }
 }
+

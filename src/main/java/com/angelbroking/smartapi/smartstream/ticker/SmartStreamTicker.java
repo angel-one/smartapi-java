@@ -41,7 +41,7 @@ import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_NULL_CONNECTED;
 
 @Slf4j
-    public class SmartStreamTicker {
+public class SmartStreamTicker {
 
     private Routes routes = new Routes();
     private SmartStreamListener smartStreamListener;
