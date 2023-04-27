@@ -1,12 +1,11 @@
 package com.angelbroking.smartapi.utils;
 
-import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.angelbroking.smartapi.dto.SmartConnectAuthDTO;
+import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,7 +70,7 @@ public class Utils {
     public static String createLoginParams(String clientCode, String password, String totp) {
         // Create JSON params object needed to be sent to api.
 
-        return new JSONObject(new Gson().toJson(new SmartConnectAuthDTO(clientCode, password, totp))).toString();
+        return new Gson().toJson(new SmartConnectAuthDTO(clientCode, password, totp));
 
 
     }

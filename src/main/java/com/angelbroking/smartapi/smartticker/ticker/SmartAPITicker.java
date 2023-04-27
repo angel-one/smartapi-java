@@ -1,8 +1,8 @@
 package com.angelbroking.smartapi.smartticker.ticker;
 
+import com.angelbroking.smartapi.dto.WsMWRequestDTO;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
-import com.angelbroking.smartapi.dto.WsMWRequestDTO;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.google.gson.Gson;
@@ -13,7 +13,6 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
@@ -113,11 +112,11 @@ public class SmartAPITicker {
             }
 
             private String createWsCNJSONRequest() {
-                return new JSONObject(new Gson().toJson(new WsMWRequestDTO(null,params.getClientId(),params.getClientId(),"cn",""))).toString();
+                return new Gson().toJson(new WsMWRequestDTO(null,params.getClientId(),params.getClientId(),"cn",""));
             }
 
             private String createWsMWJSONRequest() {
-                return new JSONObject(new Gson().toJson(new WsMWRequestDTO(params.getFeedToken(),params.getClientId(),params.getClientId(),"hb",""))).toString();
+                return new Gson().toJson(new WsMWRequestDTO(params.getFeedToken(),params.getClientId(),params.getClientId(),"hb",""));
             }
 
             @Override
@@ -178,7 +177,7 @@ public class SmartAPITicker {
     }
 
     private String createWsMWJSONRequest() {
-        return new JSONObject(new Gson().toJson(new WsMWRequestDTO(this.params.getFeedToken(),this.params.getClientId(),this.params.getClientId(),this.params.getTask(),this.params.getScript()))).toString();
+        return new Gson().toJson(new WsMWRequestDTO(this.params.getFeedToken(),this.params.getClientId(),this.params.getClientId(),this.params.getTask(),this.params.getScript()));
     }
 
     public void connect() {

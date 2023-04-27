@@ -1,5 +1,7 @@
 package com.angelbroking.smartapi;
 
+import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.dto.TradeRequestDTO;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
@@ -8,8 +10,6 @@ import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.GttRuleParams;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.SmartConnectParams;
-import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
-import com.angelbroking.smartapi.dto.TradeRequestDTO;
 import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.smartstream.models.LTPParams;
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -159,7 +158,7 @@ public class SmartConnect {
             orderParams.setVariety(variety);
             validator.orderValidator(orderParams);
             String url = routes.get(SMART_CONNECT_API_ORDER_PLACE);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(orderParams)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
             } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -188,7 +187,7 @@ public class SmartConnect {
             Validators validator = new Validators();
             validator.modifyOrderValidator(orderParams);
             String url = routes.get(SMART_CONNECT_API_ORDER_MODIFY);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(orderParams)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -216,7 +215,7 @@ public class SmartConnect {
             OrderParams orderParams = new OrderParams();
             orderParams.setVariety(variety);
             orderParams.setOrderId(orderId);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(orderParams)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -268,7 +267,7 @@ public class SmartConnect {
             ltpParams.setTradingSymbol(tradingSymbol);
             ltpParams.setSymbolToken(symboltoken);
             String url = routes.get(SMART_CONNECT_API_LTP_DATA);
-            return  smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(ltpParams)).toString(), smartConnectParams.getAccessToken());
+            return  smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(ltpParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -386,7 +385,7 @@ public class SmartConnect {
     public HttpResponse convertPosition(TradeRequestDTO params) throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(params)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(params), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -412,7 +411,7 @@ public class SmartConnect {
             Validators validator = new Validators();
             validator.gttParamsValidator(gttParams);
             String url = routes.get(SMART_CONNECT_API_GTT_CREATE);
-           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(gttParams)).toString(), smartConnectParams.getAccessToken());
+           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -440,7 +439,7 @@ public class SmartConnect {
             gttParams.setId(id);
             validator.gttModifyRuleValidator(gttParams);
             String url = routes.get(SMART_CONNECT_API_GTT_MODIFY);
-           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(gttParams)).toString(), smartConnectParams.getAccessToken());
+           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -470,7 +469,7 @@ public class SmartConnect {
             gttParams.setSymbolToken(symboltoken);
             gttParams.setExchange(exchange);
             String url = routes.get(SMART_CONNECT_API_GTT_CANCEL);
-           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(gttParams)).toString(), smartConnectParams.getAccessToken());
+           return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -498,7 +497,7 @@ public class SmartConnect {
             gttParams.setId(id);
 
             String url = routes.get(SMART_CONNECT_API_GTT_DETAILS);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(gttParams)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url,new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -528,7 +527,7 @@ public class SmartConnect {
             gttRuleParams.setPage(page);
             gttRuleParams.setCount(count);
             String url = routes.get(SMART_CONNECT_API_GTT_LIST);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(gttRuleParams)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url,new Gson().toJson(gttRuleParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -552,7 +551,7 @@ public class SmartConnect {
     public HttpResponse candleData(StockHistoryRequestDTO params) throws SmartAPIException, IOException {
         try {
             String url = routes.get(SMART_CONNECT_API_CANDLE_DATA);
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url,  new JSONObject(new Gson().toJson(params)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(params), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -577,7 +576,7 @@ public class SmartConnect {
             String url = routes.get(SMART_CONNECT_API_USER_LOGOUT);
             User user = new User();
             user.setUserId(smartConnectParams.getUserId());
-            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new JSONObject(new Gson().toJson(user)).toString(), smartConnectParams.getAccessToken());
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url,new Gson().toJson(user), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));

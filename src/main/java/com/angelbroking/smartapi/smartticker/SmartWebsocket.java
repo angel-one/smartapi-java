@@ -1,7 +1,7 @@
 package com.angelbroking.smartapi.smartticker;
 
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.dto.WsMWJSONRequestDTO;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.google.gson.Gson;
@@ -13,7 +13,6 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
@@ -145,7 +144,7 @@ public class SmartWebsocket {
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 onConnectedListener.onConnected();
                 Runnable runnable = () ->
-                    webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey))).toString());
+                    webSocket.sendText(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey)));
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
 
@@ -233,7 +232,7 @@ public class SmartWebsocket {
 
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-                webSocket.sendText(new JSONObject(new Gson().toJson(new WsMWJSONRequestDTO(this.actionType, this.feedType, this.jwtToken, this.clientId, this.apiKey))).toString());
+                webSocket.sendText(new Gson().toJson(new WsMWJSONRequestDTO(this.actionType, this.feedType, this.jwtToken, this.clientId, this.apiKey)));
 
             } else {
                 if (onErrorListener != null) {
