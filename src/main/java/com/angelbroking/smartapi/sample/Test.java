@@ -24,11 +24,11 @@ public class Test {
 
     public static void main(String[] args) throws SmartAPIException {
         try {
-            String apiKey = "";
-            String clientId = "";
-            String clientPin = "";
+            String apiKey = "zkWvUuLx";
+            String clientId = "D541276";
+            String clientPin = "1501";
             GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            String totp_key = "";
+            String totp_key = "L6FMTTCWRVSK2PW6AF7A2YMO6Q";
             String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
             Proxy proxy = Proxy.NO_PROXY;
             SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
@@ -38,14 +38,13 @@ public class Test {
             User user = smartConnect.generateSession(clientId, clientPin, tOTP);
             smartConnect.setAccessToken(user.getAccessToken());
             smartConnect.setUserId(user.getUserId());
-
+            log.info("SmartStreamTicker");
             // SmartStreamTicker
             String feedToken = user.getFeedToken();
             SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImpl());
             ticker.connect();
             ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
 
-            log.info("DONE");
 
             Examples examples = new Examples();
             log.info("getProfile");
@@ -106,7 +105,7 @@ public class Test {
             examples.logout(smartConnect);
 
         } catch (Exception e) {
-            log.info("Exception: {}", e.getMessage());
+            log.info("Exception: {}", e);
         }
 
     }

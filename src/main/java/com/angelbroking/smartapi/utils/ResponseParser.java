@@ -34,7 +34,7 @@ public class ResponseParser {
      * @throws JSONException is thrown when there is error while parsing response.
      */
     public static User parseResponse(HttpResponse httpResponse) throws JSONException {
-        JSONObject  response = new JSONObject(httpResponse.getBody());
+        JSONObject  response = new JSONObject(httpResponse.getBody().toString());
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (jsonElement, type, jsonDeserializationContext) -> {
             if (jsonElement == null || jsonElement.getAsString().isEmpty()) {

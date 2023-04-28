@@ -1,12 +1,12 @@
 package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.dto.TradeRequestDTO;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.GttParams;
 import com.angelbroking.smartapi.models.OrderParams;
-import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
-import com.angelbroking.smartapi.dto.TradeRequestDTO;
 import com.angelbroking.smartapi.models.User;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +78,6 @@ public class Examples {
      * Place order.
      */
     public HttpResponse placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-
         OrderParams orderParams = new OrderParams();
         orderParams.setDuration("DAY");
         orderParams.setQuantity(1);
@@ -92,7 +91,6 @@ public class Examples {
         orderParams.setOrderType("LIMIT");
         HttpResponse order = smartConnect.placeOrder(orderParams, "NORMAL");
         log.info("placeOrder: {}", order.toString());
-
         return order;
     }
 

@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.http;
 
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.response.HttpResponse;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
@@ -10,6 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 
 public class SmartAPIResponseHandlerTest {
@@ -17,7 +20,7 @@ public class SmartAPIResponseHandlerTest {
     private final SmartAPIResponseHandler handler = new SmartAPIResponseHandler();
 
     @Test
-    public void testHandleSuccess() throws JSONException {
+    public void testHandleSuccess() throws JSONException, IOException, SmartAPIException {
         JSONObject responseJson = new JSONObject();
         responseJson.put("status", "success");
 
@@ -37,7 +40,7 @@ public class SmartAPIResponseHandlerTest {
     }
 
     @Test
-    public void testHandleFailure() throws JSONException {
+    public void testHandleFailure() throws JSONException, IOException, SmartAPIException {
         JSONObject responseJson = new JSONObject();
         responseJson.put("status", "failure");
 

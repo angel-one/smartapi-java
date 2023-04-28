@@ -114,7 +114,6 @@ public class SmartAPIRequestHandler {
                 body = responseBody.string();
             }
         }
-        log.info("Body {}", body);
         return new SmartAPIResponseHandler().handle(response, body);
 
     }
@@ -157,7 +156,7 @@ public class SmartAPIRequestHandler {
      * @throws IOException       is thrown when there is a connection related error.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public HttpResponse postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, JSONException {
+    public HttpResponse postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createJsonPostRequest(url, jsonArray, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -182,7 +181,7 @@ public class SmartAPIRequestHandler {
      * @throws IOException       is thrown when there is a connection related error.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public HttpResponse putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException {
+    public HttpResponse putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createPutRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";
@@ -208,7 +207,7 @@ public class SmartAPIRequestHandler {
      * @throws IOException       is thrown when there is a connection related error.
      * @throws JSONException     is thrown for parsing errors.
      */
-    public HttpResponse deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException {
+    public HttpResponse deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createDeleteRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
         String body = "";

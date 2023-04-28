@@ -1,5 +1,6 @@
 package com.angelbroking.smartapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class Order {
 
 	private String duration;
 
+	@JsonProperty("tradingsymbol")
 	@SerializedName("tradingsymbol")
 	private String tradingSymbol;
 
@@ -40,6 +42,7 @@ public class Order {
 
 	private String exchange;
 
+	@JsonProperty("orderid")
 	@SerializedName("orderid")
 	private String orderId;
 
@@ -106,6 +109,5 @@ public class Order {
 
 	@SerializedName("filltime")
 	private String fillTime;
-
 
 }

@@ -65,4 +65,11 @@ public class SmartConnectParams {
         return Optional.ofNullable(userId).orElseThrow(() -> new SmartConnectException("The user ID is missing."));
     }
 
+    public static void setSessionExpiryHook(SessionExpiryHook hook) {
+        sessionExpiryHook = hook;
+    }
+
+    public static SessionExpiryHook getSessionExpiryHook() {
+        return sessionExpiryHook;
+    }
 }

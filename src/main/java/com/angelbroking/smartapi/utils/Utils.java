@@ -2,6 +2,7 @@ package com.angelbroking.smartapi.utils;
 
 import com.angelbroking.smartapi.dto.SmartConnectAuthDTO;
 import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -19,6 +20,10 @@ import java.util.Properties;
 
 @Slf4j
 public class Utils {
+
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Gson gson = new Gson();
 
     // Private constructor to prevent instantiation from outside the class
     private Utils() {
@@ -70,7 +75,7 @@ public class Utils {
     public static String createLoginParams(String clientCode, String password, String totp) {
         // Create JSON params object needed to be sent to api.
 
-        return new Gson().toJson(new SmartConnectAuthDTO(clientCode, password, totp));
+        return gson.toJson(new SmartConnectAuthDTO(clientCode, password, totp));
 
 
     }
@@ -129,3 +134,4 @@ public class Utils {
         return clientPublicIP;
     }
 }
+
