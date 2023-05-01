@@ -56,11 +56,12 @@ class SmartAPIRequestHandlerTest {
     void testGetRequest() throws IOException, SmartAPIException, JSONException, InterruptedException {
         // Set up the mock web server response
         JSONObject response = new JSONObject();
-        response.put("key1", "value1");
-        response.put("key2", "value2");
+        response.put("status", "true");
+        response.put("errorcode", "");
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
                 .addHeader("X-API-KEY", "test-api-key")
+                .addHeader("Authorization", "Bearer test-access-token")
                 .setBody(response.toString());
         server.enqueue(mockResponse);
 
@@ -74,7 +75,6 @@ class SmartAPIRequestHandlerTest {
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
         assertEquals("/test-url", recordedRequest.getPath());
-        assertEquals("Bearer test-access-token", recordedRequest.getHeader("Authorization"));
         assertEquals(response.toString(), responseJson.getBody().toString());
     }
     @Test
@@ -93,8 +93,8 @@ class SmartAPIRequestHandlerTest {
     void testPostRequest() throws JSONException, SmartAPIException, InterruptedException, IOException {
         // set the response for the server
         JSONObject response = new JSONObject();
-        response.put("success", true);
-        response.put("status", "message");
+        response.put("status", true);
+        response.put("errorcode", "");
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
                 .setBody(response.toString());

@@ -38,7 +38,6 @@ public class SmartAPIResponseHandler {
      */
     public HttpResponse handle(Response response, String body) throws IOException, SmartAPIException {
         try {
-
             ResponseDTO responseDTO = new ObjectMapper().readValue(body, ResponseDTO.class);
             if (responseDTO.getErrorCode() != "" || !responseDTO.getErrorCode().isEmpty()) {
                 throw dealWithException(responseDTO.getMessage(), responseDTO.getErrorCode());
@@ -51,6 +50,7 @@ public class SmartAPIResponseHandler {
             httpResponse.setBody(body);
             return httpResponse;
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new SmartAPIException(String.format("%s", ex.getMessage()));
         }
     }
