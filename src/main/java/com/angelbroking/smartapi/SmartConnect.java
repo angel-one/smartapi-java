@@ -98,8 +98,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
         user.setAccessToken(responseDTO.getData().getJwtToken());
@@ -123,8 +123,8 @@ public class SmartConnect {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
         }
     }
 
@@ -144,8 +144,8 @@ public class SmartConnect {
             String url = routes.get(SMART_CONNECT_API_ORDER_PLACE);
             return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
         } catch (IOException ex) {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
@@ -180,8 +180,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
         }
     }
 
@@ -207,8 +207,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -231,8 +231,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -260,8 +260,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -279,8 +279,8 @@ public class SmartConnect {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -300,8 +300,8 @@ public class SmartConnect {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -322,8 +322,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -341,8 +341,8 @@ public class SmartConnect {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -364,11 +364,8 @@ public class SmartConnect {
             log.error("{} {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
             throw new IOException(String.format("%s: %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.info("convertPosition"+ex.toString());
-            log.info("convertPosition"+ex.getMessage());
-            log.info("convertPosition"+ex);
             log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.toString()));
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
         }
     }
 
@@ -392,8 +389,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
 
@@ -420,8 +417,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
 
@@ -451,8 +448,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -479,8 +476,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
 
@@ -510,8 +507,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
 
@@ -534,8 +531,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }
@@ -560,8 +557,8 @@ public class SmartConnect {
             log.error("{} {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
             throw new JSONException(String.format("%s: %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
         } catch (SmartAPIException ex) {
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
-            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex.getMessage()));
+            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s: %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
 
         }
     }

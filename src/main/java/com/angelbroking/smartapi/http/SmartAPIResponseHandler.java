@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
-
 /**
  * Response handler for handling all the responses.
  */
@@ -53,10 +51,6 @@ public class SmartAPIResponseHandler {
             httpResponse.setBody(body);
             return httpResponse;
         } catch (Exception ex) {
-            log.info("handle"+ex.toString());
-            log.info("handle1"+ex.getMessage());
-            log.info("handle2"+ex);
-            log.error("{} {}", SMART_API_EXCEPTION_OCCURRED, ex.getMessage());
             throw new SmartAPIException(String.format("%s", ex.getMessage()));
         }
     }
@@ -92,7 +86,6 @@ public class SmartAPIResponseHandler {
                 return new PermissionException(message, code);
 
             default:
-                log.info("switch: "+message);
                 return new SmartAPIException(message);
         }
     }

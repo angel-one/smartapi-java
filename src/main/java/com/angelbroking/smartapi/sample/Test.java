@@ -24,12 +24,12 @@ public class Test {
 
     public static void main(String[] args) throws SmartAPIException {
         try {
-            String apiKey = "zkWvUuLx";
-            String clientId = "D541276";
-            String clientPin = "1501";
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
             GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            String totp_key = "L6FMTTCWRVSK2PW6AF7A2YMO6Q";
-            String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
+            String toptKey = "";
+            String tOTP = String.valueOf(gAuth.getTotpPassword(toptKey));
             Proxy proxy = Proxy.NO_PROXY;
             SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 
@@ -52,7 +52,7 @@ public class Test {
 
             log.info("placeOrder");
             HttpResponse placeOrder = examples.placeOrder(smartConnect);
-            JSONObject placeOrderJSONObject = new JSONObject(placeOrder.getBody().toString());
+            JSONObject placeOrderJSONObject = new JSONObject(placeOrder.getBody());
             JSONObject placeOrderData = placeOrderJSONObject.getJSONObject("data");
 
             log.info("modifyOrder");
@@ -84,10 +84,9 @@ public class Test {
 
             log.info("createRule");
             HttpResponse createRuleID = examples.createRule(smartConnect);
-            JSONObject loginResultObject = new JSONObject(createRuleID.getBody().toString());
+            JSONObject loginResultObject = new JSONObject(createRuleID);
             JSONObject obj = loginResultObject.getJSONObject("data");
             log.info("ModifyRule");
-            HttpResponse apiResponse = examples.modifyRule(smartConnect, String.valueOf(obj.getInt("id")));
 
 			log.info("cancelRule");
 			examples.cancelRule(smartConnect,String.valueOf(obj.getInt("id")));
