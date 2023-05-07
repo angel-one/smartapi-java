@@ -85,6 +85,8 @@ public class Constants {
     public static final String CLIENT_ID_HEADER = "x-client-code";
     public static final String FEED_TOKEN_HEADER = "x-feed-token";
     public static final String CLIENT_LIB_HEADER = "x-client-lib";
+    public static final String CLIENT_LIB_HEADER_VALUE = "JAVA";
+
 
 
     /**

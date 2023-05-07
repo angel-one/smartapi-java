@@ -28,8 +28,8 @@ public class Test {
             String clientId = "";
             String clientPin = "";
             GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            String toptKey = "";
-            String tOTP = String.valueOf(gAuth.getTotpPassword(toptKey));
+            String totp_key = "";
+            String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
             Proxy proxy = Proxy.NO_PROXY;
             SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 
@@ -44,6 +44,7 @@ public class Test {
             SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImpl());
             ticker.connect();
             ticker.subscribe(SmartStreamSubsMode.QUOTE, getTokens());
+
 
 
             Examples examples = new Examples();

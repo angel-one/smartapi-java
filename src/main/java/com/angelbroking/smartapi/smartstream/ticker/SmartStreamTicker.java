@@ -33,6 +33,7 @@ import java.util.Set;
 
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_ID_HEADER;
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER;
+import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER_VALUE;
 import static com.angelbroking.smartapi.utils.Constants.FEED_TOKEN_HEADER;
 import static com.angelbroking.smartapi.utils.Constants.PARAM_ACTION;
 import static com.angelbroking.smartapi.utils.Constants.PARAM_MODE;
@@ -76,7 +77,7 @@ public class SmartStreamTicker {
             webSocket = new WebSocketFactory().setVerifyHostname(false).createSocket(routes.getSmartStreamWSURI()).setPingInterval(PING_INTERVAL);
             webSocket.addHeader(CLIENT_ID_HEADER, clientId);
             webSocket.addHeader(FEED_TOKEN_HEADER, feedToken);
-            webSocket.addHeader(CLIENT_LIB_HEADER, "JAVA");
+            webSocket.addHeader(CLIENT_LIB_HEADER, CLIENT_LIB_HEADER_VALUE);
             webSocket.addListener(getWebsocketAdapter());
         } catch (IOException e) {
             if (smartStreamListener != null) {
@@ -191,6 +192,7 @@ public class SmartStreamTicker {
     }
 
     private void reconnectAndResubscribe() throws WebSocketException {
+        log.info("resubscibed");
         init();
         connect();
         resubscribe();
@@ -202,6 +204,7 @@ public class SmartStreamTicker {
     public void disconnect() {
 
         if (webSocket != null && webSocket.isOpen()) {
+            log.info("inside if 206");
             webSocket.disconnect();
         }
     }
