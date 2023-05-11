@@ -80,13 +80,14 @@ public class Test {
             log.info("getPosition");
             examples.getPosition(smartConnect);
 
-            log.info("convertPosition");
-            examples.convertPosition(smartConnect);
+//            log.info("convertPosition");
+//            examples.convertPosition(smartConnect);
 
             log.info("createRule");
             HttpResponse createRuleID = examples.createRule(smartConnect);
             JSONObject loginResultObject = new JSONObject(createRuleID);
-            JSONObject obj = loginResultObject.getJSONObject("data");
+            JSONObject loginResultObject2 = new JSONObject(loginResultObject.getString("body"));
+           JSONObject obj = loginResultObject2.getJSONObject("data");
             log.info("ModifyRule");
 
 			log.info("cancelRule");

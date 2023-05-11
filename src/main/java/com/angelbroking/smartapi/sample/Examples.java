@@ -191,17 +191,32 @@ public class Examples {
      */
     public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-        TradeRequestDTO requestDTO = new TradeRequestDTO();
-        requestDTO.setExchange("NSE");
-        requestDTO.setOldProductType("DELIVERY");
-        requestDTO.setNewProductType("MARGIN");
-        requestDTO.setTradingSymbol(SYMBOL_SBINEQ);
-        requestDTO.setTransactionType("BUY");
-        requestDTO.setQuantity(1);
-        requestDTO.setType("DAY");
+        TradeRequestDTO tradeRequestDTO = new TradeRequestDTO();
+        tradeRequestDTO.setExchange("NSE");
+        tradeRequestDTO.setSymbolToken("2885");
+        tradeRequestDTO.setOldProductType("DELIVERY");
+        tradeRequestDTO.setNewProductType("INTRADAY");
+        tradeRequestDTO.setTradingSymbol("RELIANCE-EQ");
+        tradeRequestDTO.setSymbolName("RELIANCE");
+        tradeRequestDTO.setInstrumentType("");
+        tradeRequestDTO.setPriceDen("1");
+        tradeRequestDTO.setPriceNum("1");
+        tradeRequestDTO.setGenDen("1");
+        tradeRequestDTO.setGenNum("1");
+        tradeRequestDTO.setPrecision("2");
+        tradeRequestDTO.setMultiplier("-1");
+        tradeRequestDTO.setBoardLotSize("1");
+        tradeRequestDTO.setBuyQty("1");
+        tradeRequestDTO.setSellQty("0");
+        tradeRequestDTO.setBuyAmount("2235.80");
+        tradeRequestDTO.setSellAmount("0");
+        tradeRequestDTO.setTransactionType("BUY");
+        tradeRequestDTO.setQuantity(1);
+        tradeRequestDTO.setType("DAY");
 
 
-        HttpResponse response = smartConnect.convertPosition(requestDTO);
+
+        HttpResponse response = smartConnect.convertPosition(tradeRequestDTO);
         log.info("convertPosition {}", response);
     }
 
@@ -296,13 +311,12 @@ public class Examples {
      * Historic Data
      */
     public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
-
         StockHistoryRequestDTO requestDTO = new StockHistoryRequestDTO();
-        requestDTO.setToDate("2021-03-09 09:20");
+        requestDTO.setToDate("2021-03-10 11:00");
         requestDTO.setExchange("NSE");
-        requestDTO.setInterval("ONE_MINUTE");
+        requestDTO.setInterval("FIVE_MINUTE");
         requestDTO.setSymbolToken("3045");
-        requestDTO.setFromDate("2021-03-08 09:00");
+        requestDTO.setFromDate("2021-02-10 09:15");
 
         HttpResponse response = smartConnect.candleData(requestDTO);
         log.info("getCandleData {}", response);

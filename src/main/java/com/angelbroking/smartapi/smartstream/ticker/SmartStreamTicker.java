@@ -1,7 +1,7 @@
 package com.angelbroking.smartapi.smartstream.ticker;
 
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.dto.WsMWRequestDTO;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.routes.Routes;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.LTP;
@@ -46,11 +46,11 @@ import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_NULL_CONNECTE
 @Slf4j
 public class SmartStreamTicker {
 
-    private Routes routes = new Routes();
-    private SmartStreamListener smartStreamListener;
+    private final Routes routes = new Routes();
+    private final SmartStreamListener smartStreamListener;
     private WebSocket webSocket;
-    private String clientId;
-    private String feedToken;
+    private final String clientId;
+    private final String feedToken;
 
     /**
      * Initializes the SmartStreamTicker.
@@ -144,7 +144,7 @@ public class SmartStreamTicker {
                         }
                         default:
                             smartStreamListener.onError(getErrorHolder(
-                             new SmartAPIException("SubsMode=${mode} in the response is not handled.")));
+                                    new SmartAPIException("SubsMode=${mode} in the response is not handled.")));
                             break;
                     }
                     super.onBinaryMessage(websocket, binary);
@@ -180,7 +180,7 @@ public class SmartStreamTicker {
                     }
 
                 } catch (Exception e) {
-                  log.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
 
@@ -192,7 +192,6 @@ public class SmartStreamTicker {
     }
 
     private void reconnectAndResubscribe() throws WebSocketException {
-        log.info("resubscibed");
         init();
         connect();
         resubscribe();
@@ -204,7 +203,6 @@ public class SmartStreamTicker {
     public void disconnect() {
 
         if (webSocket != null && webSocket.isOpen()) {
-            log.info("inside if 206");
             webSocket.disconnect();
         }
     }
@@ -284,7 +282,7 @@ public class SmartStreamTicker {
     public void resubscribe() {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-                webSocket.sendText(new Gson().toJson(new WsMWRequestDTO(this.feedToken,this.clientId,this.clientId)));
+                webSocket.sendText(new Gson().toJson(new WsMWRequestDTO(this.feedToken, this.clientId, this.clientId)));
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }
