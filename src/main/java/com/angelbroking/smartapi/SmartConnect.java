@@ -1,14 +1,5 @@
 package com.angelbroking.smartapi;
 
-import java.io.IOException;
-import java.net.Proxy;
-import java.util.List;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.angelbroking.smartapi.http.SessionExpiryHook;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
@@ -18,17 +9,25 @@ import com.angelbroking.smartapi.models.Order;
 import com.angelbroking.smartapi.models.OrderParams;
 import com.angelbroking.smartapi.models.TokenSet;
 import com.angelbroking.smartapi.models.User;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.Proxy;
+import java.util.List;
 
 public class SmartConnect {
 	public static SessionExpiryHook sessionExpiryHook = null;
 	public static boolean ENABLE_LOGGING = false;
 	private Proxy proxy = null;
-	private String apiKey;
+	String apiKey;
 	private String accessToken;
 	private String refreshToken;
 	private Routes routes = new Routes();
 	private String userId;
-	private SmartAPIRequestHandler smartAPIRequestHandler;
+	SmartAPIRequestHandler smartAPIRequestHandler;
 
 	public SmartConnect() {
 

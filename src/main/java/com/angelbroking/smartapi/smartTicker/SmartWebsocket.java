@@ -1,5 +1,17 @@
 package com.angelbroking.smartapi.smartTicker;
 
+import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.utils.NaiveSSLContext;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,29 +26,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterOutputStream;
 
-import javax.net.ssl.SSLContext;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.angelbroking.smartapi.Routes;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.utils.NaiveSSLContext;
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
-
 public class SmartWebsocket {
 
 	private Routes routes = new Routes();
 	private final String wsuri = routes.getSWsuri();
-	private SmartWSOnTicks onTickerArrivalListener;
-	private SmartWSOnConnect onConnectedListener;
-	private SmartWSOnDisconnect onDisconnectedListener;
-	private SmartWSOnError onErrorListener;
-	private WebSocket ws;
+	SmartWSOnTicks onTickerArrivalListener;
+	SmartWSOnConnect onConnectedListener;
+	SmartWSOnDisconnect onDisconnectedListener;
+	SmartWSOnError onErrorListener;
+	WebSocket ws;
 	private String clientId;
 	private String jwtToken;
 	private String apiKey;

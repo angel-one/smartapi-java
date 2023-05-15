@@ -1,5 +1,17 @@
 package com.angelbroking.smartapi.ticker;
 
+import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.utils.NaiveSSLContext;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,28 +26,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterOutputStream;
 
-import javax.net.ssl.SSLContext;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.angelbroking.smartapi.Routes;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.utils.NaiveSSLContext;
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
-
 public class SmartAPITicker {
 
 	private Routes routes = new Routes();
 	private final String wsuri = routes.getWsuri();;
-	private OnTicks onTickerArrivalListener;
-	private OnConnect onConnectedListener;
+	OnTicks onTickerArrivalListener;
+	OnConnect onConnectedListener;
 	private OnError onErrorListener;
-	private WebSocket ws;
+	WebSocket ws;
 	private String clientId;
 	private String feedToken;
 	private String script;
@@ -70,16 +68,6 @@ public class SmartAPITicker {
 
 	}
 
-//	/**
-//	 * Set error listener.
-//	 * 
-//	 * @param listener of type OnError which listens to all the type of errors that
-//	 *                 may arise in SmartAPITicker class.
-//	 */
-//	public void setOnErrorListener(OnError listener) {
-//		onErrorListener = listener;
-//	}
-
 	/**
 	 * Set listener for listening to ticks.
 	 * 
@@ -98,14 +86,7 @@ public class SmartAPITicker {
 		onConnectedListener = listener;
 	}
 
-//	/**
-//	 * Set listener for on connection is disconnected.
-//	 * 
-//	 * @param listener is used to listen to onDisconnected event.
-//	 */
-//	public void setOnDisconnectedListener(OnDisconnect listener) {
-//		onDisconnectedListener = listener;
-//	}
+
 
 	/** Returns a WebSocketAdapter to listen to ticker related events. */
 	public WebSocketAdapter getWebsocketAdapter() {

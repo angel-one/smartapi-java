@@ -10,10 +10,10 @@ public class Test {
 	public static void main(String[] args) throws SmartAPIException {
 		try {
 
-			String apiKey = "zkWvUuLx";
-			String clientId = "D541276";
-			String clientPin = "1501";
-			String totp_key = "L6FMTTCWRVSK2PW6AF7A2YMO6Q";
+			String apiKey = "";
+			String clientId = "";
+			String clientPin = "";
+			String totp_key = "";
 			GoogleAuthenticator gAuth = new GoogleAuthenticator();
 
 			String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
