@@ -48,11 +48,11 @@ public class SmartWebsocket {
     private final String actionType;
     private final String feedType;
 
-    private SmartWSOnTicks onTickerArrivalListener;
-    private SmartWSOnConnect onConnectedListener;
-    private SmartWSOnDisconnect onDisconnectedListener;
-    private SmartWSOnError onErrorListener;
-    private WebSocket webSocket;
+    SmartWSOnTicks onTickerArrivalListener;
+    SmartWSOnConnect onConnectedListener;
+    SmartWSOnDisconnect onDisconnectedListener;
+    SmartWSOnError onErrorListener;
+    WebSocket webSocket;
 
     /**
      * Initialize SmartAPITicker.
