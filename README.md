@@ -14,26 +14,18 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 ## API usage
 ```java
-	
 	// Initialize SmartAPI
 	String apiKey = "<apiKey>"; // PROVIDE YOUR API KEY HERE
 	String clientId = "<clientId>"; // PROVIDE YOUR Client ID HERE
 	String clientPin = "<clientPin>"; // PROVIDE YOUR Client PIN HERE
 	String tOTP = "<tOTP>"; // PROVIDE THE CODE DISPLAYED ON YOUR AUTHENTICATOR APP - https://smartapi.angelbroking.com/enable-totp
 
-	SmartConnect smartConnect = new SmartConnect(apiKey);
+    Proxy proxy = Proxy.NO_PROXY;
+    SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 	// Generate User Session
 	User user = smartConnect.generateSession(clientId, clientPin, tOTP);
 	smartConnect.setAccessToken(user.getAccessToken());
 	smartConnect.setUserId(user.getUserId());
-	
-	// Set session expiry callback.
-	smartConnect.setSessionExpiryHook(new SessionExpiryHook() {
-	@Override
-	public void sessionExpired() {
-		log.info("session expired");
-	}
-	});
 	
 	// token re-generate
 	TokenSet tokenSet = smartConnect.renewAccessToken(user.getAccessToken(),
@@ -90,64 +82,63 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	 */
 
 	/** Place order. */
-	public void placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-
+    public HttpResponse placeOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
             OrderParams orderParams = new OrderParams();
-            orderParams.setVariety(VARIETY_STOPLOSS);
-            orderParams.setQuantity(323);
-            orderParams.setSymbolToken("1660");
-            orderParams.setExchange(EXCHANGE_NSE);
-            orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
-            orderParams.setTradingSymbol("ITC-EQ");
-            orderParams.setProductType(PRODUCT_INTRADAY);
-            orderParams.setDuration(DURATION_DAY);
-            orderParams.setTransactionType(TRANSACTION_TYPE_BUY);
-            orderParams.setPrice(122.2);
-            orderParams.setSquareOff("0");
-            orderParams.setStopLoss("0");
-
-		Order order = smartConnect.placeOrder(orderParams, VARIETY_REGULAR);
-	}
+            orderParams.setDuration("DAY");
+            orderParams.setQuantity(1);
+            orderParams.setVariety("NORMAL");
+            orderParams.setPrice(19500.0);
+            orderParams.setTradingSymbol("SBIN-EQ");
+            orderParams.setExchange("NSE");
+            orderParams.setTransactionType("BUY");
+            orderParams.setSymbolToken("3045");
+            orderParams.setProductType("INTRADAY");
+            orderParams.setOrderType("LIMIT");
+            HttpResponse order = smartConnect.placeOrder(orderParams, "NORMAL");
+            return order;
+            }
 
 	/** Modify order. */
-	public void modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Order modify request will return order model which will contain only
-            
-            orderParams.setQuantity(324);
-            orderParams.setOrderType(ORDER_TYPE_STOPLOSS_LIMIT);
-            orderParams.setTradingSymbol("ITC-EQ");
-            orderParams.setSymbolToken("1660");
-            orderParams.setProductType(PRODUCT_INTRADAY);
-            orderParams.setExchange(EXCHANGE_NSE);
-            orderParams.setDuration(DURATION_DAY);
-            orderParams.setPrice(122.2);
-            String orderId = "201216000755110";
-		Order order = smartConnect.modifyOrder(orderId, orderParams, VARIETY_REGULAR);
-	}
-    
-	public void cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		Order order = smartConnect.cancelOrder("201009000000015", VARIETY_REGULAR);
-	}
+    public HttpResponse modifyOrder(SmartConnect smartConnect, String orderid) throws SmartAPIException, IOException {
+            // Order modify request will return order model which will contain only
+
+            OrderParams orderParams = new OrderParams();
+            orderParams.setDuration("DAY");
+            orderParams.setQuantity(2);
+            orderParams.setVariety("NORMAL");
+            orderParams.setPrice(19500.0);
+            orderParams.setTradingSymbol("SBIN-EQ");
+            orderParams.setExchange("NSE");
+            orderParams.setTransactionType("BUY");
+            orderParams.setSymbolToken("3045");
+            orderParams.setProductType("INTRADAY");
+            orderParams.setOrderType("LIMIT");
+            HttpResponse order = smartConnect.modifyOrder(orderid, orderParams, "NORMAL");
+            return order;
+
+            }
 
 	/** Get order details */
-    public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-        List<Order> orders = smartConnect.getOrderHistory(smartConnect.getUserId());
-            for (Order order : orders) {
-           log.info("{} {}", order.orderId, order.status);
-            }
+    public HttpResponse cancelOrder(SmartConnect smartConnect, String orderid) throws SmartAPIException, IOException {
+            HttpResponse order = smartConnect.cancelOrder(orderid, "NORMAL");
+            return order;
     }
 
+    public void getOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
+            HttpResponse orders = smartConnect.getOrderHistory();
+    }
 
     /**
      * Get last price for multiple instruments at once. USers can either pass
      * exchange with tradingsymbol or instrument token only. For example {NSE:NIFTY
      * 50, BSE:SENSEX} or {256265, 265}
      */
-	public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void getLTP(SmartConnect smartConnect) throws SmartAPIException, IOException {
+
             String exchange = "NSE";
             String symboltoken = "3045";
             HttpResponse ltpData = smartConnect.getLTP(exchange, SYMBOL_SBINEQ, symboltoken);
-    }
+            }
 
 	/** Get tradebook */
     public void getTrades(SmartConnect smartConnect) throws SmartAPIException, IOException {
@@ -157,37 +148,51 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 
     /** Get RMS */
-	public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
             HttpResponse response = smartConnect.getRMS();
-	}
+            }
 
 	/** Get Holdings */
-	public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void getHolding(SmartConnect smartConnect) throws SmartAPIException, IOException {
             HttpResponse response = smartConnect.getHolding();
-	}
+    }
 
 	/** Get Position */
-	public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void getPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
             HttpResponse response = smartConnect.getPosition();
-	}
+    }
 
 	/** convert Position */
-	public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void convertPosition(SmartConnect smartConnect) throws SmartAPIException, IOException {
 
-            TradeRequestDTO requestDTO = new TradeRequestDTO();
-            requestDTO.setExchange("NSE");
-            requestDTO.setOldProductType("DELIVERY");
-            requestDTO.setNewProductType("MARGIN");
-            requestDTO.setTradingSymbol(SYMBOL_SBINEQ);
-            requestDTO.setTransactionType("BUY");
-            requestDTO.setQuantity(1);
-            requestDTO.setType("DAY");
-            HttpResponse response = smartConnect.convertPosition(requestDTO);
-	}
+            TradeRequestDTO tradeRequestDTO = new TradeRequestDTO();
+            tradeRequestDTO.setExchange("NSE");
+            tradeRequestDTO.setSymbolToken("2885");
+            tradeRequestDTO.setOldProductType("DELIVERY");
+            tradeRequestDTO.setNewProductType("INTRADAY");
+            tradeRequestDTO.setTradingSymbol("RELIANCE-EQ");
+            tradeRequestDTO.setSymbolName("RELIANCE");
+            tradeRequestDTO.setInstrumentType("");
+            tradeRequestDTO.setPriceDen("1");
+            tradeRequestDTO.setPriceNum("1");
+            tradeRequestDTO.setGenDen("1");
+            tradeRequestDTO.setGenNum("1");
+            tradeRequestDTO.setPrecision("2");
+            tradeRequestDTO.setMultiplier("-1");
+            tradeRequestDTO.setBoardLotSize("1");
+            tradeRequestDTO.setBuyQty("1");
+            tradeRequestDTO.setSellQty("0");
+            tradeRequestDTO.setBuyAmount("2235.80");
+            tradeRequestDTO.setSellAmount("0");
+            tradeRequestDTO.setTransactionType("BUY");
+            tradeRequestDTO.setQuantity(1);
+            tradeRequestDTO.setType("DAY");
+            HttpResponse response = smartConnect.convertPosition(tradeRequestDTO);
+            }
 	
 	/** Create Gtt Rule*/
-	public void createRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
-		GttParams gttParams= new GttParams();
+    public HttpResponse createRule(SmartConnect smartConnect) throws SmartAPIException, IOException {
+            GttParams gttParams = new GttParams();
 
             gttParams.setTradingSymbol(SYMBOL_SBINEQ);
             gttParams.setSymbolToken("3045");
@@ -199,15 +204,14 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
             gttParams.setDisclosedQty(10);
             gttParams.setTriggerPrice(20000.1);
             gttParams.setTimePeriod(300);
-
-            Gtt gtt = smartConnect.gttCreateRule(gttParams);
-	}
+            HttpResponse response = smartConnect.gttCreateRule(gttParams);
+            return response;
+    }
 
 	
 	/** Modify Gtt Rule */
-	public void modifyRule(SmartConnect smartConnect)throws SmartAPIException,IOException{
-		GttParams gttParams= new GttParams();
-
+    public HttpResponse modifyRule(SmartConnect smartConnect, String ruleID) throws SmartAPIException, IOException {
+            GttParams gttParams = new GttParams();
             gttParams.setTradingSymbol(SYMBOL_SBINEQ);
             gttParams.setSymbolToken("3045");
             gttParams.setExchange("NSE");
@@ -218,61 +222,51 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
             gttParams.setDisclosedQty(11);
             gttParams.setTriggerPrice(20000.1);
             gttParams.setTimePeriod(300);
-
-
-            Integer id= 1000051;
-		
-		Gtt gtt = smartConnect.gttModifyRule(id,gttParams);
-	}
+            HttpResponse response = smartConnect.gttModifyRule(Integer.valueOf(ruleID), gttParams);
+            return response;
+            }
 	
 	/** Cancel Gtt Rule */
-	public void cancelRule(SmartConnect smartConnect)throws SmartAPIException, IOException{
-		Integer id=1000051;
-		String symboltoken="3045";
-		String exchange="NSE";
-		
-		Gtt gtt = smartConnect.gttCancelRule(id,symboltoken,exchange);
-	}
+    public void cancelRule(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
+            String symboltoken = "3045";
+            String exchange = "NSE";
+            HttpResponse gtt = smartConnect.gttCancelRule(Integer.valueOf(modifyRuleID), symboltoken, exchange);
+
+    }
 	
 	/** Gtt Rule Details */
-	public void ruleDetails(SmartConnect smartConnect)throws SmartAPIException, IOException{
-		Integer id=1000051;
-            HttpResponse gtt = smartConnect.gttRuleDetails(id);
-	}
+    public void ruleDetails(SmartConnect smartConnect, String modifyRuleID) throws SmartAPIException, IOException {
+            HttpResponse gtt = smartConnect.gttRuleDetails(Integer.valueOf(modifyRuleID));
+    }
 	
 	/** Gtt Rule Lists */
-	public void ruleList(SmartConnect smartConnect)throws SmartAPIException, IOException{
-		
-		List<String> status=new ArrayList<String>(){{
-			add("NEW");
-			add("CANCELLED");
-			add("ACTIVE");
-			add("SENTTOEXCHANGE");
-			add("FORALL");
-			}};
-		Integer page=1;
-		Integer count=10;
-	
-		JSONArray gtt = smartConnect.gttRuleList(status,page,count);
-	}
+    public void ruleList(SmartConnect smartConnect) throws SmartAPIException, IOException {
+            List<String> status = new ArrayList<>();
+            status.add("NEW");
+            status.add("CANCELLED");
+            status.add("ACTIVE");
+            status.add("SENTTOEXCHANGE");
+            status.add("FORALL");
+            Integer page = 1;
+            Integer count = 10;
+            HttpResponse gtt = smartConnect.gttRuleList(status, page, count);
+    }
 
 	/** Historic Data */
-	public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
-
+    public void getCandleData(SmartConnect smartConnect) throws SmartAPIException, IOException {
             StockHistoryRequestDTO requestDTO = new StockHistoryRequestDTO();
-            requestDTO.setToDate("2021-03-09 09:20");
+            requestDTO.setToDate("2021-03-10 11:00");
             requestDTO.setExchange("NSE");
-            requestDTO.setInterval("ONE_MINUTE");
+            requestDTO.setInterval("FIVE_MINUTE");
             requestDTO.setSymbolToken("3045");
-            requestDTO.setFromDate("2021-03-08 09:00");
-
+            requestDTO.setFromDate("2021-02-10 09:15");
             HttpResponse response = smartConnect.candleData(requestDTO);
-	}
+            }
 	
 	/** Logout user. */
-	public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
+    public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
             HttpResponse httpResponse = smartConnect.logout();
-	}
+    }
 	
 ```
 For more details, take a look at Examples.java in sample directory.

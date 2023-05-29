@@ -26,10 +26,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_ID_HEADER;
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER;
@@ -48,9 +53,11 @@ public class SmartStreamTicker {
 
     private final Routes routes = new Routes();
     private final SmartStreamListener smartStreamListener;
-    private WebSocket webSocket;
     private final String clientId;
     private final String feedToken;
+    private WebSocket webSocket;
+    private final Set<TokenID> tokensToResubscribe = new HashSet<>();
+
 
     /**
      * Initializes the SmartStreamTicker.
@@ -74,7 +81,8 @@ public class SmartStreamTicker {
 
     private void init() {
         try {
-            webSocket = new WebSocketFactory().setVerifyHostname(false).createSocket(routes.getSmartStreamWSURI()).setPingInterval(PING_INTERVAL);
+            webSocket = new WebSocketFactory().setVerifyHostname(false).createSocket(routes.getSmartStreamWSURI())
+                    .setPingInterval(PING_INTERVAL);
             webSocket.addHeader(CLIENT_ID_HEADER, clientId);
             webSocket.addHeader(FEED_TOKEN_HEADER, feedToken);
             webSocket.addHeader(CLIENT_LIB_HEADER, CLIENT_LIB_HEADER_VALUE);
@@ -100,11 +108,15 @@ public class SmartStreamTicker {
 
 
     public WebSocketAdapter getWebsocketAdapter() {
+
         return new WebSocketAdapter() {
+            private Timer pingTimer;
+            private LocalDateTime lastPongReceivedTime = LocalDateTime.now();
 
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 smartStreamListener.onConnected();
+                startPingTimer(websocket);
             }
 
             @Override
@@ -155,8 +167,9 @@ public class SmartStreamTicker {
 
 
             @Override
-            public void onPongFrame(WebSocket websocket, WebSocketFrame frame) {
+            public void onPongFrame(WebSocket websocket, WebSocketFrame frame){
                 try {
+                    lastPongReceivedTime = LocalDateTime.now();
                     smartStreamListener.onPong();
                 } catch (Exception e) {
                     SmartStreamError error = new SmartStreamError();
@@ -169,16 +182,12 @@ public class SmartStreamTicker {
             @Override
             public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame,
                                        WebSocketFrame clientCloseFrame, boolean closedByServer) {
-
                 try {
                     if (closedByServer) {
-                        if (serverCloseFrame.getCloseCode() == 1001) {
-                            // Log the server close code for debugging purposes
-                            log.info("Server closed connection with code: {}", serverCloseFrame.getCloseCode());
-                        }
                         reconnectAndResubscribe();
+                    } else {
+                        stopPingTimer();
                     }
-
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
@@ -188,8 +197,41 @@ public class SmartStreamTicker {
             public void onCloseFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
                 super.onCloseFrame(websocket, frame);
             }
+
+            private void startPingTimer(final WebSocket websocket) {
+
+                pingTimer = new Timer();
+                pingTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            LocalDateTime currentTime = LocalDateTime.now();
+                            if (lastPongReceivedTime.isBefore(currentTime.minusSeconds(20))) {
+                                websocket.disconnect();
+                                reconnectAndResubscribe();
+                            }
+                        } catch (Exception e) {
+                            smartStreamListener.onError(getErrorHolder(e));
+                        }
+                    }
+                }, 5000, 5000); // Send a ping every 5 seconds
+            }
+
+            private void stopPingTimer() {
+                if (pingTimer != null) {
+                    pingTimer.cancel();
+                    pingTimer = null;
+                }
+            }
         };
     }
+
+    private void closeAndReconnect(WebSocket websocket) throws WebSocketException {
+        websocket.disconnect(); // Close the current connection
+        // Reconnect and resubscribe to the server
+        reconnectAndResubscribe();
+    }
+
 
     private void reconnectAndResubscribe() throws WebSocketException {
         init();
@@ -204,6 +246,8 @@ public class SmartStreamTicker {
 
         if (webSocket != null && webSocket.isOpen()) {
             webSocket.disconnect();
+
+
         }
     }
 
@@ -235,6 +279,7 @@ public class SmartStreamTicker {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
                 webSocket.sendText(getApiRequest(SmartStreamAction.SUBS, mode, tokens).toString());
+                tokensToResubscribe.addAll(tokens);
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException(TICKER_NOT_CONNECTED, "504")));
             }
@@ -246,7 +291,7 @@ public class SmartStreamTicker {
     public void unsubscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
-                getApiRequest(SmartStreamAction.UNSUBS, mode, tokens);
+                webSocket.sendText(getApiRequest(SmartStreamAction.UNSUBS, mode, tokens).toString());
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }
@@ -283,6 +328,9 @@ public class SmartStreamTicker {
         if (webSocket != null) {
             if (webSocket.isOpen()) {
                 webSocket.sendText(new Gson().toJson(new WsMWRequestDTO(this.feedToken, this.clientId, this.clientId)));
+                for (TokenID token : tokensToResubscribe) {
+                    subscribe(SmartStreamSubsMode.SNAP_QUOTE, Collections.singleton(token));
+                }
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }

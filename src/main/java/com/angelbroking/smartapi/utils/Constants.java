@@ -49,7 +49,8 @@ public class Constants {
     public static final String ROOT_URL = "https://apiconnect.angelbroking.com";
     public static final String LOGIN_URL = "https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword";
     public static final String WSURI = "wss://wsfeeds.angelbroking.com/NestHtml5Mobile/socket/stream";
-    public static final String SMARTSTREAM_WSURI = "ws://smartapisocket.angelone.in/smart-stream";
+//    public static final String SMARTSTREAM_WSURI = "ws://smartapisocket.angelone.in/smart-stream";
+    public static final String SMARTSTREAM_WSURI = "ws://mds-uat.angelone.in/smart-stream";
     public static final String SWSURI = "wss://smartapisocket.angelbroking.com/websocket";
 
     /**

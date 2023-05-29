@@ -124,9 +124,6 @@ public class Examples {
      * @return order
      */
     public HttpResponse cancelOrder(SmartConnect smartConnect, String orderid) throws SmartAPIException, IOException {
-        // Order modify request will return order model which will contain only
-        // order_id.
-        // Cancel order will return order model which will only have orderId.
         HttpResponse order = smartConnect.cancelOrder(orderid, "NORMAL");
         log.info("cancelOrder {}", order);
         return order;
