@@ -7,6 +7,7 @@ import lombok.Data;
 import java.util.Optional;
 
 import static com.angelbroking.smartapi.utils.Constants.ENABLE_LOGGING;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
 
 @Data
 public class SmartConnectParams {
@@ -52,12 +53,12 @@ public class SmartConnectParams {
     }
 
     public String getApiKey() throws SmartConnectException {
-        if (apiKey != null) return apiKey;
+        if (validateInputNotNullCheck(apiKey)) return apiKey;
         else throw new SmartConnectException("The API key is missing.");
     }
 
     public String getAccessToken() throws SmartConnectException {
-        if (accessToken != null) return accessToken;
+        if (validateInputNotNullCheck(accessToken)) return accessToken;
         else throw new SmartConnectException("The Access Token key is missing.");
     }
 

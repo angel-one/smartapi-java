@@ -5,6 +5,8 @@ import com.angelbroking.smartapi.http.exceptions.SmartConnectException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.TextUtils;
 
@@ -18,6 +20,10 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import static com.angelbroking.smartapi.utils.Constants.HEX_FORMAT;
+import static com.angelbroking.smartapi.utils.Constants.MAC_ADDRESS_FORMAT;
+import static com.angelbroking.smartapi.utils.Constants.URL_PROPERTY_KEY;
+
 @Slf4j
 public class Utils {
 
@@ -25,9 +31,7 @@ public class Utils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Gson gson = new Gson();
 
-    // Private constructor to prevent instantiation from outside the class
     private Utils() {
-        // This constructor is intentionally left blank
     }
 
     /**
@@ -84,7 +88,7 @@ public class Utils {
         byte[] a = DigestUtils.sha256(str);
         StringBuilder sb = new StringBuilder(a.length * 2);
         for (byte b : a)
-            sb.append(String.format("%02x", b));
+            sb.append(String.format(HEX_FORMAT, b));
         return sb.toString();
     }
 
@@ -94,13 +98,13 @@ public class Utils {
             while (networkInterface.hasMoreElements()) {
                 NetworkInterface network = networkInterface.nextElement();
                 byte[] macAddressBytes = network.getHardwareAddress();
-                if (macAddressBytes != null) {
+                if (validateInputNotNullCheck(macAddressBytes)) {
                     StringBuilder macAddressStr = new StringBuilder();
                     for (int i = 0; i < macAddressBytes.length; i++) {
-                        macAddressStr.append(String.format("%02X%s", macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
+                        macAddressStr.append(String.format(MAC_ADDRESS_FORMAT, macAddressBytes[i], (i < macAddressBytes.length - 1) ? "-" : ""));
                     }
                     String macAddress = macAddressStr.toString();
-                    if (macAddress != null) {
+                    if (validateInputNotNullCheck(macAddress)) {
                         return macAddress;
                     }
                 }
@@ -111,12 +115,30 @@ public class Utils {
             throw new SmartConnectException("Failed to retrieve MAC address", e);
         }
     }
+    public static String getResponseBody(Response response) throws IOException {
+        String body = "";
+        if (response.isSuccessful()) {
+            ResponseBody responseBody = response.body();
+            if (validateInputNotNullCheck(responseBody)) {
+                body = responseBody.string();
+            }
+        }
+        return body;
+    }
+
+    public static <T> boolean validateInputNullCheck(T input) {
+        return input == null;
+    }
+
+    public static <T> boolean validateInputNotNullCheck(T input) {
+        return input != null;
+    }
 
     public static String getPublicIPAddress() throws IOException {
         String clientPublicIP;
         Properties properties = new Properties();
         try (InputStream input = Utils.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
+            if (validateInputNullCheck(input)) {
                 throw new IOException("config.properties not found on the classpath");
             }
             properties.load(input);
@@ -124,7 +146,7 @@ public class Utils {
             log.error("Error loading configuration file: {}", e.getMessage());
             throw new IOException("Failed to load configuration file");
         }
-        URL urlName = new URL(properties.getProperty("url"));
+        URL urlName = new URL(properties.getProperty(URL_PROPERTY_KEY));
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlName.openStream()))) {
             clientPublicIP = bufferedReader.readLine().trim();
         } catch (IOException e) {

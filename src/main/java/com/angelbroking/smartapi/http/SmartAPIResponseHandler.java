@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
+
 /**
  * Response handler for handling all the responses.
  */
@@ -50,7 +52,7 @@ public class SmartAPIResponseHandler {
             httpResponse.setBody(body);
             return httpResponse;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.info("An exception occurred while handling the response : {}", ex.getMessage());
             throw new SmartAPIException(String.format("%s", ex.getMessage()));
         }
     }
@@ -60,7 +62,7 @@ public class SmartAPIResponseHandler {
         switch (code) {
             // if there is a token exception, generate a signal to logout the user.
             case "AB1010":
-                if (SmartConnectParams.getSessionExpiryHook() != null) {
+                if (validateInputNotNullCheck(SmartConnectParams.getSessionExpiryHook())) {
                     SmartConnectParams.setSessionExpiryHook(() -> log.info("Session expired"));
                 }
                 return new TokenException(message, code);

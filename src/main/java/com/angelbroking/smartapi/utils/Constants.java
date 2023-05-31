@@ -126,9 +126,9 @@ public class Constants {
     public static final String NULL_URL_MESSAGE = "url cannot be null";
     public static final String INVALID_URL = "Invalid URL: ";
     public static final String API_REQUEST_FAILED_MSG = "Failed to create API request";
-    public static final String SMART_API_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to an SmartAPIException error.";
-    public static final String IO_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to an IO error.";
-    public static final String JSON_EXCEPTION_ERROR_MSG = "Failed to perform the operation due to a JSON error.";
+    public static final String SMART_API_EXCEPTION_ERROR_MSG = "The operation failed to execute because of a SmartAPIException error";
+    public static final String IO_EXCEPTION_ERROR_MSG = "The operation failed to execute because of an IO error.";
+    public static final String JSON_EXCEPTION_ERROR_MSG = "The operation failed to execute because of a JSON error";
     public static final String ID = "id";
     public static final String QTY = "qty";
     public static final String DISCLOSED_QTY = "disclosedqty";
@@ -148,9 +148,9 @@ public class Constants {
     public static final String X_USER_TYPE = "X-UserType";
     public static final String X_SOURCE_ID = "X-SourceID";
     public static final String MESSAGE = "message";
-    public static final String SMART_API_EXCEPTION_OCCURRED = "SmartAPIException occurred: ";
-    public static final String IO_EXCEPTION_OCCURRED = "IOException occurred: ";
-    public static final String JSON_EXCEPTION_OCCURRED = "JSONException occurred: ";
+    public static final String SMART_API_EXCEPTION_OCCURRED = "SmartAPIException occurred ";
+    public static final String IO_EXCEPTION_OCCURRED = "IOException occurred ";
+    public static final String JSON_EXCEPTION_OCCURRED = "JSONException occurred ";
     public static final String TICKER_NOT_CONNECTED = "ticker is not connected";
     public static final String TICKER_NOT_NULL_CONNECTED = "ticker is not connected";
     public static final String SYMBOL_SBINEQ = "SBIN-EQ";
@@ -161,9 +161,31 @@ public class Constants {
     public static final String PARAM_PARAMS = "params";
     public static final String SMARTAPIREQUESTHANDLER_USER_AGENT = "javasmartapiconnect/3.0.0";
     public static boolean ENABLE_LOGGING = false;
-    // Private constructor to prevent instantiation from outside the class
+
+    /**
+     * Utils Constants
+     */
+    public static final String HEX_FORMAT = "%02x";
+    public static final String MAC_ADDRESS_FORMAT = "%02X%s";
+    public static final String URL_PROPERTY_KEY = "url";
+
+
+    public static final String QUESTION_MARK = "?";
+    public static final String AMPERSAND = "&";
+    public static final String EQUALS = "=";
+    public static final String JWT_TOKEN_PARAM = "jwttoken";
+    public static final String CLIENT_CODE_PARAM = "clientcode";
+    public static final String API_KEY_PARAM = "apikey";
+
+    /**
+     * LTP Constants
+     */
+
+    public static final int SEQUENCE_NUMBER_OFFSET = 27;
+    public static final int EXCHANGE_FEED_TIME_OFFSET = 35;
+    public static final int LAST_TRADED_PRICE_OFFSET = 43;
+
     private Constants() {
-        // This constructor is intentionally left blank
     }
 
 

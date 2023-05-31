@@ -3,6 +3,8 @@ package com.angelbroking.smartapi.smartstream.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.angelbroking.smartapi.utils.Utils.validateInputNullCheck;
+
 @Data
 @NoArgsConstructor
 public class TokenID {
@@ -11,7 +13,7 @@ public class TokenID {
 	private String token;
 
 	public TokenID(ExchangeType exchangeType, String token) throws IllegalArgumentException {
-		if(exchangeType == null || token == null || token.isEmpty()) {
+		if(validateInputNullCheck(exchangeType)|| validateInputNullCheck(token) || token.isEmpty()) {
 			throw new IllegalArgumentException("Invalid exchangeType or token.");
 		}
 		this.exchangeType = exchangeType;

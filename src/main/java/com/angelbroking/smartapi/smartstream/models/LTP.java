@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.nio.ByteBuffer;
 
+import static com.angelbroking.smartapi.utils.Constants.EXCHANGE_FEED_TIME_OFFSET;
+import static com.angelbroking.smartapi.utils.Constants.LAST_TRADED_PRICE_OFFSET;
+import static com.angelbroking.smartapi.utils.Constants.SEQUENCE_NUMBER_OFFSET;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,9 +24,9 @@ public class LTP {
 
 	public LTP(ByteBuffer buffer) {
 		this.token = ByteUtils.getTokenID(buffer);
-		this.sequenceNumber = buffer.getLong(27);
-		this.exchangeFeedTimeEpochMillis = buffer.getLong(35);
-		this.lastTradedPrice = buffer.getLong(43);
+		this.sequenceNumber = buffer.getLong(SEQUENCE_NUMBER_OFFSET);
+		this.exchangeFeedTimeEpochMillis = buffer.getLong(EXCHANGE_FEED_TIME_OFFSET);
+		this.lastTradedPrice = buffer.getLong(LAST_TRADED_PRICE_OFFSET);
 	}
 
 }

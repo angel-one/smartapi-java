@@ -1,27 +1,41 @@
 package com.angelbroking.smartapi.sample;
 
-import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.routes.Routes;
+import com.angelbroking.smartapi.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.Proxy;
-
-import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
 
 @Slf4j
 public class LoginWithTOTPSample {
 
 	public static void main(String[] args) throws SmartAPIException, IOException {
-		String clientID = System.getProperty("clientID");
-		String clientPass = System.getProperty("clientPass");
-		String apiKey = System.getProperty("apiKey");
-		String totp = System.getProperty("totp");
-		Proxy proxy = Proxy.NO_PROXY;
-		SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
-		User user = smartConnect.generateSession(clientID, clientPass, totp);
-		String feedToken = user.getFeedToken();
-		log.info(feedToken);
+		Routes routes = new Routes();
+		StringBuilder sb = new StringBuilder();
+		String jwtToken = null;
+		String clientId = null;
+		String apiKey = null;
+		sb.append(routes.getSWsuri()).append("?jwttoken=").append(jwtToken).append("&&clientcode=").append(clientId).append("&&apikey=").append(apiKey);
+
+		StringBuilder sb2 = new StringBuilder();
+		sb2.append(routes.getSWsuri())
+				.append(Constants.QUESTION_MARK)
+				.append(Constants.JWT_TOKEN_PARAM)
+				.append(Constants.EQUALS)
+				.append(jwtToken)
+				.append(Constants.AMPERSAND)
+				.append(Constants.AMPERSAND)
+				.append(Constants.CLIENT_CODE_PARAM)
+				.append(Constants.EQUALS)
+				.append(clientId)
+				.append(Constants.AMPERSAND)
+				.append(Constants.AMPERSAND)
+				.append(Constants.API_KEY_PARAM)
+				.append(Constants.EQUALS)
+				.append(apiKey);
+		log.info("SB :{}",sb.toString());
+		log.info("SB2:{}",sb2.toString());
+
 	}
 }

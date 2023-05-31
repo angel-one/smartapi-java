@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 public enum SmartStreamAction {
 
-	SUBS(1), UNSUBS(0);
+	SUBSCRIBE(1), UNSUBSCRIBE(0);
 	
 	private int val;
 

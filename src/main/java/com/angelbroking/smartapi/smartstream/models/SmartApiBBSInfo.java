@@ -12,10 +12,10 @@ public class SmartApiBBSInfo {
 
 	// siBbBuySellFlag = 1 buy
 	// siBbBuySellFlag = 0 sell
-	private short siBbBuySellFlag = -1;
-	private long lQuantity = -1;
-	private long lPrice = -1;
-	private short siNumberOfOrders = -1;
+	private short buySellFlag = -1;
+	private long quantity = -1;
+	private long price = -1;
+	private short numberOfOrders = -1;
 
 
 }

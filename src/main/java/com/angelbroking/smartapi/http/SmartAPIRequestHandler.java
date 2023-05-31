@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +44,9 @@ import static com.angelbroking.smartapi.utils.Constants.X_MAC_ADDRESS;
 import static com.angelbroking.smartapi.utils.Constants.X_SOURCE_ID;
 import static com.angelbroking.smartapi.utils.Constants.X_USER_TYPE;
 import static com.angelbroking.smartapi.utils.Utils.getPublicIPAddress;
+import static com.angelbroking.smartapi.utils.Utils.getResponseBody;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNullCheck;
 
 /**
  * Request handler for all Http requests
@@ -58,7 +60,7 @@ public class SmartAPIRequestHandler {
     public SmartAPIRequestHandler(Proxy proxy, long timeOutInMillis) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(timeOutInMillis, TimeUnit.MILLISECONDS);
-        if (proxy != null) {
+        if (validateInputNotNullCheck(proxy)) {
             builder.proxy(proxy);
         }
 
@@ -107,13 +109,7 @@ public class SmartAPIRequestHandler {
 
         Request request = createPostRequest(apiKey, url, params);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
 
     }
@@ -134,13 +130,7 @@ public class SmartAPIRequestHandler {
     public HttpResponse postRequest(String apiKey, String url, String params, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createPostRequest(apiKey, url, params, accessToken);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
     }
 
@@ -159,13 +149,7 @@ public class SmartAPIRequestHandler {
     public HttpResponse postRequestJSON(String url, JSONArray jsonArray, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createJsonPostRequest(url, jsonArray, apiKey, accessToken);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
     }
 
@@ -184,13 +168,7 @@ public class SmartAPIRequestHandler {
     public HttpResponse putRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createPutRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
     }
 
@@ -210,13 +188,7 @@ public class SmartAPIRequestHandler {
     public HttpResponse deleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) throws IOException, JSONException, SmartAPIException {
         Request request = createDeleteRequest(url, params, apiKey, accessToken);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
     }
 
@@ -235,13 +207,7 @@ public class SmartAPIRequestHandler {
     public HttpResponse getRequest(String apiKey, String url, String accessToken) throws IOException, SmartAPIException, JSONException {
         Request request = createGetRequest(apiKey, url, accessToken);
         Response response = client.newCall(request).execute();
-        String body = "";
-        if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                body = responseBody.string();
-            }
-        }
+       String body = getResponseBody(response);
         return new SmartAPIResponseHandler().handle(response, body);
     }
 
@@ -254,11 +220,11 @@ public class SmartAPIRequestHandler {
      */
     public Request createGetRequest(String privateKey, String url, String accessToken) {
 
-        if (url == null) {
+        if (validateInputNullCheck(url)) {
             throw new IllegalArgumentException(NULL_URL_MESSAGE);
         }
         HttpUrl httpUrl = HttpUrl.parse(url);
-        if (httpUrl == null) {
+        if (validateInputNullCheck(httpUrl)) {
             throw new IllegalArgumentException(String.format("Invalid URL: %s", url));
 
         }
@@ -284,11 +250,11 @@ public class SmartAPIRequestHandler {
      *                    256265, NSE:INFY.
      */
     public Request createGetRequest(String url, String commonKey, String[] values, String apiKey, String accessToken) {
-        if (url == null) {
+        if (validateInputNullCheck(url)) {
             throw new IllegalArgumentException(NULL_URL_MESSAGE);
         }
         HttpUrl httpUrl = HttpUrl.parse(url);
-        if (httpUrl == null) {
+        if (validateInputNullCheck(httpUrl)) {
             throw new IllegalArgumentException(String.format("%s %s", INVALID_URL, url));
         }
         HttpUrl.Builder httpBuilder = httpUrl.newBuilder();
@@ -383,11 +349,11 @@ public class SmartAPIRequestHandler {
      *                    params.
      */
     public Request createDeleteRequest(String url, Map<String, Object> params, String apiKey, String accessToken) {
-        if (url == null) {
+        if (validateInputNullCheck(url)) {
             throw new IllegalArgumentException(NULL_URL_MESSAGE);
         }
         HttpUrl httpUrl = HttpUrl.parse(url);
-        if (httpUrl == null) {
+        if (validateInputNullCheck(httpUrl)) {
             throw new IllegalArgumentException(String.format("%s %s", INVALID_URL, url));
         }
         HttpUrl.Builder httpBuilder = httpUrl.newBuilder();
@@ -398,5 +364,6 @@ public class SmartAPIRequestHandler {
 
         return new Request.Builder().url(httpBuilder.build()).delete().header(Constants.USER_AGENT, SMARTAPIREQUESTHANDLER_USER_AGENT).header(Constants.SMART_API_VERSION, "3").header(Constants.AUTHORIZATION, String.format("%s%s:%s", Constants.TOKEN, apiKey, accessToken)).build();
     }
+
 
 }

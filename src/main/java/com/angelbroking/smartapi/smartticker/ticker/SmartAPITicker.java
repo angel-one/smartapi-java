@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
 
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
+
 @Slf4j
 public class SmartAPITicker {
 
@@ -55,7 +57,7 @@ public class SmartAPITicker {
             SSLContext context = NaiveSSLContext.getInstance("TLS");
             ws = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(routes.getWsuri());
         } catch (IOException e) {
-            if (onErrorListener != null) {
+            if (validateInputNotNullCheck(onErrorListener)) {
                 onErrorListener.onError(e);
             }
             throw new SmartConnectException("Could not create WebSocket instance.");
@@ -127,7 +129,7 @@ public class SmartAPITicker {
 
                 JSONArray tickerData = new JSONArray(str);
 
-                if (onTickerArrivalListener != null) {
+                if (validateInputNotNullCheck(onTickerArrivalListener)) {
                     onTickerArrivalListener.onTicks(tickerData);
                 }
             }
@@ -138,7 +140,7 @@ public class SmartAPITicker {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
                     log.error(e.getMessage());
-                    if (onErrorListener != null) {
+                    if (validateInputNotNullCheck(onErrorListener)) {
                         onErrorListener.onError(e);
                     }
                 }
@@ -153,7 +155,7 @@ public class SmartAPITicker {
      * @return boolean
      */
     public boolean isConnectionOpen() {
-        return ws != null && ws.isOpen();
+        return validateInputNotNullCheck(ws) && ws.isOpen();
     }
 
     /**
@@ -161,16 +163,16 @@ public class SmartAPITicker {
      */
     public void subscribe() {
 
-        if (ws != null) {
+        if (validateInputNotNullCheck(ws)) {
             if (ws.isOpen()) {
                 ws.sendText(createWsMWJSONRequest());
             } else {
-                if (onErrorListener != null) {
+                if (validateInputNotNullCheck(onErrorListener)) {
                     onErrorListener.onError(new SmartAPIException(TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
                 }
             }
         } else {
-            if (onErrorListener != null) {
+            if (validateInputNotNullCheck(onErrorListener)) {
                 onErrorListener.onError(new SmartAPIException(TICKER_NOT_CONNECTED, String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
             }
         }

@@ -3,6 +3,7 @@ package com.angelbroking.smartapi.smartticker;
 import com.angelbroking.smartapi.dto.WsMWJSONRequestDTO;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.routes.Routes;
+import com.angelbroking.smartapi.utils.Constants;
 import com.angelbroking.smartapi.utils.NaiveSSLContext;
 import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocket;
@@ -27,6 +28,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.InflaterOutputStream;
+
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
 
 /**
  * The `SmartWebsocket` class provides a websocket client for connecting to a financial data feed provided by SmartAPI.
@@ -67,12 +70,12 @@ public class SmartWebsocket {
         Routes routes = new Routes();
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(routes.getSWsuri()).append("?jwttoken=").append(this.jwtToken).append("&&clientcode=").append(this.clientId).append("&&apikey=").append(this.apiKey);
+            sb.append(routes.getSWsuri()).append(Constants.QUESTION_MARK).append(Constants.JWT_TOKEN_PARAM).append(Constants.EQUALS).append(this.jwtToken).append(Constants.AMPERSAND).append(Constants.AMPERSAND).append(Constants.CLIENT_CODE_PARAM).append(Constants.EQUALS).append(this.clientId).append(Constants.AMPERSAND).append(Constants.AMPERSAND).append(Constants.API_KEY_PARAM).append(Constants.EQUALS).append(this.apiKey);
             SSLContext context = NaiveSSLContext.getInstance("TLS");
             webSocket = new WebSocketFactory().setSSLContext(context).setVerifyHostname(false).createSocket(sb.toString());
 
         } catch (IOException e) {
-            if (onErrorListener != null) {
+            if (validateInputNotNullCheck(onErrorListener)) {
                 onErrorListener.onError(e);
             }
         } catch (NoSuchAlgorithmException e) {
@@ -80,7 +83,7 @@ public class SmartWebsocket {
         }
 
         WebSocketAdapter adapter = getWebsocketAdapter();
-        if (adapter != null) {
+        if (validateInputNotNullCheck(adapter)) {
             webSocket.addListener(adapter);
         }
     }
@@ -143,8 +146,7 @@ public class SmartWebsocket {
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
                 onConnectedListener.onConnected();
-                Runnable runnable = () ->
-                    webSocket.sendText(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey)));
+                Runnable runnable = () -> webSocket.sendText(new Gson().toJson(new WsMWJSONRequestDTO(actionType, feedType, jwtToken, clientId, apiKey)));
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
 
@@ -158,7 +160,7 @@ public class SmartWebsocket {
 
                 JSONArray tickerData = new JSONArray(str);
 
-                if (onTickerArrivalListener != null) {
+                if (validateInputNotNullCheck(onTickerArrivalListener)) {
                     onTickerArrivalListener.onTicks(tickerData);
                 }
             }
@@ -169,7 +171,7 @@ public class SmartWebsocket {
                     super.onBinaryMessage(websocket, binary);
                 } catch (Exception e) {
                     log.error(e.getMessage());
-                    if (onErrorListener != null) {
+                    if (validateInputNotNullCheck(onErrorListener)) {
                         onErrorListener.onError(e);
                     }
                 }
@@ -186,7 +188,7 @@ public class SmartWebsocket {
              */
             @Override
             public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
-                if (onDisconnectedListener != null) {
+                if (validateInputNotNullCheck(onDisconnectedListener)) {
                     onDisconnectedListener.onDisconnected();
                 }
             }
@@ -197,7 +199,7 @@ public class SmartWebsocket {
                     super.onError(websocket, cause);
                 } catch (Exception e) {
                     log.error(e.getMessage());
-                    if (onErrorListener != null) {
+                    if (validateInputNotNullCheck(onErrorListener)) {
                         onErrorListener.onError(e);
                     }
                 }
@@ -211,7 +213,7 @@ public class SmartWebsocket {
      */
     public void disconnect() {
 
-        if (webSocket != null && webSocket.isOpen()) {
+        if (validateInputNotNullCheck(webSocket) && webSocket.isOpen()) {
             webSocket.disconnect();
         }
     }
@@ -222,7 +224,7 @@ public class SmartWebsocket {
      * @return boolean
      */
     public boolean isConnectionOpen() {
-        return webSocket != null && webSocket.isOpen();
+        return validateInputNotNullCheck(webSocket) && webSocket.isOpen();
     }
 
     /**
@@ -230,17 +232,17 @@ public class SmartWebsocket {
      */
     public void runscript() {
 
-        if (webSocket != null) {
+        if (validateInputNotNullCheck(webSocket)) {
             if (webSocket.isOpen()) {
                 webSocket.sendText(new Gson().toJson(new WsMWJSONRequestDTO(this.actionType, this.feedType, this.jwtToken, this.clientId, this.apiKey)));
 
             } else {
-                if (onErrorListener != null) {
+                if (validateInputNotNullCheck(onErrorListener)) {
                     onErrorListener.onError(new SmartAPIException("ticker is not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
                 }
             }
         } else {
-            if (onErrorListener != null) {
+            if (validateInputNotNullCheck(onErrorListener)) {
                 onErrorListener.onError(new SmartAPIException("ticker is null not connected", String.valueOf(HttpStatus.SC_GATEWAY_TIMEOUT)));
             }
         }

@@ -17,6 +17,7 @@ import static com.angelbroking.smartapi.utils.Constants.TIME_PERIOD;
 import static com.angelbroking.smartapi.utils.Constants.TRADING_SYMBOL;
 import static com.angelbroking.smartapi.utils.Constants.TRANSACTION_TYPE;
 import static com.angelbroking.smartapi.utils.Constants.TRIGGER_PRICE;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNullCheck;
 
 public class Validators {
 
@@ -72,19 +73,19 @@ public class Validators {
     }
 
     public void validateGreaterThanZero(Integer value, String fieldName) throws InvalidParamsException {
-        if (value == null || value <= 0) {
+        if (validateInputNullCheck(value) || value <= 0) {
             throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
     public void validateGreaterThanZeroDouble(Double value, String fieldName) throws InvalidParamsException {
-        if (value == null || value <= 0) {
+        if (validateInputNullCheck(value)|| value <= 0) {
             throw new InvalidParamsException(String.format("%s must be greater than zero", fieldName));
         }
     }
 
     public void validateNotEmpty(String value, String fieldName) throws InvalidParamsException {
-        if (value == null || value.isEmpty()) {
+        if (validateInputNullCheck(value)|| value.isEmpty()) {
             throw new InvalidParamsException(String.format("%s is required", fieldName));
         }
     }

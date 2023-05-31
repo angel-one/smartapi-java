@@ -11,7 +11,6 @@ import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.SnapQuote;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
-import com.angelbroking.smartapi.utils.ByteUtils;
 import com.angelbroking.smartapi.utils.Utils;
 import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocket;
@@ -36,6 +35,9 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.angelbroking.smartapi.utils.ByteUtils.mapByteBufferToLTP;
+import static com.angelbroking.smartapi.utils.ByteUtils.mapByteBufferToQuote;
+import static com.angelbroking.smartapi.utils.ByteUtils.mapByteBufferToSnapQuote;
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_ID_HEADER;
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER;
 import static com.angelbroking.smartapi.utils.Constants.CLIENT_LIB_HEADER_VALUE;
@@ -47,6 +49,8 @@ import static com.angelbroking.smartapi.utils.Constants.PARAM_TOKEN_LIST;
 import static com.angelbroking.smartapi.utils.Constants.PING_INTERVAL;
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_CONNECTED;
 import static com.angelbroking.smartapi.utils.Constants.TICKER_NOT_NULL_CONNECTED;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNullCheck;
 
 @Slf4j
 public class SmartStreamTicker {
@@ -68,7 +72,7 @@ public class SmartStreamTicker {
      * @throws IllegalArgumentException - if the clientId, feedToken, or SmartStreamListener is null or empty
      */
     public SmartStreamTicker(String clientId, String feedToken, SmartStreamListener smartStreamListener) {
-        if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) || smartStreamListener == null) {
+        if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) ||  validateInputNullCheck(smartStreamListener)) {
             throw new IllegalArgumentException(
                     "clientId, feedToken and SmartStreamListener should not be empty or null");
         }
@@ -88,7 +92,7 @@ public class SmartStreamTicker {
             webSocket.addHeader(CLIENT_LIB_HEADER, CLIENT_LIB_HEADER_VALUE);
             webSocket.addListener(getWebsocketAdapter());
         } catch (IOException e) {
-            if (smartStreamListener != null) {
+            if (validateInputNotNullCheck(smartStreamListener)) {
                 smartStreamListener.onError(getErrorHolder(e));
             }
         }
@@ -127,7 +131,7 @@ public class SmartStreamTicker {
             @Override
             public void onBinaryMessage(WebSocket websocket, byte[] binary) {
                 SmartStreamSubsMode mode = SmartStreamSubsMode.findByVal(binary[0]);
-                if (mode == null) {
+                if (validateInputNullCheck(mode)) {
                     StringBuilder sb = new StringBuilder();
                     sb.append("Invalid SubsMode=");
                     sb.append(binary[0]);
@@ -138,19 +142,19 @@ public class SmartStreamTicker {
                     switch (mode) {
                         case LTP: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
-                            LTP ltp = ByteUtils.mapByteBufferToLTP(packet);
+                            LTP ltp = mapByteBufferToLTP(packet);
                             smartStreamListener.onLTPArrival(ltp);
                             break;
                         }
                         case QUOTE: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
-                            Quote quote = ByteUtils.mapByteBufferToQuote(packet);
+                            Quote quote = mapByteBufferToQuote(packet);
                             smartStreamListener.onQuoteArrival(quote);
                             break;
                         }
                         case SNAP_QUOTE: {
                             ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
-                            SnapQuote snapQuote = ByteUtils.mapByteBufferToSnapQuote(packet);
+                            SnapQuote snapQuote = mapByteBufferToSnapQuote(packet);
                             smartStreamListener.onSnapQuoteArrival(snapQuote);
                             break;
                         }
@@ -218,7 +222,7 @@ public class SmartStreamTicker {
             }
 
             private void stopPingTimer() {
-                if (pingTimer != null) {
+                if (validateInputNotNullCheck(pingTimer)) {
                     pingTimer.cancel();
                     pingTimer = null;
                 }
@@ -244,7 +248,7 @@ public class SmartStreamTicker {
      */
     public void disconnect() {
 
-        if (webSocket != null && webSocket.isOpen()) {
+        if (validateInputNotNullCheck(webSocket) && webSocket.isOpen()) {
             webSocket.disconnect();
 
 
@@ -257,7 +261,7 @@ public class SmartStreamTicker {
      * @return boolean
      */
     public boolean isConnectionOpen() {
-        return (webSocket != null) && webSocket.isOpen();
+        return (validateInputNotNullCheck(webSocket)) && webSocket.isOpen();
     }
 
     /**
@@ -276,9 +280,9 @@ public class SmartStreamTicker {
      * @param tokens the set of tokens to subscribe to.
      */
     public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
-        if (webSocket != null) {
+        if (validateInputNotNullCheck(webSocket)) {
             if (webSocket.isOpen()) {
-                webSocket.sendText(getApiRequest(SmartStreamAction.SUBS, mode, tokens).toString());
+                webSocket.sendText(getApiRequest(SmartStreamAction.SUBSCRIBE, mode, tokens).toString());
                 tokensToResubscribe.addAll(tokens);
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException(TICKER_NOT_CONNECTED, "504")));
@@ -289,9 +293,9 @@ public class SmartStreamTicker {
     }
 
     public void unsubscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
-        if (webSocket != null) {
+        if (validateInputNotNullCheck(webSocket)) {
             if (webSocket.isOpen()) {
-                webSocket.sendText(getApiRequest(SmartStreamAction.UNSUBS, mode, tokens).toString());
+                webSocket.sendText(getApiRequest(SmartStreamAction.UNSUBSCRIBE, mode, tokens).toString());
             } else {
                 smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
             }
@@ -304,7 +308,7 @@ public class SmartStreamTicker {
         Map<ExchangeType, JSONArray> tokensByExchange = new EnumMap<>(ExchangeType.class);
         tokens.stream().forEach(t -> {
             JSONArray tokenList = tokensByExchange.get(t.getExchangeType());
-            if (tokenList == null) {
+            if (validateInputNullCheck(tokenList)) {
                 tokenList = new JSONArray();
                 tokensByExchange.put(t.getExchangeType(), tokenList);
             }
@@ -325,7 +329,7 @@ public class SmartStreamTicker {
     }
 
     public void resubscribe() {
-        if (webSocket != null) {
+        if (validateInputNotNullCheck(webSocket)) {
             if (webSocket.isOpen()) {
                 webSocket.sendText(new Gson().toJson(new WsMWRequestDTO(this.feedToken, this.clientId, this.clientId)));
                 for (TokenID token : tokensToResubscribe) {

@@ -13,9 +13,8 @@ import java.nio.charset.StandardCharsets;
 @Data
 public class ByteUtils {
 
-	// Private constructor to prevent instantiation from outside the class
+
 	private ByteUtils() {
-		// This constructor is intentionally left blank
 	}
 	
 	private static final int CHAR_ARRAY_SIZE = 25;

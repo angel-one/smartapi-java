@@ -17,10 +17,10 @@ import java.util.Date;
 import static com.angelbroking.smartapi.utils.Constants.USER_DATA;
 import static com.angelbroking.smartapi.utils.Constants.USER_EXCHANGES;
 import static com.angelbroking.smartapi.utils.Constants.USER_PRODUCTS;
+import static com.angelbroking.smartapi.utils.Utils.validateInputNullCheck;
 
 public class ResponseParser {
 
-//    Added a private constructor to hide the implicit public one.
 
 
     private ResponseParser() {
@@ -37,7 +37,7 @@ public class ResponseParser {
         JSONObject  response = new JSONObject(httpResponse.getBody().toString());
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (jsonElement, type, jsonDeserializationContext) -> {
-            if (jsonElement == null || jsonElement.getAsString().isEmpty()) {
+            if (validateInputNullCheck(jsonElement) || jsonElement.getAsString().isEmpty()) {
                 // return a default date value
                 return new Date(0L); // or any other default date value
             }
