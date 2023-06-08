@@ -1,128 +1,113 @@
 package com.angelbroking.smartapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A wrapper for order.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
 	@SerializedName("disclosedquantity")
-	public String disclosedQuantity;
+	private String disclosedQuantity;
 
-	@SerializedName("duration")
-	public String duration;
+	private String duration;
 
+	@JsonProperty("tradingsymbol")
 	@SerializedName("tradingsymbol")
-	public String tradingSymbol;
+	private String tradingSymbol;
 
-	@SerializedName("variety")
-	public String variety;
+	private String variety;
 
 	@SerializedName("ordertype")
-	public String orderType;
+	private String orderType;
 
 	@SerializedName("triggerprice")
-	public String triggerPrice;
+	private String triggerPrice;
 
-	@SerializedName("text")
-	public String text;
+	private String text;
 
-	@SerializedName("price")
-	public String price;
+	private String price;
 
-	@SerializedName("status")
-	public String status;
+	private String status;
 
 	@SerializedName("producttype")
-	public String productType;
+	private String productType;
 
-	@SerializedName("exchange")
-	public String exchange;
+	private String exchange;
 
+	@JsonProperty("orderid")
 	@SerializedName("orderid")
-	public String orderId;
+	private String orderId;
 
-	@SerializedName("symbol")
-	public String symbol;
+	private String symbol;
 
 	@SerializedName("updatetime")
-	public String updateTime;
+	private String updateTime;
 
 	@SerializedName("exchtime")
-	public String exchangeTimestamp;
+	private String exchangeTimestamp;
 
 	@SerializedName("exchorderupdatetime")
-	public String exchangeUpdateTimestamp;
+	private String exchangeUpdateTimestamp;
 
 	@SerializedName("averageprice")
-	public String averagePrice;
+	private String averagePrice;
 
 	@SerializedName("transactiontype")
-	public String transactionType;
+	private String transactionType;
 
-	@SerializedName("quantity")
-	public String quantity;
+	private String quantity;
 
 	@SerializedName("squareoff")
-	public String squareOff;
+	private String squareOff;
 
 	@SerializedName("stoploss")
-	public String stopLoss;
+	private String stopLoss;
 
 	@SerializedName("trailingstoploss")
-	public String trailingStopLoss;
+	private String trailingStopLoss;
 
 	@SerializedName("symboltoken")
-	public String symbolToken;
+	private String symbolToken;
 
 	@SerializedName("instrumenttype")
-	public String instrumentType;
+	private String instrumentType;
 
 	@SerializedName("strikeprice")
-	public String strikePrice;
+	private String strikePrice;
 
 	@SerializedName("optiontype")
-	public String optionType;
+	private String optionType;
 
 	@SerializedName("expirydate")
-	public String expiryDate;
+	private String expiryDate;
 
 	@SerializedName("lotsize")
-	public String lotSize;
+	private String lotSize;
 
 	@SerializedName("cancelsize")
-	public String cancelSize;
+	private String cancelSize;
 
 	@SerializedName("filledshares")
-	public String filledShares;
+	private String filledShares;
 
 	@SerializedName("orderstatus")
-	public String orderStatus;
+	private String orderStatus;
 
 	@SerializedName("unfilledshares")
-	public String unfilledShares;
+	private String unfilledShares;
 
 	@SerializedName("fillid")
-	public String fillId;
+	private String fillId;
 
 	@SerializedName("filltime")
-	public String fillTime;
-
-	@Override
-	public String toString() {
-		return "Order [disclosedQuantity=" + disclosedQuantity + ", duration=" + duration + ", tradingSymbol="
-				+ tradingSymbol + ", variety=" + variety + ", orderType=" + orderType + ", triggerPrice=" + triggerPrice
-				+ ", text=" + text + ", price=" + price + ", status=" + status + ", productType=" + productType
-				+ ", exchange=" + exchange + ", orderId=" + orderId + ", symbol=" + symbol + ", updateTime="
-				+ updateTime + ", exchangeTimestamp=" + exchangeTimestamp + ", exchangeUpdateTimestamp="
-				+ exchangeUpdateTimestamp + ", averagePrice=" + averagePrice + ", transactionType=" + transactionType
-				+ ", quantity=" + quantity + ", squareOff=" + squareOff + ", stopLoss=" + stopLoss
-				+ ", trailingStopLoss=" + trailingStopLoss + ", symbolToken=" + symbolToken + ", instrumentType="
-				+ instrumentType + ", strikePrice=" + strikePrice + ", optionType=" + optionType + ", expiryDate="
-				+ expiryDate + ", lotSize=" + lotSize + ", cancelSize=" + cancelSize + ", filledShares=" + filledShares
-				+ ", orderStatus=" + orderStatus + ", unfilledShares=" + unfilledShares + ", fillId=" + fillId
-				+ ", fillTime=" + fillTime + "]";
-	}
+	private String fillTime;
 
 }

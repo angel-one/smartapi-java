@@ -1,74 +1,28 @@
 package com.angelbroking.smartapi.models;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A wrapper for profile response.
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profile {
 
-//    @SerializedName("user_type")
-//    public String userType;
+    private String email;
 
-	@SerializedName("email")
-	public String email;
-	@SerializedName("name")
-	public String userName;
-//    @SerializedName("user_shortname")
-//    public String userShortname;
-	@SerializedName("broker")
-	public String broker;
+    @SerializedName("name")
+    private String userName;
 
-	@SerializedName("exchanges")
-	public String[] exchanges;
+    private String broker;
 
-	@SerializedName("products")
-	public String[] products;
+    private String[] exchanges;
 
-//    @SerializedName("order_types")
-//    public String[] orderTypes;
-//    @SerializedName("avatar_url")
-//    public String avatarURL;
+    private String[] products;
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getBroker() {
-		return broker;
-	}
-
-	public void setBroker(String broker) {
-		this.broker = broker;
-	}
-
-	public String[] getExchanges() {
-		return exchanges;
-	}
-
-	public void setExchanges(String[] exchanges) {
-		this.exchanges = exchanges;
-	}
-
-	public String[] getProducts() {
-		return products;
-	}
-
-	public void setProducts(String[] products) {
-		this.products = products;
-	}
 
 }

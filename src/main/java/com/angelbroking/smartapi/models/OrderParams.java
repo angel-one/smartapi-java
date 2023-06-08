@@ -1,77 +1,96 @@
 package com.angelbroking.smartapi.models;
 
+import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /** A wrapper for order params to be sent while placing an order. */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderParams {
 
-	public String orderid;
+	@SerializedName("orderid")
+	private String orderId;
+
 	/**
 	 * Exchange in which instrument is listed (NSE, BSE, NFO, BFO, CDS, MCX).
 	 */
-
-	public String exchange;
+	@SerializedName("exchange")
+	private String exchange;
 
 	/**
-	 * symboltoken of the instrument.
+	 * Symbol Token is unique identifier.
 	 */
-
-	public String symbolToken;
+	@SerializedName("symboltoken")
+	private String symbolToken;
 
 	/**
 	 * Transaction type (BUY or SELL).
 	 */
-
-	public String transactiontype;
-
-	/**
-	 * Order quantity
-	 */
-
-	public Integer quantity;
+	@SerializedName("transactiontype")
+	private String transactionType;
 
 	/**
-	 * Order Price
+	 * Quantity to transact
 	 */
+	@SerializedName("quantity")
+	private Integer quantity;
 
-	public Double price;
+	/**
+	 * The min or max price to execute the order at (for LIMIT orders)
+	 */
+	@SerializedName("price")
+	private Double price;
 
 	/**
 	 * producttype code (NRML, MIS, CNC).
 	 */
-
-	public String producttype;
+	@SerializedName("producttype")
+	private String productType;
 
 	/**
 	 * Order type (LIMIT, SL, SL-M, MARKET).
 	 */
-
-	public String ordertype;
+	@SerializedName("ordertype")
+	private String orderType;
 
 	/**
 	 * Order duration (DAY, IOC).
 	 */
-
-	public String duration;
+	@SerializedName("duration")
+	private String duration;
 
 	/**
 	 * variety
 	 */
-
-	public String variety;
+	@SerializedName("variety")
+	private String variety;
 
 	/**
-	 * Order duration (DAY, IOC).
+	 * Trading Symbol of the instrument
 	 */
+	@SerializedName("tradingsymbol")
+	private String tradingSymbol;
 
-	public String tradingsymbol;
-	
-	public String triggerprice;
-	
-	public String squareoff;
-	
-	public String stoploss;
-	
-	public String symboltoken;
-	
-	
+	/**
+	 * The price at which an order should be triggered (SL, SL-M)
+	 */
+	@SerializedName("triggerprice")
+	private String triggerPrice;
+
+	/**
+	 * Only For ROBO (Bracket Order)
+	 */
+	@SerializedName("squareoff")
+	private String squareOff;
+
+	/**
+	 * Only For ROBO (Bracket Order)
+	 */
+	@SerializedName("stoploss")
+	private String stopLoss;
+
 
 }

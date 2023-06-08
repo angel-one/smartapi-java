@@ -1,11 +1,5 @@
 package com.angelbroking.smartapi.http;
 
-import java.io.IOException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.GeneralException;
 import com.angelbroking.smartapi.http.exceptions.InputException;
@@ -14,83 +8,87 @@ import com.angelbroking.smartapi.http.exceptions.OrderException;
 import com.angelbroking.smartapi.http.exceptions.PermissionException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.http.exceptions.TokenException;
-
+import com.angelbroking.smartapi.http.response.HttpResponse;
+import com.angelbroking.smartapi.http.response.ResponseDTO;
+import com.angelbroking.smartapi.models.SmartConnectParams;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.Headers;
 import okhttp3.Response;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import static com.angelbroking.smartapi.utils.Utils.validateInputNotNullCheck;
 
 /**
  * Response handler for handling all the responses.
  */
+@Slf4j
 public class SmartAPIResponseHandler {
 
-	public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
-		System.out.println("***************************");
-		if (response.header("Content-Type").contains("json")) {
-			JSONObject jsonObject = new JSONObject(body);
-			
-//			if (jsonObject.optString("data") == null || jsonObject.optString("data") == "") {
-			if (!jsonObject.has("status") || jsonObject.has("success")) {	
-				if (jsonObject.has("errorcode")) {
-					throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
-				} else if (jsonObject.has("errorCode")) {
-					
-					throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
-				}
-			}
-			//System.out.println(jsonObject);
-			return jsonObject;
-		} else {
-			throw new DataException("Unexpected content type received from server: " + response.header("Content-Type")
-					+ " " + response.body().string(), "AG8001");
-		}
-	}
 
-	private SmartAPIException dealWithException(JSONObject jsonObject, String code) throws JSONException {
+    /**
+     * Parses the response body as a JSON object and returns it.
+     *
+     * @param response the HTTP response from the server
+     * @param body     the body of the response as a string
+     * @return the JSON object parsed from the response body
+     * @throws JSONException if the response indicates an error
+     */
+    public HttpResponse handle(Response response, String body) throws IOException, SmartAPIException {
+        try {
+            ResponseDTO responseDTO = new ObjectMapper().readValue(body, ResponseDTO.class);
+            if (responseDTO.getErrorCode() != "" || !responseDTO.getErrorCode().isEmpty()) {
+                throw dealWithException(responseDTO.getMessage(), responseDTO.getErrorCode());
+            }
+            Headers responseHeaders = response.headers();
+            Map<String, List<String>> headersMap = responseHeaders.toMultimap();
+            HttpResponse httpResponse = new HttpResponse();
+            httpResponse.setStatusCode(response.code());
+            httpResponse.setHeaders(headersMap);
+            httpResponse.setBody(body);
+            return httpResponse;
+        } catch (Exception ex) {
+            log.info("An exception occurred while handling the response : {}", ex.getMessage());
+            throw new SmartAPIException(String.format("%s", ex.getMessage()));
+        }
+    }
 
-		switch (code) {
-		// if there is a token exception, generate a signal to logout the user.
-		case "AG8003":
-		case "AB8050":
-		case "AB8051":
-		case "AB1010":
-			if (SmartConnect.sessionExpiryHook != null) {
-				SmartConnect.sessionExpiryHook.sessionExpired();
-			}
-			return new TokenException(jsonObject.getString("message"), code);
+    private SmartAPIException dealWithException(String message, String code) throws JSONException {
 
-		case "AG8001":
-		case "AG8002":
-			return new DataException(jsonObject.getString("message"), code);
+        switch (code) {
+            // if there is a token exception, generate a signal to logout the user.
+            case "AB1010":
+                if (validateInputNotNullCheck(SmartConnectParams.getSessionExpiryHook())) {
+                    SmartConnectParams.setSessionExpiryHook(() -> log.info("Session expired"));
+                }
+                return new TokenException(message, code);
 
-		case "AB1004":
-		case "AB2000":
-			return new GeneralException(jsonObject.getString("message"), code);
+            case "AG8002":
+                return new DataException(message, code);
 
-		case "AB1003":
-		case "AB1005":
-		case "AB1012":
-		case "AB1002":
-			return new InputException(jsonObject.getString("message"), code);
+            case "AB2000":
+                return new GeneralException(message, code);
 
-		case "AB1008":
-		case "AB1009":
-		case "AB1013":
-		case "AB1014":
-		case "AB1015":
-		case "AB1016":
-		case "AB1017":
-			return new OrderException(jsonObject.getString("message"), code);
 
-		case "NetworkException":
-			return new NetworkException(jsonObject.getString("message"), code);
+            case "AB1002":
+                return new InputException(message, code);
 
-		case "AB1000":
-		case "AB1001":
-		case "AB1011":
-			return new PermissionException(jsonObject.getString("message"), code);
 
-		default:
-			return new SmartAPIException(jsonObject.getString("data not found"));
-		}
-	}
+            case "AB1017":
+                return new OrderException(message, code);
 
+            case "NetworkException":
+                return new NetworkException(message, code);
+
+            case "AB1011":
+                return new PermissionException(message, code);
+
+            default:
+                return new SmartAPIException(message);
+        }
+    }
 }

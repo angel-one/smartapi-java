@@ -1,33 +1,28 @@
 package com.angelbroking.smartapi.models;
 
-import java.util.Date;
-
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trade {
-	@SerializedName("trade_id")
-	public String tradeId;
+
 	@SerializedName("order_id")
-	public String orderId;
-	@SerializedName("exchange_order_id")
-	public String exchangeOrderId;
+	private String orderId;
+
 	@SerializedName("tradingsymbol")
-	public String tradingSymbol;
-	@SerializedName("exchange")
-	public String exchange;
-	@SerializedName("instrument_token")
-	public String instrumentToken;
-	@SerializedName("product")
-	public String product;
-	@SerializedName("average_price")
-	public String averagePrice;
-	@SerializedName("quantity")
-	public String quantity;
-	@SerializedName("fill_timestamp")
-	public Date fillTimestamp;
-	@SerializedName("exchange_timestamp")
-	public Date exchangeTimestamp;
+	private String tradingSymbol;
+
+	private String exchange;
+
+	private String product;
+
+	private String quantity;
+
 	@SerializedName("transaction_type")
-	public String transactionType;
+	private String transactionType;
 
 }

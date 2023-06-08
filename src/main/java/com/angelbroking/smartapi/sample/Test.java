@@ -2,116 +2,117 @@ package com.angelbroking.smartapi.sample;
 
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
 import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.smartstream.SmartStreamListenerImpl;
+import com.angelbroking.smartapi.smartstream.models.ExchangeType;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
+import com.angelbroking.smartapi.smartstream.models.TokenID;
+import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import lombok.extern.slf4j.Slf4j;
 
+import java.net.Proxy;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.angelbroking.smartapi.utils.Constants.TIME_OUT_IN_MILLIS;
+
+@Slf4j
 public class Test {
 
-	public static void main(String[] args) throws SmartAPIException {
-		try {
+    public static void main(String[] args) throws SmartAPIException {
+        try {
+            String apiKey = "";
+            String clientId = "";
+            String clientPin = "";
+            GoogleAuthenticator gAuth = new GoogleAuthenticator();
+            String totp_key = "";
+            String tOTP = String.valueOf(gAuth.getTotpPassword(totp_key));
+            Proxy proxy = Proxy.NO_PROXY;
+            SmartConnect smartConnect = new SmartConnect(apiKey,proxy,TIME_OUT_IN_MILLIS);
 
-			SmartConnect smartConnect = new SmartConnect("<api_key>"); // PROVIDE YOUR API KEY HERE
+            // Generate User Session smartConnectParams
+            log.info("Generate session");
+            User user = smartConnect.generateSession(clientId, clientPin, tOTP);
+            smartConnect.setAccessToken(user.getAccessToken());
+            smartConnect.setUserId(user.getUserId());
+            log.info("SmartStreamTicker");
+            // SmartStreamTicker
+            String feedToken = user.getFeedToken();
+            SmartStreamTicker ticker = new SmartStreamTicker(clientId, feedToken, new SmartStreamListenerImpl());
+            ticker.connect();
+            log.info("subscribe");
+            ticker.subscribe(SmartStreamSubsMode.SNAP_QUOTE, getTokens());
 
-			/*
-			 * OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN SmartConnect smartConnect = new
-			 * SmartConnect("<api_key>", "<YOUR_ACCESS_TOKEN>", "<YOUR_REFRESH_TOKEN>");
-			 */
+            Examples examples = new Examples();
+            log.info("getProfile");
+            examples.getProfile(smartConnect);
 
-			/*
-			 * Set session expiry callback. smartConnect.setSessionExpiryHook(new
-			 * SessionExpiryHook() {
-			 * 
-			 * @Override public void sessionExpired() {
-			 * System.out.println("session expired"); } });
-			 * 
-			 * User user = smartConnect.generateSession("<clientId>", "<password>");
-			 * smartConnect.setAccessToken(user.getAccessToken());
-			 * smartConnect.setUserId(user.getUserId());
-			 * 
-			 * /* token re-generate
-			 */
-			/*
-			 * TokenSet tokenSet = smartConnect.renewAccessToken(user.getAccessToken(),
-			 * user.getRefreshToken());
-			 * smartConnect.setAccessToken(tokenSet.getAccessToken());
-			 */
+            log.info("placeOrder");
+            HttpResponse placeOrder = examples.placeOrder(smartConnect);
 
-			Examples examples = new Examples();
-			/* System.out.println("getProfile"); */
-			examples.getProfile(smartConnect);
 
-			System.out.println("placeOrder");
-			examples.placeOrder(smartConnect);
+            log.info("modifyOrder");
+            examples.modifyOrder(smartConnect,"230531000603615");
 
-			/* System.out.println("modifyOrder"); */
-			examples.modifyOrder(smartConnect);
+            log.info("cancelOrder");
+            examples.cancelOrder(smartConnect,"230531000603615");
 
-			/* System.out.println("cancelOrder"); */
-			examples.cancelOrder(smartConnect);
+            log.info("getOrder");
+            examples.getOrder(smartConnect);
 
-			/* System.out.println("getOrder"); */
-			examples.getOrder(smartConnect);
+            log.info("getLTP");
+            examples.getLTP(smartConnect);
 
-			/* System.out.println("getLTP"); */
-			examples.getLTP(smartConnect);
+            log.info("getTrades");
+            examples.getTrades(smartConnect);
 
-			/* System.out.println("getTrades"); */
-			examples.getTrades(smartConnect);
+            log.info("getRMS");
+            examples.getRMS(smartConnect);
 
-			/* System.out.println("getRMS"); */
-			examples.getRMS(smartConnect);
+            log.info("getHolding");
+            examples.getHolding(smartConnect);
 
-			/* System.out.println("getHolding"); */
-			examples.getHolding(smartConnect);
+            log.info("getPosition");
+            examples.getPosition(smartConnect);
 
-			/* System.out.println("getPosition"); */
-			examples.getPosition(smartConnect);
+//            log.info("convertPosition");
+//            examples.convertPosition(smartConnect);
 
-			/* System.out.println("convertPosition"); */
-			examples.convertPosition(smartConnect);
+            log.info("createRule");
+            HttpResponse createRuleID = examples.createRule(smartConnect);
 
-			/* System.out.println("createRule"); */
-			examples.createRule(smartConnect);
+            log.info("ModifyRule");
 
-			/* System.out.println("ModifyRule"); */
-			examples.modifyRule(smartConnect);
+			log.info("cancelRule");
+			examples.cancelRule(smartConnect,"865598");
 
-			/* System.out.println("cancelRule"); */
-			examples.cancelRule(smartConnect);
+            log.info("Rule Details");
+            examples.ruleDetails(smartConnect, "865598");
 
-			/* System.out.println("Rule Details"); */
-			examples.ruleDetails(smartConnect);
+            log.info("Rule List");
+            examples.ruleList(smartConnect);
 
-			/* System.out.println("Rule List"); */
-			examples.ruleList(smartConnect);
+            log.info("Historic candle Data");
+            examples.getCandleData(smartConnect);
 
-			/* System.out.println("Historic candle Data"); */
-			examples.getCandleData(smartConnect);
+            log.info("logout");
+            examples.logout(smartConnect);
 
-			/* System.out.println("logout"); */
-			examples.logout(smartConnect);
+        } catch (Exception e) {
+            log.info("Exception: {}", e);
+        }
 
-			/* SmartAPITicker */
-			String clientId = "<clientId>";
-			User user = smartConnect.generateSession("<clientId>", "<password>", "<totp>");
-			String feedToken = user.getFeedToken();
-			String strWatchListScript = "nse_cm|2885&nse_cm|1594&nse_cm|11536&mcx_fo|221658";
-			String task = "mw";
+    }
 
-			examples.tickerUsage(clientId, feedToken, strWatchListScript, task);
-
-			/*
-			 * String jwtToken = user.getAccessToken(); String apiKey = "smartapi_key";
-			 * String actionType = "subscribe"; String feedType = "order_feed";
-			 * 
-			 * examples.smartWebSocketUsage(clientId, jwtToken, apiKey, actionType,
-			 * feedType);
-			 * 
-			 */
-
-		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-	}
+    private static Set<TokenID> getTokens() {
+        // find out the required token from
+        // https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json
+        Set<TokenID> tokenSet = new HashSet<>();
+        tokenSet.add(new TokenID(ExchangeType.NSE_CM, "26009")); // NIFTY BANK
+        tokenSet.add(new TokenID(ExchangeType.NSE_CM, "1594")); // NSE Infosys
+        tokenSet.add(new TokenID(ExchangeType.NCX_FO, "GUARGUM5")); // GUAREX (NCDEX)
+        return tokenSet;
+    }
 }

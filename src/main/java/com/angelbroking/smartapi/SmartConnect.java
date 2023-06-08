@@ -1,727 +1,570 @@
 package com.angelbroking.smartapi;
 
+import com.angelbroking.smartapi.dto.StockHistoryRequestDTO;
+import com.angelbroking.smartapi.dto.TradeRequestDTO;
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.http.response.HttpResponse;
+import com.angelbroking.smartapi.http.response.UserResponseDTO;
+import com.angelbroking.smartapi.models.GttParams;
+import com.angelbroking.smartapi.models.GttRuleParams;
+import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.SmartConnectParams;
+import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.routes.Routes;
+import com.angelbroking.smartapi.smartstream.models.LTPParams;
+import com.angelbroking.smartapi.utils.ResponseParser;
+import com.angelbroking.smartapi.utils.Utils;
+import com.angelbroking.smartapi.utils.Validators;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.net.Proxy;
 import java.util.List;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_ERROR_MSG;
+import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_OCCURRED;
+import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_ERROR_MSG;
+import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
+import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_CANDLE_DATA;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_GTT_CANCEL;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_GTT_CREATE;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_GTT_DETAILS;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_GTT_LIST;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_GTT_MODIFY;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_LTP_DATA;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_BOOK;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_CANCEL;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_MODIFY;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_PLACE;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_RMS_DATA;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_RMS_HOLDING;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_RMS_POSITION;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_ORDER_TRADE_BOOK;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_LOGOUT;
+import static com.angelbroking.smartapi.utils.Constants.SMART_CONNECT_API_USER_PROFILE;
 
-import com.angelbroking.smartapi.http.SessionExpiryHook;
-import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.Gtt;
-import com.angelbroking.smartapi.models.GttParams;
-import com.angelbroking.smartapi.models.Order;
-import com.angelbroking.smartapi.models.OrderParams;
-import com.angelbroking.smartapi.models.TokenSet;
-import com.angelbroking.smartapi.models.User;
 
+@Slf4j
 public class SmartConnect {
-	public static SessionExpiryHook sessionExpiryHook = null;
-	public static boolean ENABLE_LOGGING = false;
-	private Proxy proxy = null;
-	private String apiKey;
-	private String accessToken;
-	private String refreshToken;
-	private Routes routes = new Routes();
-	private String userId;
-	private SmartAPIRequestHandler smartAPIRequestHandler;
-
-	public SmartConnect() {
-
-	}
-
-	public SmartConnect(String apiKey) {
-		this.apiKey = apiKey;
-	}
-
-	public SmartConnect(String apiKey, String accessToken, String refreshToken) {
-		this.apiKey = apiKey;
-		this.accessToken = accessToken;
-		this.refreshToken = refreshToken;
-	}
-
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
-
-	/**
-	 * Registers callback for session error.
-	 * 
-	 * @param hook can be set to get callback when session is expired.
-	 */
-	public void setSessionExpiryHook(SessionExpiryHook hook) {
-		sessionExpiryHook = hook;
-	}
-
-	/**
-	 * Returns apiKey of the App.
-	 * 
-	 * @return String apiKey is returned.
-	 * @throws NullPointerException if _apiKey is not found.
-	 */
-	public String getApiKey() throws NullPointerException {
-		if (apiKey != null)
-			return apiKey;
-		else
-			throw new NullPointerException();
-	}
-
-	/**
-	 * Returns accessToken.
-	 * 
-	 * @return String access_token is returned.
-	 * @throws NullPointerException if accessToken is null.
-	 */
-	public String getAccessToken() throws NullPointerException {
-		if (accessToken != null)
-			return accessToken;
-		else
-			throw new NullPointerException();
-	}
-
-	/**
-	 * Returns userId.
-	 * 
-	 * @return String userId is returned.
-	 * @throws NullPointerException if userId is null.
-	 */
-	public String getUserId() throws NullPointerException {
-		if (userId != null) {
-			return userId;
-		} else {
-			throw new NullPointerException();
-		}
-	}
-
-	/**
-	 * Set userId.
-	 * 
-	 * @param id is user_id.
-	 */
-	public void setUserId(String id) {
-		userId = id;
-	}
-
-	/**
-	 * Returns publicToken.
-	 * 
-	 * @throws NullPointerException if publicToken is null.
-	 * @return String public token is returned.
-	 */
-	public String getPublicToken() throws NullPointerException {
-		if (refreshToken != null) {
-			return refreshToken;
-		} else {
-			throw new NullPointerException();
-		}
-	}
-
-	/**
-	 * Set the accessToken received after a successful authentication.
-	 * 
-	 * @param accessToken is the access token received after sending request token
-	 *                    and api secret.
-	 */
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	/**
-	 * Set publicToken.
-	 * 
-	 * @param publicToken is the public token received after sending request token
-	 *                    and api secret.
-	 */
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-
-	/**
-	 * Retrieves login url
-	 * 
-	 * @return String loginUrl is returned.
-	 */
-	public String getLoginURL() throws NullPointerException {
-		String baseUrl = routes.getLoginUrl();
-		return baseUrl;
-	}
-
-	/**
-	 * Do the token exchange with the `request_token` obtained after the login flow,
-	 * and retrieve the `access_token` required for all subsequent requests.
-	 * 
-	 * @param requestToken received from login process.
-	 * @param apiSecret    which is unique for each aap.
-	 * @return User is the user model which contains user and session details.
-	 * 
-	 */
-	public User generateSession(String clientCode, String password, String totp) {
-		try {
-			smartAPIRequestHandler = new SmartAPIRequestHandler(proxy);
-
-			// Create JSON params object needed to be sent to api.
-			JSONObject params = new JSONObject();
-			params.put("clientcode", clientCode);
-			params.put("password", password);
-			params.put("totp", totp);
-
-			JSONObject loginResultObject = smartAPIRequestHandler.postRequest(this.apiKey, routes.getLoginUrl(),
-					params);
-			System.out.print(loginResultObject);
-			String jwtToken = loginResultObject.getJSONObject("data").getString("jwtToken");
-			String refreshToken = loginResultObject.getJSONObject("data").getString("refreshToken");
-			String feedToken = loginResultObject.getJSONObject("data").getString("feedToken");
-			String url = routes.get("api.user.profile");
-			User user = new User().parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, jwtToken));
-			user.setAccessToken(jwtToken);
-			user.setRefreshToken(refreshToken);
-			user.setFeedToken(feedToken);
-
-			return user;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-
-	}
-
-	/**
-	 * Get a new access token using refresh token.
-	 * 
-	 * @param refreshToken is the refresh token obtained after generateSession.
-	 * @param apiSecret    is unique for each app.
-	 * @return TokenSet contains user id, refresh token, api secret.
-	 * 
-	 */
-	public TokenSet renewAccessToken(String accessToken, String refreshToken) {
-		try {
-			String hashableText = this.apiKey + refreshToken + accessToken;
-			String sha256hex = sha256Hex(hashableText);
-
-			JSONObject params = new JSONObject();
-			params.put("refreshToken", refreshToken);
-			params.put("checksum", sha256hex);
-			String url = routes.get("api.refresh");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-
-			accessToken = response.getJSONObject("data").getString("jwtToken");
-			refreshToken = response.getJSONObject("data").getString("refreshToken");
-
-			TokenSet tokenSet = new TokenSet();
-			tokenSet.setUserId(userId);
-			tokenSet.setAccessToken(accessToken);
-			tokenSet.setRefreshToken(refreshToken);
-
-			return tokenSet;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Hex encodes sha256 output for android support.
-	 * 
-	 * @return Hex encoded String.
-	 * @param str is the String that has to be encrypted.
-	 */
-	public String sha256Hex(String str) {
-		byte[] a = DigestUtils.sha256(str);
-		StringBuilder sb = new StringBuilder(a.length * 2);
-		for (byte b : a)
-			sb.append(String.format("%02x", b));
-		return sb.toString();
-	}
-
-	/**
-	 * Get the profile details of the use.
-	 * 
-	 * @return Profile is a POJO which contains profile related data.
-	 * 
-	 */
-	public User getProfile() {
-		try {
-			String url = routes.get("api.user.profile");
-			User user = new User().parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken));
-			return user;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Places an order.
-	 * 
-	 * @param orderParams is Order params.
-	 * @param variety     variety="regular". Order variety can be bo, co, amo,
-	 *                    regular.
-	 * @return Order contains only orderId.
-	 * 
-	 */
-	public Order placeOrder(OrderParams orderParams, String variety) {
-
-		try {
-			String url = routes.get("api.order.place");
-
-			JSONObject params = new JSONObject();
-
-			if (orderParams.exchange != null)
-				params.put("exchange", orderParams.exchange);
-			if (orderParams.tradingsymbol != null)
-				params.put("tradingsymbol", orderParams.tradingsymbol);
-			if (orderParams.transactiontype != null)
-				params.put("transactiontype", orderParams.transactiontype);
-			if (orderParams.quantity != null)
-				params.put("quantity", orderParams.quantity);
-			if (orderParams.price != null)
-				params.put("price", orderParams.price);
-			if (orderParams.producttype != null)
-				params.put("producttype", orderParams.producttype);
-			if (orderParams.ordertype != null)
-				params.put("ordertype", orderParams.ordertype);
-			if (orderParams.duration != null)
-				params.put("duration", orderParams.duration);
-			if (orderParams.price != null)
-				params.put("price", orderParams.price);
-			if (orderParams.symboltoken != null)
-				params.put("symboltoken", orderParams.symboltoken);
-			if (orderParams.squareoff != null)
-				params.put("squareoff", orderParams.squareoff);
-			if (orderParams.stoploss != null)
-				params.put("stoploss", orderParams.stoploss);
-			if (orderParams.triggerprice != null)
-				params.put("triggerprice", orderParams.triggerprice);
-
-			params.put("variety", variety);
-
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Order order = new Order();
-			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
-			System.out.println(order);
-			return order;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Modifies an open order.
-	 *
-	 * @param orderParams is Order params.
-	 * @param variety     variety="regular". Order variety can be bo, co, amo,
-	 *                    regular.
-	 * @param orderId     order id of the order being modified.
-	 * @return Order object contains only orderId.
-	 * 
-	 */
-	public Order modifyOrder(String orderId, OrderParams orderParams, String variety) {
-		try {
-			String url = routes.get("api.order.modify");
-
-			JSONObject params = new JSONObject();
-
-			if (orderParams.exchange != null)
-				params.put("exchange", orderParams.exchange);
-			if (orderParams.tradingsymbol != null)
-				params.put("tradingsymbol", orderParams.tradingsymbol);
-			if (orderParams.symboltoken != null)
-				params.put("symboltoken", orderParams.symboltoken);
-			if (orderParams.quantity != null)
-				params.put("quantity", orderParams.quantity);
-			if (orderParams.price != null)
-				params.put("price", orderParams.price);
-			if (orderParams.producttype != null)
-				params.put("producttype", orderParams.producttype);
-			if (orderParams.ordertype != null)
-				params.put("ordertype", orderParams.ordertype);
-			if (orderParams.duration != null)
-				params.put("duration", orderParams.duration);
-
-			params.put("variety", variety);
-			params.put("orderid", orderId);
-
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Order order = new Order();
-			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
-			return order;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Cancels an order.
-	 * 
-	 * @param orderId order id of the order to be cancelled.
-	 * @param variety [variety="regular"]. Order variety can be bo, co, amo,
-	 *                regular.
-	 * @return Order object contains only orderId.
-	 * 
-	 */
-	public Order cancelOrder(String orderId, String variety) {
-		try {
-			String url = routes.get("api.order.cancel");
-			JSONObject params = new JSONObject();
-			params.put("variety", variety);
-			params.put("orderid", orderId);
-
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Order order = new Order();
-			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
-			return order;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Returns list of different stages an order has gone through.
-	 * 
-	 * @return List of multiple stages an order has gone through in the system.
-	 * @throws SmartAPIException is thrown for all Smart API trade related errors.
-	 * @param orderId is the order id which is obtained from orderbook.
-	 * 
-	 */
-	@SuppressWarnings({})
-	public JSONObject getOrderHistory(String clientId) {
-		try {
-			String url = routes.get("api.order.book");
-			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			System.out.println(response);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println("Exception#: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves last price. User can either pass exchange with tradingsymbol or
-	 * instrument token only. For example {NSE:NIFTY 50, BSE:SENSEX} or {256265,
-	 * 265}.
-	 * 
-	 * @return Map of String and LTPQuote.
-	 * 
-	 */
-	public JSONObject getLTP(String exchange, String tradingSymbol, String symboltoken) {
-		try {
-			JSONObject params = new JSONObject();
-			params.put("exchange", exchange);
-			params.put("tradingsymbol", tradingSymbol);
-			params.put("symboltoken", symboltoken);
-
-			String url = routes.get("api.ltp.data");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-
-			return response.getJSONObject("data");
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves list of trades executed.
-	 * 
-	 * @return List of trades.
-	 */
-	public JSONObject getTrades() {
-		try {
-			String url = routes.get("api.order.trade.book");
-			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves RMS.
-	 * 
-	 * @return Object of RMS.
-	 * @throws SmartAPIException is thrown for all Smart API trade related errors.
-	 * @throws JSONException     is thrown when there is exception while parsing
-	 *                           response.
-	 * @throws IOException       is thrown when there is connection error.
-	 */
-	public JSONObject getRMS() {
-		try {
-			String url = routes.get("api.order.rms.data");
-			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			return response.getJSONObject("data");
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves Holding.
-	 * 
-	 * @return Object of Holding.
-	 * 
-	 */
-	public JSONObject getHolding() {
-		try {
-			String url = routes.get("api.order.rms.holding");
-			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves position.
-	 * 
-	 * @return Object of position.
-	 * 
-	 */
-	public JSONObject getPosition() {
-		try {
-			String url = routes.get("api.order.rms.position");
-			JSONObject response = smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Retrieves conversion.
-	 * 
-	 * @return Object of conversion.
-	 * @throws SmartAPIException is thrown for all Smart API trade related errors.
-	 * @throws JSONException     is thrown when there is exception while parsing
-	 *                           response.
-	 * @throws IOException       is thrown when there is connection error.
-	 */
-	public JSONObject convertPosition(JSONObject params) {
-		try {
-			String url = routes.get("api.order.rms.position.convert");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Create a Gtt Rule.
-	 * 
-	 * @param gttParams is gtt Params.
-	 * @return Gtt contains only orderId.
-	 * 
-	 */
-
-	public Gtt gttCreateRule(GttParams gttParams) {
-		try {
-			String url = routes.get("api.gtt.create");
-
-			JSONObject params = new JSONObject();
-
-			if (gttParams.tradingsymbol != null)
-				params.put("tradingsymbol", gttParams.tradingsymbol);
-			if (gttParams.symboltoken != null)
-				params.put("symboltoken", gttParams.symboltoken);
-			if (gttParams.exchange != null)
-				params.put("exchange", gttParams.exchange);
-			if (gttParams.transactiontype != null)
-				params.put("transactiontype", gttParams.transactiontype);
-			if (gttParams.producttype != null)
-				params.put("producttype", gttParams.producttype);
-			if (gttParams.price != null)
-				params.put("price", gttParams.price);
-			if (gttParams.qty != null)
-				params.put("qty", gttParams.qty);
-			if (gttParams.triggerprice != null)
-				params.put("triggerprice", gttParams.triggerprice);
-			if (gttParams.disclosedqty != null)
-				params.put("disclosedqty", gttParams.disclosedqty);
-			if (gttParams.timeperiod != null)
-				params.put("timeperiod", gttParams.timeperiod);
-
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Gtt gtt = new Gtt();
-			gtt.id = jsonObject.getJSONObject("data").getInt("id");
-			System.out.println(gtt);
-			return gtt;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-
-	}
-
-	/**
-	 * Modify a Gtt Rule.
-	 * 
-	 * @param gttParams is gtt Params.
-	 * @return Gtt contains only orderId.
-	 * 
-	 */
-
-	public Gtt gttModifyRule(Integer id, GttParams gttParams) {
-		try {
-			String url = routes.get("api.gtt.modify");
-
-			JSONObject params = new JSONObject();
-
-			if (gttParams.symboltoken != null)
-				params.put("symboltoken", gttParams.symboltoken);
-			if (gttParams.exchange != null)
-				params.put("exchange", gttParams.exchange);
-			if (gttParams.price != null)
-				params.put("price", gttParams.price);
-			if (gttParams.qty != null)
-				params.put("qty", gttParams.qty);
-			if (gttParams.triggerprice != null)
-				params.put("triggerprice", gttParams.triggerprice);
-			if (gttParams.disclosedqty != null)
-				params.put("disclosedqty", gttParams.disclosedqty);
-			if (gttParams.timeperiod != null)
-				params.put("timeperiod", gttParams.timeperiod);
-
-			params.put("id", id);
-
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Gtt gtt = new Gtt();
-			gtt.id = jsonObject.getJSONObject("data").getInt("id");
-			System.out.println(gtt);
-			return gtt;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-
-	}
-
-	/**
-	 * Cancel a Gtt Rule.
-	 * 
-	 * @param gttParams is gtt Params.
-	 * @return Gtt contains only orderId.
-	 */
-
-	public Gtt gttCancelRule(Integer id, String symboltoken, String exchange) {
-		try {
-			JSONObject params = new JSONObject();
-			params.put("id", id);
-			params.put("symboltoken", symboltoken);
-			params.put("exchange", exchange);
-
-			String url = routes.get("api.gtt.cancel");
-			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			Gtt gtt = new Gtt();
-			gtt.id = jsonObject.getJSONObject("data").getInt("id");
-			System.out.println(gtt);
-			return gtt;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Get Gtt Rule Details.
-	 * 
-	 * @param id is gtt rule id.
-	 * @return returns the details of gtt rule.
-	 */
-
-	public JSONObject gttRuleDetails(Integer id) {
-		try {
-
-			JSONObject params = new JSONObject();
-			params.put("id", id);
-
-			String url = routes.get("api.gtt.details");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println(response);
-
-			return response.getJSONObject("data");
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-
-	}
-
-	/**
-	 * Get Gtt Rule Details.
-	 * 
-	 * @param status is list of gtt rule status.
-	 * @param page   is no of page
-	 * @param count  is the count of gtt rules
-	 * @return returns the detailed list of gtt rules.
-	 */
-	public JSONArray gttRuleList(List<String> status, Integer page, Integer count) {
-		try {
-			JSONObject params = new JSONObject();
-			params.put("status", status);
-			params.put("page", page);
-			params.put("count", count);
-
-			String url = routes.get("api.gtt.list");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println(response);
-			return response.getJSONArray("data");
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-
-	}
-
-	/**
-	 * Get Historic Data.
-	 * 
-	 * @param params is historic data params.
-	 * @return returns the details of historic data.
-	 */
-	public String candleData(JSONObject params) {
-		try {
-			String url = routes.get("api.candle.data");
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			System.out.println(response);
-			return response.getString("data");
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Logs out user by invalidating the access token.
-	 * 
-	 * @return JSONObject which contains status
-	 * 
-	 */
-
-	public JSONObject logout() {
-		try {
-			String url = routes.get("api.user.logout");
-			JSONObject params = new JSONObject();
-			params.put("clientcode", this.userId);
-			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			return response;
-		} catch (Exception | SmartAPIException e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
+
+    private static final Routes routes = new Routes();
+    private final SmartAPIRequestHandler smartAPIRequestHandler;
+    private final SmartConnectParams smartConnectParams;
+
+
+    public SmartConnect(String apiKey, Proxy proxy, long timeOutInMillis) {
+        this.smartConnectParams = new SmartConnectParams(apiKey);
+        this.smartAPIRequestHandler = new SmartAPIRequestHandler(proxy, timeOutInMillis);
+
+    }
+
+    public SmartConnect(String apiKey, String accessToken, String refreshToken, Proxy proxy, long timeOutInMillis) {
+        this.smartConnectParams = new SmartConnectParams(apiKey, accessToken, refreshToken);
+        this.smartAPIRequestHandler = new SmartAPIRequestHandler(proxy, timeOutInMillis);
+    }
+
+
+    /**
+     * Generates a session for the given client with the provided credentials and TOTP.
+     *
+     * @param clientCode the client code for which the session needs to be generated
+     * @param password   the password of the client account
+     * @param totp       the TOTP generated by the client's TOTP device
+     * @return a User object representing the client's session, or null if an error occurs
+     * @throws SmartAPIException if an error occurs while making the API request
+     * @throws IOException       if an I/O error occurs while making the API request
+     * @throws JSONException     if there is an error while parsing the JSON response
+     */
+    public User generateSession(String clientCode, String password, String totp) throws SmartAPIException, IOException {
+        User user;
+        UserResponseDTO responseDTO;
+        String url = routes.get(SMART_CONNECT_API_USER_PROFILE);
+
+        try {
+            HttpResponse httpResponse = smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), routes.getLoginUrl(), Utils.createLoginParams(clientCode, password, totp));
+            responseDTO = new ObjectMapper().readValue(httpResponse.getBody(), UserResponseDTO.class);
+            user = ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, responseDTO.getData().getJwtToken()));
+        } catch (IOException ex) {
+            log.error("{} while generating session {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in generating Session  %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while generating session {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in generating Session %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while generating session {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in generating Session %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+        user.setAccessToken(responseDTO.getData().getJwtToken());
+        user.setRefreshToken(responseDTO.getData().getRefreshToken());
+        user.setFeedToken(responseDTO.getData().getFeedToken());
+        return user;
+    }
+
+
+    /**
+     * Get the profile details of the use.
+     *
+     * @return Profile is a POJO which contains profile related data.
+     */
+    public User getProfile() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_USER_PROFILE);
+        try {
+            return ResponseParser.parseResponse(smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken()));
+
+        } catch (IOException ex) {
+            log.error("{} while getting profile {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting profile %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting profile {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting profile %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+        }
+    }
+
+    /**
+     * Places an order.
+     *
+     * @param orderParams is Order params.
+     * @param variety     variety="regular". Order variety can be bo, co, amo,
+     *                    regular.
+     * @return Order contains only orderId.
+     */
+    public HttpResponse placeOrder(OrderParams orderParams, String variety) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_PLACE);
+        Validators validator = new Validators();
+        try {
+            orderParams.setVariety(variety);
+            validator.orderValidator(orderParams);
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
+        } catch (SmartAPIException ex) {
+            log.error("{} while placing order {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in placing order %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+        } catch (IOException ex) {
+            log.error("{} while placing order {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in placing order %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while placing order {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in placing order %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        }
+    }
+
+    /**
+     * Modifies an open order.
+     *
+     * @param orderParams is Order params.
+     * @param variety     variety="regular". Order variety can be bo, co, amo,
+     *                    regular.
+     * @param orderId     order id of the order being modified.
+     * @return Order object contains only orderId.
+     */
+    public HttpResponse modifyOrder(String orderId, OrderParams orderParams, String variety) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_MODIFY);
+        Validators validator = new Validators();
+        try {
+            orderParams.setVariety(variety);
+            orderParams.setOrderId(orderId);
+            validator.modifyOrderValidator(orderParams);
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while modifying order {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in modifying order %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while modifying order {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in modifying order %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while modifying order {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in modifying order %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+        }
+    }
+
+    /**
+     * Cancels an order.
+     *
+     * @param orderId order id of the order to be cancelled.
+     * @param variety [variety="regular"]. Order variety can be bo, co, amo,
+     *                regular.
+     * @return Order object contains only orderId.
+     */
+    public HttpResponse cancelOrder(String orderId, String variety) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_CANCEL);
+        OrderParams orderParams = new OrderParams();
+        orderParams.setVariety(variety);
+        orderParams.setOrderId(orderId);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(orderParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while canceling order {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in canceling order %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while canceling order {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in canceling order %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while canceling order {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in canceling order %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Returns list of different stages an order has gone through.
+     *
+     * @return List of multiple stages an order has gone through in the system.
+     * @throws SmartAPIException is thrown for all Smart API trade related errors.
+     */
+    @SuppressWarnings({})
+    public HttpResponse getOrderHistory() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_BOOK);
+        try {
+            return smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting order history {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting order history %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting order history {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting order history %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting order history {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting order history %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves last price. User can either pass exchange with tradingsymbol or
+     * instrument token only. For example {NSE:NIFTY 50, BSE:SENSEX} or {256265,
+     * 265}.
+     *
+     * @return Map of String and LTPQuote.
+     */
+    public HttpResponse getLTP(String exchange, String tradingSymbol, String symboltoken) throws SmartAPIException, IOException {
+        LTPParams ltpParams = new LTPParams();
+        ltpParams.setExchange(exchange);
+        ltpParams.setTradingSymbol(tradingSymbol);
+        ltpParams.setSymbolToken(symboltoken);
+        String url = routes.get(SMART_CONNECT_API_LTP_DATA);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(ltpParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting ltp {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting ltp %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting ltp {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting ltp %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting ltp {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting ltp %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves list of trades executed.
+     *
+     * @return List of trades.
+     */
+    public HttpResponse getTrades() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_TRADE_BOOK);
+        try {
+            return smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting trades {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting trades %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting trades {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting trades %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves RMS.
+     *
+     * @return Object of RMS.
+     * @throws SmartAPIException is thrown for all Smart API trade related errors.
+     * @throws IOException       is thrown when there is connection error.
+     */
+    public HttpResponse getRMS() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_RMS_DATA);
+        try {
+            return smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting rms {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting rms  %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting rms  {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting rms %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves Holding.
+     *
+     * @return Object of Holding.
+     */
+    public HttpResponse getHolding() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_RMS_HOLDING);
+        try {
+            return smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting holding {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting holding %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting holding {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting holding %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting holding {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting holding %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves position.
+     *
+     * @return Object of position.
+     */
+    public HttpResponse getPosition() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_RMS_POSITION);
+        try {
+            return smartAPIRequestHandler.getRequest(smartConnectParams.getApiKey(), url, smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting position {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting position %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting position {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting position %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Retrieves conversion.
+     *
+     * @return Object of conversion.
+     * @throws SmartAPIException is thrown for all Smart API trade related errors.
+     * @throws JSONException     is thrown when there is exception while parsing
+     *                           response.
+     * @throws IOException       is thrown when there is connection error.
+     */
+    public HttpResponse convertPosition(TradeRequestDTO params) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_ORDER_RMS_POSITION_CONVERT);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(params), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while converting position  {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in converting position %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while converting position {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in converting position %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+        }
+    }
+
+    /**
+     * Create a Gtt Rule.
+     *
+     * @param gttParams is gtt Params.
+     * @return Gtt contains only orderId.
+     */
+
+    public HttpResponse gttCreateRule(GttParams gttParams) throws SmartAPIException, IOException {
+        Validators validator = new Validators();
+        String url = routes.get(SMART_CONNECT_API_GTT_CREATE);
+        try {
+            validator.gttParamsValidator(gttParams);
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while creating gtt rule  {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in creating gtt rule  %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while creating gtt rule {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in creating gtt rule %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while creating gtt rule {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in creating gtt rule %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+
+    }
+
+    /**
+     * Modify a Gtt Rule.
+     *
+     * @param gttParams is gtt Params.
+     * @return Gtt contains only orderId.
+     */
+
+    public HttpResponse gttModifyRule(Integer id, GttParams gttParams) throws SmartAPIException, IOException {
+        Validators validator = new Validators();
+        String url = routes.get(SMART_CONNECT_API_GTT_MODIFY);
+        try {
+            gttParams.setId(id);
+            validator.gttModifyRuleValidator(gttParams);
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while modifying gtt rule {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in modifying gtt rule %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while modifying gtt rule {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in modifying gtt rule %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while modifying gtt rule {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in modifying gtt rule %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+
+
+    }
+
+    /**
+     * Cancel a Gtt Rule.
+     *
+     * @param exchange,id,symboltoken is gtt Params.
+     * @return Gtt contains only orderId.
+     */
+
+    public HttpResponse gttCancelRule(Integer id, String symboltoken, String exchange) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_GTT_CANCEL);
+        GttParams gttParams = new GttParams();
+        gttParams.setId(id);
+        gttParams.setSymbolToken(symboltoken);
+        gttParams.setExchange(exchange);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while canceling gtt rule {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in canceling gtt rule %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while canceling gtt rule {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in canceling gtt rule %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while canceling gtt rule {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in canceling gtt rule %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Get Gtt Rule Details.
+     *
+     * @param id is gtt rule id.
+     * @return returns the details of gtt rule.
+     */
+
+    public HttpResponse gttRuleDetails(Integer id) throws SmartAPIException, IOException {
+        GttParams gttParams = new GttParams();
+        gttParams.setId(id);
+        String url = routes.get(SMART_CONNECT_API_GTT_DETAILS);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting gtt rule details {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting gtt rule details %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting gtt rule details {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting gtt rule details %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting gtt rule details {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting gtt rule details %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+
+    }
+
+    /**
+     * Get Gtt Rule Details.
+     *
+     * @param status is list of gtt rule status.
+     * @param page   is no of page
+     * @param count  is the count of gtt rules
+     * @return returns the detailed list of gtt rules.
+     */
+    public HttpResponse gttRuleList(List<String> status, Integer page, Integer count) throws SmartAPIException, IOException {
+        GttRuleParams gttRuleParams = new GttRuleParams();
+        gttRuleParams.setStatus(status);
+        gttRuleParams.setPage(page);
+        gttRuleParams.setCount(count);
+        String url = routes.get(SMART_CONNECT_API_GTT_LIST);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(gttRuleParams), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting gtt rule list {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting gtt rule list %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting gtt rule list {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting gtt rule list %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting gtt rule list {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting gtt rule list %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+
+    }
+
+    /**
+     * Get Historic Data.
+     *
+     * @param params is historic data params.
+     * @return returns the details of historic data.
+     */
+    public HttpResponse candleData(StockHistoryRequestDTO params) throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_CANDLE_DATA);
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(params), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while getting candle data {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in getting candle data %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (JSONException ex) {
+            log.error("{} while getting candle data {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in getting candle data %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while getting candle data {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in getting candle data %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+    /**
+     * Logs out user by invalidating the access token.
+     *
+     * @return HttpResponse which contains status
+     */
+
+    public HttpResponse logout() throws SmartAPIException, IOException {
+        String url = routes.get(SMART_CONNECT_API_USER_LOGOUT);
+        User user = new User();
+        user.setUserId(smartConnectParams.getUserId());
+        try {
+            return smartAPIRequestHandler.postRequest(smartConnectParams.getApiKey(), url, new Gson().toJson(user), smartConnectParams.getAccessToken());
+        } catch (IOException ex) {
+            log.error("{} while logout {}", IO_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new IOException(String.format("%s in logout %s", IO_EXCEPTION_ERROR_MSG, ex.getMessage()));
+
+        } catch (JSONException ex) {
+            log.error("{} while logout {}", JSON_EXCEPTION_OCCURRED, ex.getMessage());
+            throw new JSONException(String.format("%s in logout %s", JSON_EXCEPTION_ERROR_MSG, ex.getMessage()));
+        } catch (SmartAPIException ex) {
+            log.error("{} while logout {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            throw new SmartAPIException(String.format("%s in logout %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
+
+        }
+    }
+
+
+    public void setAccessToken(String accessToken) {
+        smartConnectParams.setAccessToken(accessToken);
+    }
+
+    public void setUserId(String userId) {
+        smartConnectParams.setUserId(userId);
+    }
+
 
 }

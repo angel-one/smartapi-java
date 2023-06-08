@@ -1,41 +1,24 @@
 package com.angelbroking.smartapi.models;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A wrapper for user id, access token, refresh token.
  */
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TokenSet {
 
 	@SerializedName("clientcode")
-	public String userId;
+	private String userId;
 	@SerializedName("access_token")
-	public String accessToken;
+	private String accessToken;
 	@SerializedName("refresh_token")
-	public String refreshToken;
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
+	private String refreshToken;
 
 }
