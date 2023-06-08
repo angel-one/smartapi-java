@@ -177,16 +177,52 @@ public class Constants {
     public static final String CLIENT_CODE_PARAM = "clientcode";
     public static final String API_KEY_PARAM = "apikey";
 
+
+    public static final int BEST_FIVE_DATA_SIZE = 200;
+    public static final int BEST_FIVE_DATA_START_POSITION = 147;
+
+
     /**
-     * LTP Constants
+     * LTP QUOTE SNAPQUOTE Constants
      */
 
     public static final int SEQUENCE_NUMBER_OFFSET = 27;
     public static final int EXCHANGE_FEED_TIME_OFFSET = 35;
     public static final int LAST_TRADED_PRICE_OFFSET = 43;
+    public static final int SUBSCRIPTION_MODE = 0;
+    public static final int EXCHANGE_TYPE = 1;
+    public static final int LAST_TRADED_QTY_OFFSET = 51;
+    public static final int AVG_TRADED_PRICE_OFFSET = 59;
+    public static final int VOLUME_TRADED_TODAY_OFFSET = 67;
+    public static final int TOTAL_BUY_QTY_OFFSET = 75;
+    public static final int TOTAL_SELL_QTY_OFFSET = 83;
+    public static final int OPEN_PRICE_OFFSET = 91;
+    public static final int HIGH_PRICE_OFFSET = 99;
+    public static final int LOW_PRICE_OFFSET = 107;
+    public static final int CLOSE_PRICE_OFFSET = 115;
+    public static final int LAST_TRADED_TIMESTAMP_OFFSET = 123;
+    public static final int OPEN_INTEREST_OFFSET = 131;
+    public static final int OPEN_INTEREST_CHANGE_PERC_OFFSET = 139;
+    public static final int UPPER_CIRCUIT_OFFSET = 347;
+    public static final int LOWER_CIRCUIT_OFFSET = 355;
+    public static final int YEARLY_HIGH_PRICE_OFFSET = 363;
+    public static final int YEARLY_LOW_PRICE_OFFSET = 371;
+
+
+
+    public static final int BUY_START_POSITION = 147;
+    public static final int SELL_START_POSITION = 247;
+    public static final int NUM_PACKETS = 5;
+    public static final int PACKET_SIZE = 20;
+    public static final int BUY_SELL_FLAG_OFFSET = 0;
+    public static final int QUANTITY_OFFSET = 2;
+    public static final int PRICE_OFFSET = 10;
+    public static final int NUMBER_OF_ORDERS_OFFSET = 18;
+    public static final int PRICE_CONVERSION_FACTOR = 100;
 
     private Constants() {
     }
+
 
 
 }

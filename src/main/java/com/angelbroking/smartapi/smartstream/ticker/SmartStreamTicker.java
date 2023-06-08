@@ -218,7 +218,7 @@ public class SmartStreamTicker {
                             smartStreamListener.onError(getErrorHolder(e));
                         }
                     }
-                }, 5000, 5000); // Send a ping every 5 seconds
+                }, 5000, 5000); // run at every 5 second
             }
 
             private void stopPingTimer() {
