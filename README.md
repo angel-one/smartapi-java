@@ -14,10 +14,10 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 ## API usage
 ```java
-	// Initialize Samart API using clientcode and password.
+	// Initialize the Smart API using clientcode and password.
 	SmartConnect smartConnect = new SmartConnect();
 	
-	// Provide your api key here
+	// Provide your API key here
 	smartConnect.setApiKey("<api_key>");
 	
 	// Set session expiry callback.
