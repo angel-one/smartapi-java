@@ -1,10 +1,10 @@
-# Smart API 2.1.0 Java client
-The official Java client for communicating with [Smart API Connect API](https://smartapi.angelbroking.com).
+# SmartAPI 2.1.0 Java client
+The official Java client for communicating with [SmartAPI Connect API](https://smartapi.angelbroking.com).
 
-Smart API is a set of REST-like APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real time, manage user portfolio, stream live market data (WebSockets), and more, with the simple HTTP API collection.
+SmartAPI is a set of REST-like APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real-time, manage user portfolios, stream live market data (WebSockets), and more, with the simple HTTP API collection.
 
 ## Documentation
-- [Smart API - HTTP API documentation] (https://smartapi.angelbroking.com/docs)
+- [SmartAPI - HTTP API documentation] (https://smartapi.angelbroking.com/docs)
 - [Java library documentation](https://smartapi.angelbroking.com/docs)
 
 ## Usage
@@ -14,10 +14,10 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 ## API usage
 ```java
-	// Initialize Samart API using clientcode and password.
+	// Initialize SamartAPI using Client code, Password, and TOTP.
 	SmartConnect smartConnect = new SmartConnect();
 	
-	// Provide your api key here
+	// Provide your API key here
 	smartConnect.setApiKey("<api_key>");
 	
 	// Set session expiry callback.
@@ -28,8 +28,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	}
 	});
 	
-	User user = smartConnect.generateSession(<clientId>, <password>);
-	System.out.println(user.toString());
+	User user = smartConnect.generateSession(<clientId>, <password>, <totp>);
 	smartConnect.setAccessToken(user.getAccessToken());
 	smartConnect.setUserId(user.getUserId());
 	
@@ -110,7 +109,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 
 	/** Modify order. */
 	public void modifyOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Order modify request will return order model which will contain only
+		// Modify order request will return the order model which will contain order_id.
 
 		OrderParams orderParams = new OrderParams();
 		orderParams.quantity = 1;
@@ -126,12 +125,11 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 		Order order = smartConnect.modifyOrder(orderId, orderParams, Constants.VARIETY_REGULAR);
 	}
 
-	/** Cancel an order */
+	/** Cancel order */
 	public void cancelOrder(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		// Order modify request will return order model which will contain only
-		// order_id.
-		// Cancel order will return order model which will only have orderId.
-		Order order = smartConnect.cancelOrder("201009000000015", Constants.VARIETY_REGULAR);
+		// Cancel order will return the order model which will have orderId.
+		String orderId = "201216000755110";
+		Order order = smartConnect.cancelOrder(orderId, Constants.VARIETY_REGULAR);
 	}
 
 	/** Get order details */
@@ -143,7 +141,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	}
 
 	/**
-	 * Get last price for multiple instruments at once. USers can either pass
+	 * Get the last price for multiple instruments at once. Users can either pass
 	 * exchange with tradingsymbol or instrument token only. For example {NSE:NIFTY
 	 * 50, BSE:SENSEX} or {256265, 265}
 	 */
@@ -163,7 +161,7 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 		}
 	}
 
-	/** Get RMS */
+	/** Get Margin in trading account*/
 	public void getRMS(SmartConnect smartConnect) throws SmartAPIException, IOException {
 		// Returns RMS.
 		JSONObject response = smartConnect.getRMS();
@@ -282,12 +280,12 @@ Smart API is a set of REST-like APIs that expose many capabilities required to b
 	
 	/** Logout user. */
 	public void logout(SmartConnect smartConnect) throws SmartAPIException, IOException {
-		/** Logout user and kill session. */
+		/** Logout user and kill the session. */
 		JSONObject jsonObject = smartConnect.logout();
 	}
 	
 ```
-For more details, take a look at Examples.java in sample directory.
+For more details, take a look at Examples.java in the sample directory.
 
 ## WebSocket live streaming data
 
@@ -295,7 +293,7 @@ For more details, take a look at Examples.java in sample directory.
 
 	/* SmartAPITicker */
 	String clientId = "<clientId>";
-	User user = smartConnect.generateSession("<clientId>", "<password>");
+	User user = smartConnect.generateSession("<clientId>", "<password>", "<totp>");
 	String feedToken = user.getFeedToken();
 	String strWatchListScript = "nse_cm|2885&nse_cm|1594&nse_cm|11536&mcx_fo|221658";
 	String task = "mw";
@@ -333,7 +331,7 @@ For more details, take a look at Examples.java in sample directory.
 		});
 
 		/**
-		 * connects to Smart API ticker server for getting live quotes
+		 * connects to SmartAPI ticker server for getting live quotes
 		 */
 		tickerProvider.connect();
 
@@ -344,7 +342,7 @@ For more details, take a look at Examples.java in sample directory.
 		boolean isConnected = tickerProvider.isConnectionOpen();
 		System.out.println(isConnected);
 
-		// After using SmartAPI ticker, close websocket connection.
+		// After using the SmartAPI ticker, close websocket connection.
 		// tickerProvider.disconnect();
 
 	}
@@ -396,7 +394,7 @@ For more details, take a look at Examples.java in sample directory.
 		});
 
 		/**
-		 * connects to Smart API ticker server for getting live quotes
+		 * connects to SmartAPI ticker server for getting live quotes
 		 */
 		smartWebsocket.connect();
 
@@ -407,11 +405,11 @@ For more details, take a look at Examples.java in sample directory.
 		boolean isConnected = smartWebsocket.isConnectionOpen();
 		System.out.println(isConnected);
 
-		// After using SmartAPI ticker, close websocket connection.
+		// After using the SmartAPI ticker, close websocket connection.
 		// smartWebsocket.disconnect();
 
 	}
 
 ```
-For more details, take a look at Examples.java in sample directory.
+For more details, take a look at Examples.java in the sample directory.
 
