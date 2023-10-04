@@ -486,12 +486,41 @@ public class ModelTests {
     }
 
     @Test
-    void TestSSS34(){
+    void TestSSS34() {
         SmartConnect smartConnect = new SmartConnect();
         smartConnect.setApiKey("R2WSHRE9");
         User user = smartConnect.generateSession("user", "pass", "502216");
 
         System.out.println(smartConnect.getProfile());
 
+    }
+
+    @Test
+    public void testGttModelWithAllFields() {
+        Gtt gtt = new Gtt();
+        gtt.id = 123;
+        gtt.tradingSymbol = "AAPL";
+        gtt.symbolToken = "1111";
+        gtt.exchange = "NCE";
+        gtt.transactionType = "BUY";
+        gtt.productType = "Equity";
+        gtt.price = 100;
+        gtt.quantity = 10;
+        gtt.triggerPrice = 100;
+        gtt.disclosedQty = 10;
+        gtt.timePeriod = 10;
+
+        assertNotNull(gtt);
+        assertEquals(123, (int) gtt.id);
+        assertEquals("AAPL", gtt.tradingSymbol);
+        assertEquals("1111", gtt.symbolToken);
+        assertEquals("NCE", gtt.exchange);
+        assertEquals("BUY", gtt.transactionType);
+        assertEquals("Equity", gtt.productType);
+        assertEquals(100, (int) gtt.price);
+        assertEquals(10, (int) gtt.quantity);
+        assertEquals(100,(int) gtt.triggerPrice);
+        assertEquals(10, (int) gtt.disclosedQty);
+        assertEquals(10, (int) gtt.timePeriod);
     }
 }
