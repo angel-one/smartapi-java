@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi;
 
 import com.angelbroking.smartapi.models.*;
+import com.angelbroking.smartapi.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -522,5 +523,37 @@ public class ModelTests {
         assertEquals(100,(int) gtt.triggerPrice);
         assertEquals(10, (int) gtt.disclosedQty);
         assertEquals(10, (int) gtt.timePeriod);
+    }
+
+    @Test
+    public void test_empty_string() {
+        assertFalse(Constants.PRODUCT_DELIVERY.isEmpty());
+        assertFalse(Constants.PRODUCT_INTRADAY.isEmpty());
+        assertFalse(Constants.PRODUCT_MARGIN.isEmpty());
+        assertFalse(Constants.PRODUCT_BO.isEmpty());
+        assertFalse(Constants.PRODUCT_CARRYFORWARD.isEmpty());
+
+        assertFalse(Constants.ORDER_TYPE_MARKET.isEmpty());
+        assertFalse(Constants.ORDER_TYPE_LIMIT.isEmpty());
+        assertFalse(Constants.ORDER_TYPE_STOPLOSS_LIMIT.isEmpty());
+        assertFalse(Constants.ORDER_TYPE_STOPLOSS_MARKET.isEmpty());
+
+        assertFalse(Constants.VARIETY_NORMAL.isEmpty());
+        assertFalse(Constants.VARIETY_AMO.isEmpty());
+        assertFalse(Constants.VARIETY_STOPLOSS.isEmpty());
+        assertFalse(Constants.VARIETY_ROBO.isEmpty());
+
+        assertFalse(Constants.TRANSACTION_TYPE_BUY.isEmpty());
+        assertFalse(Constants.TRANSACTION_TYPE_SELL.isEmpty());
+
+        assertFalse(Constants.DURATION_DAY.isEmpty());
+        assertFalse(Constants.DURATION_IOC.isEmpty());
+
+        assertFalse(Constants.EXCHANGE_NSE.isEmpty());
+        assertFalse(Constants.EXCHANGE_BSE.isEmpty());
+        assertFalse(Constants.EXCHANGE_NFO.isEmpty());
+        assertFalse(Constants.EXCHANGE_CDS.isEmpty());
+        assertFalse(Constants.EXCHANGE_NCDEX.isEmpty());
+        assertFalse(Constants.EXCHANGE_MCX.isEmpty());
     }
 }
