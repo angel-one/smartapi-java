@@ -3,6 +3,7 @@ package com.angelbroking.smartapi;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +22,10 @@ import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_ERROR_MSG
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -282,4 +286,69 @@ public class SmartConnectTest {
         return payload;
     }
 
+    @Test
+    public void test_create_instance_with_api_key() {
+        SmartConnect smartConnect = new SmartConnect("API_KEY");
+        assertNotNull(smartConnect);
+    }
+
+    @Test
+    public void test_create_instance_with_apiKey_accessToken_refreshToken() {
+        SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
+        assertNotNull(smartConnect);
+        assertEquals("apiKey", smartConnect.getApiKey());
+        assertEquals("accessToken", smartConnect.getAccessToken());
+        assertEquals("refreshToken", smartConnect.getPublicToken());
+    }
+    @Test
+    public void test_set_apiKey_accessToken_refreshToken() {
+        SmartConnect smartConnect = new SmartConnect();
+        smartConnect.setApiKey("apiKey");
+        smartConnect.setAccessToken("accessToken");
+        smartConnect.setRefreshToken("refreshToken");
+        assertEquals("apiKey", smartConnect.getApiKey());
+        assertEquals("accessToken", smartConnect.getAccessToken());
+        assertEquals("refreshToken", smartConnect.getPublicToken());
+    }
+
+    @Test
+    public void test_get_apiKey_accessToken_userId_refreshToken_null() {
+        SmartConnect smartConnect = new SmartConnect();
+        smartConnect.setApiKey(null);
+        smartConnect.setAccessToken(null);
+        smartConnect.setRefreshToken(null);
+        assertThrows(NullPointerException.class, () -> smartConnect.getApiKey());
+        assertThrows(NullPointerException.class, () -> smartConnect.getAccessToken());
+        assertThrows(NullPointerException.class, () -> smartConnect.getUserId());
+        assertThrows(NullPointerException.class, () -> smartConnect.getPublicToken());
+    }
+
+    @Test
+    public void test_generateSession_invalid_credentials() {
+        SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
+        assertNull(smartConnect.generateSession("invalidClientCode", "password", "totp"));
+    }
+
+    @Test
+    public void test_returns_apiKey_if_not_null() {
+        SmartConnect smartConnect = new SmartConnect("apiKey");
+        String result = smartConnect.getApiKey();
+        assertEquals("apiKey", result);
+    }
+
+    @Test
+    public void test_throws_NullPointerException_if_apiKey_is_null() {
+        SmartConnect smartConnect = new SmartConnect();
+        assertThrows(NullPointerException.class, () -> {
+            smartConnect.getApiKey();
+        });
+    }
+
+    @Test
+    public void test_setAndGetExceptionObject() {
+        SmartStreamError error = new SmartStreamError();
+        Exception exception = new Exception("Test Exception");
+        error.setException(exception);
+        assertEquals(exception, error.getException());
+    }
 }

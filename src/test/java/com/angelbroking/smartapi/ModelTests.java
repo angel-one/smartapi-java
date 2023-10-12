@@ -1,6 +1,8 @@
 package com.angelbroking.smartapi;
 
 import com.angelbroking.smartapi.models.*;
+import com.angelbroking.smartapi.smartstream.models.ExchangeType;
+import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 import org.json.JSONArray;
@@ -8,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -555,5 +559,25 @@ public class ModelTests {
         assertFalse(Constants.EXCHANGE_CDS.isEmpty());
         assertFalse(Constants.EXCHANGE_NCDEX.isEmpty());
         assertFalse(Constants.EXCHANGE_MCX.isEmpty());
+    }
+
+    @Test
+    public void test_ltp_object_created_with_valid_input_parameters() {
+        ByteBuffer buffer = ByteBuffer.allocate(25);
+        buffer.put((byte) 0); // Subscription mode
+        buffer.put((byte) 1); // Exchange type
+        buffer.put("TOKEN1234567890".getBytes(StandardCharsets.UTF_8)); // Token
+        buffer.putLong(Long.MAX_VALUE); // Sequence number
+        buffer.putLong(Long.MAX_VALUE); // Exchange feed time epoch millis
+        buffer.putLong(Long.MAX_VALUE); // Last traded price
+
+        LTP ltp = new LTP(buffer);
+
+        assertEquals(0, ltp.getSubscriptionMode());
+        assertEquals(ExchangeType.NSE_CM, ltp.getExchangeType());
+        assertEquals("NSE_CM-TOKEN1234567890", ltp.getToken().toString());
+        assertEquals(1234567890L, ltp.getSequenceNumber());
+        assertEquals(1609459200000L, ltp.getExchangeFeedTimeEpochMillis());
+        assertEquals(1000L, ltp.getLastTradedPrice());
     }
 }

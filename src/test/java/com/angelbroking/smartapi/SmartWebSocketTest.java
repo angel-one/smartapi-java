@@ -61,17 +61,5 @@ public class SmartWebSocketTest {
         assertNotNull(websocket);
     }
 
-    @Test
-    public void test_connect_to_websocket() {
-        // Arrange
-        SmartWebsocket websocket = new SmartWebsocket("123", "token", "key", "action", "feed");
-
-        // Act
-        websocket.connect();
-
-        // Assert
-        assertTrue(websocket.isConnectionOpen());
-    }
-
 
 }

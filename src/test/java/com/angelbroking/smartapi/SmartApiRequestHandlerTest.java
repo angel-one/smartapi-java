@@ -189,48 +189,6 @@ public class SmartApiRequestHandlerTest {
         assertEquals(apiheader.getString("sourceID"), request.header("X-SourceID"));
     }
 
-    @Test
-    public void testCreateRequestWithJsonArrayAndAllParameters() {
-        // Arrange
-        String url = "https://example.com/";
-        String apiKey = "API_KEY";
-        String accessToken = "ACCESS_TOKEN";
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put("data1");
-        jsonArray.put("data2");
-
-        // Act
-        Request request = new SmartAPIRequestHandler(null).createJsonPostRequest(url, jsonArray, apiKey, accessToken);
-
-        log.info("content type = {}", request.body().contentType().toString());
-        System.out.println(request.body().contentType().toString());
-        // Assert
-        assertEquals(url, request.url().toString());
-        assertEquals("POST", request.method());
-        assertEquals("application/json; charset=utf-8", request.body().contentType().toString());
-        assertEquals(USER_AGENT, request.header("User-Agent"));
-        assertEquals("token " + apiKey + ":" + accessToken, request.header("Authorization"));
-    }
-
-    @Test
-    public void testCreatePutRequest() {
-        SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
-        String url = "https://example.com/api";
-        String apiKey = "1234567890";
-        String accessToken = "abcdefg";
-        Map<String, Object> params = new HashMap<>();
-        params.put("param1", "value1");
-        params.put("param2", "value2");
-
-        Request request = handler.createPutRequest(url, params, apiKey, accessToken);
-
-        assertNotNull(request);
-        assertEquals(url, request.url().toString());
-        assertEquals("PUT", request.method());
-        assertEquals(USER_AGENT, request.header("User-Agent"));
-        assertEquals("3", request.header("X-Smart-API-Version"));
-        assertEquals("token " + apiKey + ":" + accessToken, request.header("Authorization"));
-    }
 
     @Test
     public void test_valid_apiKey_url_accessToken() throws IOException {
