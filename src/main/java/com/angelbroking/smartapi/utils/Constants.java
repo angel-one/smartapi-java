@@ -85,4 +85,8 @@ public class Constants {
     public static final String SMART_API_EXCEPTION_OCCURRED = "SmartAPIException occurred ";
     public static final String IO_EXCEPTION_OCCURRED = "IOException occurred ";
     public static final String JSON_EXCEPTION_OCCURRED = "JSONException occurred ";
+
+    public static final String TOKEN_EXCEPTION_MESSAGE = "Unauthorized access. Please provide a valid or non-expired jwtToken.";
+    public static final String APIKEY_EXCEPTION_MESSAGE = "Invalid or missing api key. Please provide a valid api key.";
+
 }

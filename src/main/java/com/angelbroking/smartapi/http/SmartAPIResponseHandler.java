@@ -1,7 +1,14 @@
 package com.angelbroking.smartapi.http;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.angelbroking.smartapi.http.exceptions.ApiKeyException;
+import com.angelbroking.smartapi.models.SearchScripResponseDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,22 +24,26 @@ import com.angelbroking.smartapi.http.exceptions.TokenException;
 
 import okhttp3.Response;
 
+import static com.angelbroking.smartapi.utils.Constants.APIKEY_EXCEPTION_MESSAGE;
+import static com.angelbroking.smartapi.utils.Constants.TOKEN_EXCEPTION_MESSAGE;
+
 /**
  * Response handler for handling all the responses.
  */
+@Slf4j
 public class SmartAPIResponseHandler {
 
 	public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
 		System.out.println("***************************");
 		if (response.header("Content-Type").contains("json")) {
 			JSONObject jsonObject = new JSONObject(body);
-			
+
 //			if (jsonObject.optString("data") == null || jsonObject.optString("data") == "") {
-			if (!jsonObject.has("status") || jsonObject.has("success")) {	
+			if (!jsonObject.has("status") || jsonObject.has("success")) {
 				if (jsonObject.has("errorcode")) {
 					throw dealWithException(jsonObject, jsonObject.getString("errorcode"));
 				} else if (jsonObject.has("errorCode")) {
-					
+
 					throw dealWithException(jsonObject, jsonObject.getString("errorCode"));
 				}
 			}
@@ -58,8 +69,9 @@ public class SmartAPIResponseHandler {
 			return new TokenException(jsonObject.getString("message"), code);
 
 		case "AG8001":
-		case "AG8002":
-			return new DataException(jsonObject.getString("message"), code);
+                return new TokenException(TOKEN_EXCEPTION_MESSAGE, code);
+            case "AG8002":
+                return new DataException(jsonObject.getString("message"), code);
 
 		case "AB1004":
 		case "AB2000":
@@ -87,10 +99,63 @@ public class SmartAPIResponseHandler {
 		case "AB1001":
 		case "AB1011":
 			return new PermissionException(jsonObject.getString("message"), code);
-
+            case "AG8004":
+                return new ApiKeyException(APIKEY_EXCEPTION_MESSAGE, code);
 		default:
 			return new SmartAPIException(jsonObject.getString("data not found"));
 		}
 	}
 
+    public String handler(Response response, String body) throws SmartAPIException, JSONException, IOException {
+        if (response.code() == 200) {
+            return handleResponse(response,body);
+        } else if (response.code() == 400){
+            log.error("Bad request. Please provide valid input");
+            return "Bad request. Please provide valid input";
+        }else {
+            log.error("Response or response body is null.");
+            throw new IllegalArgumentException("Response or response body is null.");
+        }
+    }
+
+    private String handleResponse(Response response, String body) throws SmartAPIException, IOException {
+        try {
+            JSONObject responseBodyJson = new JSONObject(body);
+            if(responseBodyJson.getBoolean("status")) {
+                JSONArray dataArray = responseBodyJson.optJSONArray("data");
+                if (dataArray != null && dataArray.length() > 0) {
+                    List<SearchScripResponseDTO> stockDTOList = parseStockDTOList(dataArray);
+
+                    StringBuilder result = new StringBuilder();
+                    result.append("Search successful. Found ").append(stockDTOList.size()).append(" trading symbols for the given query:\n");
+
+                    int index = 1;
+                    for (SearchScripResponseDTO stockDTO : stockDTOList) {
+                        result.append(index).append(". exchange: ").append(stockDTO.getExchange()).append(", tradingsymbol: ").append(stockDTO.getTradingSymbol()).append(", symboltoken: ").append(stockDTO.getSymbolToken()).append("\n");
+                        index++;
+                    }
+                    return result.toString();
+                } else {
+                    return "Search successful. No matching trading symbols found for the given query.";
+                }
+            }else {
+                return String.valueOf(handle(response,body));
+            }
+
+        } catch (JSONException e) {
+            log.error("Error parsing response body as JSON.", e.getMessage());
+            throw new SmartAPIException("Error parsing response body as JSON.");
+        }
+    }
+
+    private List<SearchScripResponseDTO> parseStockDTOList(JSONArray dataArray) throws JSONException, SmartAPIException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(dataArray.toString(), new TypeReference<List<SearchScripResponseDTO>>() {
+            });
+        } catch (IOException e) {
+            log.error("Error parsing JSON data array.", e);
+            throw new SmartAPIException("Error parsing JSON data array.");
+        }
+    }
 }

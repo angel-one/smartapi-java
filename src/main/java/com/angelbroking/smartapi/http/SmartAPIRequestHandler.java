@@ -1,5 +1,19 @@
 package com.angelbroking.smartapi.http;
 
+import com.angelbroking.smartapi.SmartConnect;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,22 +24,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.angelbroking.smartapi.SmartConnect;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Request handler for all Http requests
@@ -372,6 +370,27 @@ public class SmartAPIRequestHandler {
 				.header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
 				.post(body).build();
 		return request;
+	}
+
+	/**
+	 * Makes a POST request.
+	 *
+	 * @return JSONObject which is received by Smart API Trade.
+	 * @param url         is the endpoint to which request has to be sent.
+	 * @param apiKey      is the api key of the Smart API Connect app.
+	 * @param accessToken is the access token obtained after successful login
+	 *                    process.
+	 * @param params      is the map of params which has to be sent in the body.
+	 * @throws IOException       is thrown when there is a connection related error.
+	 * @throws SmartAPIException is thrown for all Smart API Trade related errors.
+	 * @throws JSONException     is thrown for parsing errors.
+	 */
+	public String postRequestJSONObject(String apiKey, String url, JSONObject params, String accessToken)
+			throws IOException, SmartAPIException, JSONException {
+		Request request = createPostRequest(apiKey, url, params, accessToken);
+		Response response = client.newCall(request).execute();
+		String body = response.body().string();
+		return new SmartAPIResponseHandler().handler(response, body);
 	}
 
 	/**

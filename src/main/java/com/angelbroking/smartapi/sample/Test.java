@@ -87,8 +87,13 @@ public class Test {
 			/* System.out.println("Historic candle Data"); */
 			examples.getCandleData(smartConnect);
 
+
+			/* System.out.println("Search script api"); */
+			examples.getSearchScrip(smartConnect);
+
 			/* System.out.println("Market Data"); */
 			examples.getMarketData(smartConnect);
+
 
 			/* System.out.println("logout"); */
 			examples.logout(smartConnect);

@@ -278,6 +278,17 @@ SmartAPI is a set of REST-like APIs that expose many capabilities required to bu
 		String response = smartConnect.candleData(requestObejct);
 	}
 
+
+    /** Search Scrip Data */
+    public void getSearchScrip(SmartConnect smartConnect) throws SmartAPIException{
+        JSONObject payload = new JSONObject();
+        payload.put("exchange", "MCX");
+        payload.put("searchscrip", "Crude");
+        String response = smartConnect.getSearchScrip(payload);
+    }
+        
+	/** Logout user. */
+
     /** Market Data  FULL*/
     public void getMarketData(SmartConnect smartConnect) {
       

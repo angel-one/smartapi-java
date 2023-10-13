@@ -45,6 +45,8 @@
 		<okhttp.mockwebserver.version>4.4.0</okhttp.mockwebserver.version>
 		<google-auth.version>1.4.0</google-auth.version>
 		<wiremock.version>2.27.2</wiremock.version>
+		<slf4j-api.version>1.7.32</slf4j-api.version>
+		<logback-classic.version>1.2.6</logback-classic.version>
 	</properties>
 
 	<dependencies>
@@ -171,7 +173,16 @@
             <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+        </dependency>
     </dependencies>
 	
 	<build>

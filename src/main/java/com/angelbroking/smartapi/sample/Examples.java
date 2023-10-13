@@ -272,6 +272,15 @@ public class Examples {
 		String response = smartConnect.candleData(requestObejct);
 	}
 
+
+	/** Search Scrip Data */
+	public void getSearchScrip(SmartConnect smartConnect) throws SmartAPIException, IOException {
+		JSONObject payload = new JSONObject();
+		payload.put("exchange", "MCX");
+		payload.put("searchscrip", "Crude");
+		smartConnect.getSearchScrip(payload);
+	}
+
 	/**
 	 * Market Data
 	 * To Retrieve Market Data with different modes use.
@@ -290,6 +299,7 @@ public class Examples {
         payload.put("exchangeTokens", exchangeTokens);
         JSONObject response = smartConnect.marketData(payload);
     }
+
 
 
 	public void tickerUsage(String clientId, String feedToken, String strWatchListScript, String task)
