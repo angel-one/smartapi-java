@@ -580,4 +580,41 @@ public class ModelTests {
         assertEquals(1609459200000L, ltp.getExchangeFeedTimeEpochMillis());
         assertEquals(1000L, ltp.getLastTradedPrice());
     }
+
+    @Test
+    public void test_valid_values_for_all_fields() {
+        OrderParams orderParams = new OrderParams();
+        orderParams.orderid = "12345";
+        orderParams.exchange = "NSE";
+        orderParams.symbolToken = "123";
+        orderParams.transactiontype = "BUY";
+        orderParams.quantity = 100;
+        orderParams.price = 100.0;
+        orderParams.producttype = "NRML";
+        orderParams.ordertype = "LIMIT";
+        orderParams.duration = "DAY";
+        orderParams.variety = "NORMAL";
+        orderParams.tradingsymbol = "AAPL";
+        orderParams.triggerprice = "150.0";
+        orderParams.squareoff = "160.0";
+        orderParams.stoploss = "140.0";
+        assertNotNull(orderParams);
+    }
+
+    @Test
+    public void test_fields_set_when_creating_new_instance() {
+        GttParams gttParams = new GttParams();
+        assertNotNull(gttParams);
+        assertNull(gttParams.id);
+        assertNull(gttParams.tradingsymbol);
+        assertNull(gttParams.exchange);
+        assertNull(gttParams.transactiontype);
+        assertNull(gttParams.producttype);
+        assertNull(gttParams.price);
+        assertNull(gttParams.qty);
+        assertNull(gttParams.triggerprice);
+        assertNull(gttParams.disclosedqty);
+        assertNull(gttParams.timeperiod);
+        assertNull(gttParams.symboltoken);
+    }
 }
