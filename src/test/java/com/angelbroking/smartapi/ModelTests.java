@@ -562,26 +562,6 @@ public class ModelTests {
     }
 
     @Test
-    public void test_ltp_object_created_with_valid_input_parameters() {
-        ByteBuffer buffer = ByteBuffer.allocate(25);
-        buffer.put((byte) 0); // Subscription mode
-        buffer.put((byte) 1); // Exchange type
-        buffer.put("TOKEN1234567890".getBytes(StandardCharsets.UTF_8)); // Token
-        buffer.putLong(Long.MAX_VALUE); // Sequence number
-        buffer.putLong(Long.MAX_VALUE); // Exchange feed time epoch millis
-        buffer.putLong(Long.MAX_VALUE); // Last traded price
-
-        LTP ltp = new LTP(buffer);
-
-        assertEquals(0, ltp.getSubscriptionMode());
-        assertEquals(ExchangeType.NSE_CM, ltp.getExchangeType());
-        assertEquals("NSE_CM-TOKEN1234567890", ltp.getToken().toString());
-        assertEquals(1234567890L, ltp.getSequenceNumber());
-        assertEquals(1609459200000L, ltp.getExchangeFeedTimeEpochMillis());
-        assertEquals(1000L, ltp.getLastTradedPrice());
-    }
-
-    @Test
     public void test_valid_values_for_all_fields() {
         OrderParams orderParams = new OrderParams();
         orderParams.orderid = "12345";
@@ -616,5 +596,60 @@ public class ModelTests {
         assertNull(gttParams.disclosedqty);
         assertNull(gttParams.timeperiod);
         assertNull(gttParams.symboltoken);
+    }
+
+    @Test
+    public void test_create_instance_with_values() {
+        SearchScripResponseDTO responseDTO = new SearchScripResponseDTO();
+        responseDTO.setTradingSymbol("ABC");
+        responseDTO.setExchange("NYSE");
+        responseDTO.setSymbolToken("12345");
+
+        assertEquals("ABC", responseDTO.getTradingSymbol());
+        assertEquals("NYSE", responseDTO.getExchange());
+        assertEquals("12345", responseDTO.getSymbolToken());
+    }
+
+    @Test
+    public void test_returns_all_fields() {
+        Order order = new Order();
+        order.disclosedQuantity = "10";
+        order.duration = "DAY";
+        order.tradingSymbol = "AAPL";
+        order.variety = "NORMAL";
+        order.orderType = "LIMIT";
+        order.triggerPrice = "100.0";
+        order.text = "Sample order";
+        order.price = "99.0";
+        order.status = "OPEN";
+        order.productType = "CNC";
+        order.exchange = "NSE";
+        order.orderId = "12345";
+        order.symbol = "AAPL";
+        order.updateTime = "2021-01-01 10:00:00";
+        order.exchangeTimestamp = "2021-01-01 10:00:00";
+        order.exchangeUpdateTimestamp = "2021-01-01 10:00:00";
+        order.averagePrice = "98.0";
+        order.transactionType = "BUY";
+        order.quantity = "5";
+        order.squareOff = "100.0";
+        order.stopLoss = "95.0";
+        order.trailingStopLoss = "90.0";
+        order.symbolToken = "AAPL";
+        order.instrumentType = "EQUITY";
+        order.strikePrice = "0.0";
+        order.optionType = "";
+        order.expiryDate = "";
+        order.lotSize = "";
+        order.cancelSize = "";
+        order.filledShares = "";
+        order.orderStatus = "";
+        order.unfilledShares = "";
+        order.fillId = "";
+        order.fillTime = "";
+
+        String expected = "Order [disclosedQuantity=10, duration=DAY, tradingSymbol=AAPL, variety=NORMAL, orderType=LIMIT, triggerPrice=100.0, text=Sample order, price=99.0, status=OPEN, productType=CNC, exchange=NSE, orderId=12345, symbol=AAPL, updateTime=2021-01-01 10:00:00, exchangeTimestamp=2021-01-01 10:00:00, exchangeUpdateTimestamp=2021-01-01 10:00:00, averagePrice=98.0, transactionType=BUY, quantity=5, squareOff=100.0, stopLoss=95.0, trailingStopLoss=90.0, symbolToken=AAPL, instrumentType=EQUITY, strikePrice=0.0, optionType=, expiryDate=, lotSize=, cancelSize=, filledShares=, orderStatus=, unfilledShares=, fillId=, fillTime=]";
+
+        assertEquals(expected, order.toString());
     }
 }

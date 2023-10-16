@@ -35,4 +35,6 @@ public class SmartApiResponseHandlerTest {
             throw new RuntimeException(e);
         }
     }
+
+
 }

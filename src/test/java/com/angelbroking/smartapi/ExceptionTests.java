@@ -62,5 +62,12 @@ public class ExceptionTests {
         assertEquals(code, tokenException.code);
     }
 
-
+    @Test
+    public void test_instance_with_message_and_code() {
+        String message = "Invalid API Key";
+        String code = "123";
+        ApiKeyException exception = new ApiKeyException(message, code);
+        assertEquals(message, exception.message);
+        assertEquals(code, exception.code);
+    }
 }

@@ -40,7 +40,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.Silent.class)
 @Slf4j
 public class SmartConnectTest {
-  
+
+    @Mock
     private SmartAPIRequestHandler smartAPIRequestHandler;
 
     @Mock
