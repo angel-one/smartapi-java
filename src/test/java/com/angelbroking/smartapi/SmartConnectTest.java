@@ -53,6 +53,13 @@ public class SmartConnectTest {
     private String accessToken;
 
 
+    @Before
+    public void setup() {
+        apiKey = System.getProperty("apiKey");
+        accessToken = System.getenv("accessToken");
+    }
+
+
     @Test
     public void testGetSearchScript_Success() throws SmartAPIException, IOException {
         // Mock the necessary objects
@@ -169,12 +176,6 @@ public class SmartConnectTest {
         jsonObject.put("status", true);
 
         return jsonObject;
-    }
-
-    @Before
-    public void setup() {
-        apiKey = System.getProperty("apiKey");
-        accessToken = System.getenv("accessToken");
     }
 
     // Testing market data success for Full payload

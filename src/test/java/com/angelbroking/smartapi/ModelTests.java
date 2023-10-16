@@ -1,6 +1,7 @@
 package com.angelbroking.smartapi;
 
 import com.angelbroking.smartapi.models.*;
+import com.angelbroking.smartapi.smartstream.models.BestTwentyData;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.utils.Constants;
@@ -652,4 +653,13 @@ public class ModelTests {
 
         assertEquals(expected, order.toString());
     }
+
+    @Test
+    public void test_create_instance_with_valid_values() {
+        BestTwentyData data = new BestTwentyData(10, 20, (short) 5);
+        assertEquals(10, data.getQuantity());
+        assertEquals(20, data.getPrice());
+        assertEquals(5, data.getNumberOfOrders());
+    }
+
 }

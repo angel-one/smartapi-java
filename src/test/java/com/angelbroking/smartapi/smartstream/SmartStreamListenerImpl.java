@@ -5,11 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
-import com.angelbroking.smartapi.smartstream.models.LTP;
-import com.angelbroking.smartapi.smartstream.models.Quote;
-import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
-import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
-import com.angelbroking.smartapi.smartstream.models.SnapQuote;
+import com.angelbroking.smartapi.smartstream.models.*;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamListener;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +70,19 @@ public class SmartStreamListenerImpl implements SmartStreamListener {
 				(snapQuote.getYearlyLowPrice() / 100.0), getExchangeTime(snapQuote.getExchangeFeedTimeEpochMillis()),
 				Instant.now().toEpochMilli() - snapQuote.getExchangeFeedTimeEpochMillis());
 		log.info(snapQuoteData);
+	}
+
+	@Override
+	public void onDepthArrival(Depth depth) {
+		String depthData = String.format(
+				"subscriptionMode: %s exchangeType: %s token: %s exchangeTimeStamp: %s packetReceivedTime: %s bestTwentyBuyData: %s bestTwentySellData: %s",
+				SmartStreamSubsMode.findByVal(depth.getSubscriptionMode()),
+				depth.getExchangeType(), depth.getToken().toString(),
+				depth.getExchangeTimeStamp(),
+				depth.getPacketReceivedTime(),
+				Arrays.toString(depth.getBestTwentyBuyData()),
+				Arrays.toString(depth.getBestTwentySellData()));
+		log.info(depthData);
 	}
 
 	private ZonedDateTime getExchangeTime(long exchangeFeedTimeEpochMillis) {

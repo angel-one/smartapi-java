@@ -11,19 +11,12 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.angelbroking.smartapi.smartstream.models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.smartstream.models.ExchangeType;
-import com.angelbroking.smartapi.smartstream.models.LTP;
-import com.angelbroking.smartapi.smartstream.models.Quote;
-import com.angelbroking.smartapi.smartstream.models.SmartStreamAction;
-import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
-import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
-import com.angelbroking.smartapi.smartstream.models.SnapQuote;
-import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.utils.ByteUtils;
 import com.angelbroking.smartapi.utils.Utils;
 import com.neovisionaries.ws.client.WebSocket;
@@ -137,6 +130,12 @@ public class SmartStreamTicker {
 							ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
 							SnapQuote snapQuote = ByteUtils.mapToSnapQuote(packet);
 							smartStreamListener.onSnapQuoteArrival(snapQuote);
+							break;
+						}
+						case DEPTH_20: {
+							ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
+							Depth depth = ByteUtils.mapToDepth20(packet);
+							smartStreamListener.onDepthArrival(depth);
 							break;
 						}
 						default: {
@@ -265,9 +264,25 @@ public class SmartStreamTicker {
 	public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
 		if (ws != null) {
 			if (ws.isOpen()) {
-				tokensByModeMap.put(mode, tokens);
-				JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
-				ws.sendText(wsMWJSONRequest.toString());
+				for (TokenID token : tokens) {
+					if (ExchangeType.NSE_CM.equals(token.getExchangeType()) && SmartStreamSubsMode.DEPTH_20.equals(mode)) {
+						if (tokens.size() < 50) {
+							JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
+							ws.sendText(wsMWJSONRequest.toString());
+							tokensByModeMap.put(mode, tokens);
+						} else {
+							smartStreamListener.onError(getErrorHolder(new SmartAPIException("Token size should be less than 50", "504")));
+						}
+					} else {
+						if (!ExchangeType.NSE_CM.equals(token.getExchangeType()) && SmartStreamSubsMode.DEPTH_20.equals(mode)) {
+							smartStreamListener.onError(getErrorHolder(new SmartAPIException("Invalid Exchange Type: Please check the exchange type and try again", "504")));
+						} else {
+							JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
+							ws.sendText(wsMWJSONRequest.toString());
+							tokensByModeMap.put(mode, tokens);
+						}
+					}
+				}
 			} else {
 				smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
 			}

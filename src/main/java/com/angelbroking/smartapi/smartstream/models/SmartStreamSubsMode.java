@@ -1,7 +1,7 @@
 package com.angelbroking.smartapi.smartstream.models;
 
 public enum SmartStreamSubsMode {
-	LTP(1), QUOTE(2), SNAP_QUOTE(3);
+	LTP(1), QUOTE(2), SNAP_QUOTE(3), DEPTH_20(4);
 	
 	private static final int SIZE = SmartStreamSubsMode.values().length;
 	

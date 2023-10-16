@@ -1,23 +1,11 @@
 package com.angelbroking.smartapi.utils;
 
-import static com.angelbroking.smartapi.utils.Constants.BUY_SELL_FLAG_OFFSET;
-import static com.angelbroking.smartapi.utils.Constants.BUY_START_POSITION;
-import static com.angelbroking.smartapi.utils.Constants.NUMBER_OF_ORDERS_OFFSET;
-import static com.angelbroking.smartapi.utils.Constants.NUM_PACKETS;
-import static com.angelbroking.smartapi.utils.Constants.PACKET_SIZE;
-import static com.angelbroking.smartapi.utils.Constants.PRICE_OFFSET;
-import static com.angelbroking.smartapi.utils.Constants.QUANTITY_OFFSET;
-import static com.angelbroking.smartapi.utils.Constants.SELL_START_POSITION;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-import com.angelbroking.smartapi.smartstream.models.ExchangeType;
-import com.angelbroking.smartapi.smartstream.models.LTP;
-import com.angelbroking.smartapi.smartstream.models.Quote;
-import com.angelbroking.smartapi.smartstream.models.SmartApiBBSInfo;
-import com.angelbroking.smartapi.smartstream.models.SnapQuote;
-import com.angelbroking.smartapi.smartstream.models.TokenID;
+import com.angelbroking.smartapi.smartstream.models.*;
+
+import static com.angelbroking.smartapi.utils.Constants.*;
 
 public class ByteUtils {
 	
@@ -38,7 +26,9 @@ public class ByteUtils {
 	public static SnapQuote mapToSnapQuote(ByteBuffer packet) {
 		return new SnapQuote(packet);
 	}
-	
+    public static Depth mapToDepth20(ByteBuffer packet) {
+        return new Depth(packet);
+    }
 	public static TokenID getTokenID(ByteBuffer byteBuffer) {
 		byte[] token = new byte[CHAR_ARRAY_SIZE];
 		for (int i = 0; i < CHAR_ARRAY_SIZE; i++) {
@@ -73,5 +63,33 @@ public class ByteUtils {
             bestFiveSellData[i] = new SmartApiBBSInfo(buySellFlag, quantity, price, numberOfOrders);
         }
         return bestFiveSellData;
+    }
+
+    public static BestTwentyData[] getBestTwentyBuyData(ByteBuffer buffer) {
+        BestTwentyData[] bestTwentyBuyData = new BestTwentyData[NUM_PACKETS_FOR_DEPTH];
+
+        for (int i = 0; i < NUM_PACKETS_FOR_DEPTH; i++) {
+            int offset = BEST_TWENTY_BUY_DATA_POSITION + (i * PACKET_SIZE_FOR_DEPTH20);
+            long quantity = buffer.getInt(offset + QUANTITY_OFFSET_FOR_DEPTH20);
+            long price = buffer.getInt(offset + PRICE_OFFSET_FOR_DEPTH20);
+            short numberOfOrders = buffer.getShort(offset + NUMBER_OF_ORDERS_OFFSET_FOR_DEPTH20);
+            bestTwentyBuyData[i] = new BestTwentyData(quantity, price, numberOfOrders);
+        }
+
+        return bestTwentyBuyData;
+    }
+
+    public static BestTwentyData[] getBestTwentySellData(ByteBuffer buffer) {
+        BestTwentyData[] bestTwentyBuyData = new BestTwentyData[NUM_PACKETS_FOR_DEPTH];
+
+        for (int i = 0; i < NUM_PACKETS_FOR_DEPTH; i++) {
+            int offset = BEST_TWENTY_SELL_DATA_POSITION + (i * PACKET_SIZE_FOR_DEPTH20);
+            long quantity = buffer.getInt(offset + QUANTITY_OFFSET_FOR_DEPTH20);
+            long price = buffer.getInt(offset + PRICE_OFFSET_FOR_DEPTH20);
+            short numberOfOrders = buffer.getShort(offset + NUMBER_OF_ORDERS_OFFSET_FOR_DEPTH20);
+            bestTwentyBuyData[i] = new BestTwentyData(quantity, price, numberOfOrders);
+        }
+
+        return bestTwentyBuyData;
     }
 }

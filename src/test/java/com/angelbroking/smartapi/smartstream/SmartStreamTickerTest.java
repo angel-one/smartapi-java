@@ -29,6 +29,7 @@ public class SmartStreamTickerTest {
 
 	@BeforeAll
 	public static void initClass() throws InterruptedException {
+//<<<<<<< HEAD
 		//    clientID = System.getProperty("clientID");
 //    clientPass = System.getProperty("clientPass");
 //    apiKey = System.getProperty("apiKey");
@@ -50,6 +51,15 @@ public class SmartStreamTickerTest {
 		GoogleAuthenticator gAuth = new GoogleAuthenticator();
 		String totp_key = "DOBXCSIGFBJAKJH4BUDCTCLKEI";
 		totp = String.valueOf(gAuth.getTotpPassword(totp_key));
+//=======
+//		clientID = System.getProperty("clientID");
+//		clientPass = System.getProperty("clientPass");
+//		apiKey = System.getProperty("apiKey");
+//
+//		Scanner sc = new Scanner(System.in);
+//		System.out.print("enter totp: ");
+//		totp = sc.nextLine();
+//>>>>>>> 916d7b8452b60bfdcd78171c07dffe5bdb77ce88
 
 		SmartConnect smartConnect = new SmartConnect(apiKey);
 		User user = smartConnect.generateSession(clientID, clientPass, totp);
@@ -79,6 +89,7 @@ public class SmartStreamTickerTest {
 	private Set<TokenID> getTokens(){
 		// find out the required token from https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json
 		Set<TokenID> tokenSet = new HashSet<>();
+//<<<<<<< HEAD
 		tokenSet.add(new TokenID(ExchangeType.BSE_FO, "1165360")); // NIFTY
 //		tokenSet.add(new TokenID(ExchangeType.BSE_FO, "1165360")); // NIFTY BANK
 //		tokenSet.add(new TokenID(ExchangeType.BSE_CM, "19000")); // Sensex
@@ -93,6 +104,22 @@ public class SmartStreamTickerTest {
 //		tokenSet.add(new TokenID(ExchangeType.BSE_CM, "532540")); // BSE TCS
 //		tokenSet.add(new TokenID(ExchangeType.NCX_FO, "GUARGUM5")); // GUAREX (NCDEX)
 //		tokenSet.add(new TokenID(ExchangeType.MCX_FO, "252453")); //CRUDEOIL
+//=======
+		tokenSet.add(new TokenID(ExchangeType.NSE_CM, "26000")); // NIFTY
+		tokenSet.add(new TokenID(ExchangeType.NSE_CM, "26009")); // NIFTY BANK
+		tokenSet.add(new TokenID(ExchangeType.BSE_CM, "19000")); // Sensex
+
+		tokenSet.add(new TokenID(ExchangeType.NSE_CM, "99926000")); // NIFTY
+		tokenSet.add(new TokenID(ExchangeType.NSE_CM, "99926009")); // NIFTY BANK
+		tokenSet.add(new TokenID(ExchangeType.BSE_CM, "99919000")); // Sensex
+
+		tokenSet.add(new TokenID(ExchangeType.NSE_CM, "1594")); // NSE Infosys
+		tokenSet.add(new TokenID(ExchangeType.NSE_FO, "35003")); // Nifty June 2023 FUT
+		tokenSet.add(new TokenID(ExchangeType.CDE_FO, "1185")); // 1185 USDINR
+		tokenSet.add(new TokenID(ExchangeType.BSE_CM, "532540")); // BSE TCS
+		tokenSet.add(new TokenID(ExchangeType.NCX_FO, "GUARGUM5")); // GUAREX (NCDEX)
+		tokenSet.add(new TokenID(ExchangeType.MCX_FO, "252453")); //CRUDEOIL
+//>>>>>>> 916d7b8452b60bfdcd78171c07dffe5bdb77ce88
 		return tokenSet;
 	}
 
