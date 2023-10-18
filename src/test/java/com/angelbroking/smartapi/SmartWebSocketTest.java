@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 public class SmartWebSocketTest {
     @Test
-    public void test_initialize_with_valid_parameters() {
+    public void testWebSocketWithAllFields() {
         // Arrange
         String clientId = "123";
         String jwtToken = "token";
@@ -26,7 +26,7 @@ public class SmartWebSocketTest {
     }
 
     @Test
-    public void test_set_listeners() {
+    public void testSetListener() {
         // Arrange
         SmartWebsocket websocket = new SmartWebsocket("123", "token", "key", "action", "feed");
 

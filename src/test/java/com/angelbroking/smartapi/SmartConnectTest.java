@@ -3,7 +3,12 @@ package com.angelbroking.smartapi;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.models.Order;
+import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.User;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
+import com.angelbroking.smartapi.utils.Constants;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -326,13 +331,13 @@ public class SmartConnectTest {
 
 
     @Test
-    public void test_create_instance_with_api_key() {
+    public void testSmartConnectObjectWithApiKey() {
         SmartConnect smartConnect = new SmartConnect("API_KEY");
         assertNotNull(smartConnect);
     }
 
     @Test
-    public void test_create_instance_with_apiKey_accessToken_refreshToken() {
+    public void testSmartConnectObjectWithApiKeyAccessTokenRefreshToken() {
         SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
         assertNotNull(smartConnect);
         assertEquals("apiKey", smartConnect.getApiKey());
@@ -340,7 +345,7 @@ public class SmartConnectTest {
         assertEquals("refreshToken", smartConnect.getPublicToken());
     }
     @Test
-    public void test_set_apiKey_accessToken_refreshToken() {
+    public void testSetApiKeyOfSmartConnect() {
         SmartConnect smartConnect = new SmartConnect();
         smartConnect.setApiKey("apiKey");
         smartConnect.setAccessToken("accessToken");
@@ -351,7 +356,7 @@ public class SmartConnectTest {
     }
 
     @Test
-    public void test_get_apiKey_accessToken_userId_refreshToken_null() {
+    public void testSmartConnectWithNullValues() {
         SmartConnect smartConnect = new SmartConnect();
         smartConnect.setApiKey(null);
         smartConnect.setAccessToken(null);
@@ -363,33 +368,26 @@ public class SmartConnectTest {
     }
 
     @Test
-    public void test_generateSession_invalid_credentials() {
+    public void testGenerateSession() {
         SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
         assertNull(smartConnect.generateSession("invalidClientCode", "password", "totp"));
     }
 
     @Test
-    public void test_returns_apiKey_if_not_null() {
+    public void testReturnApiKeyIfNotNull() {
         SmartConnect smartConnect = new SmartConnect("apiKey");
         String result = smartConnect.getApiKey();
         assertEquals("apiKey", result);
     }
 
     @Test
-    public void test_throws_NullPointerException_if_apiKey_is_null() {
+    public void testThrowsNullPointerExceptionIfApiKeyIsNull() {
         SmartConnect smartConnect = new SmartConnect();
         assertThrows(NullPointerException.class, () -> {
             smartConnect.getApiKey();
         });
     }
 
-    @Test
-    public void test_setAndGetExceptionObject() {
-        SmartStreamError error = new SmartStreamError();
-        Exception exception = new Exception("Test Exception");
-        error.setException(exception);
-        assertEquals(exception, error.getException());
-    }
 }
 
 

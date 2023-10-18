@@ -63,7 +63,7 @@ public class ExceptionTests {
     }
 
     @Test
-    public void test_instance_with_message_and_code() {
+    public void testApiKeyException() {
         String message = "Invalid API Key";
         String code = "123";
         ApiKeyException exception = new ApiKeyException(message, code);

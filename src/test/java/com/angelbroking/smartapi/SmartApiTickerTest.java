@@ -57,22 +57,6 @@ public class SmartApiTickerTest {
         assertNotNull(ticker);
     }
 
-//    @Test
-//    public void testWebSocketConnectionOfSmartAPITicker() {
-//        // Arrange
-//        String clientId = "client_id";
-//        String feedToken = "feed_token";
-//        String script = "script";
-//        String task = "task";
-//
-//        SmartAPITicker ticker = new SmartAPITicker(clientId, feedToken, script, task);
-//
-//        // Act
-//        ticker.connect();
-//
-//        // Assert
-//        assertTrue(ticker.isConnectionOpen());
-//    }
 
     @Test
     public void testUnableToCloseWebSocketConnectionOfSmartAPITicker() {

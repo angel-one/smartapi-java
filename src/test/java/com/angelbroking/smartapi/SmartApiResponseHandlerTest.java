@@ -18,7 +18,7 @@ public class SmartApiResponseHandlerTest {
 
 
     @Test
-    public void test_returns_jsonObject_when_response_header_contains_json_and_jsonObject_has_status_or_success_fields() {
+    public void testSmartApiResponseHandlerResponse() {
         Response response = mock(Response.class);
         when(response.header("Content-Type")).thenReturn("application/json");
 

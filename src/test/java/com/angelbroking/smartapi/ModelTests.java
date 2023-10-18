@@ -298,7 +298,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_null_or_missing_fields_in_json_response() throws JSONException {
+    public void testUserWithNullResponse() throws JSONException {
         JSONObject response = null;
         JSONObject finalResponse = response;
 
@@ -325,7 +325,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_trade_object_created_with_all_fields_populated() {
+    public void testTradeModelWithAllFields() {
         Trade trade = new Trade();
         trade.tradeId = "123";
         trade.orderId = "456";
@@ -356,7 +356,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_serialized_name_annotations_mapped_correctly() throws NoSuchFieldException {
+    public void testTradeModelSerializedNameAnnotationsMappedCorrectly() throws NoSuchFieldException {
         Trade trade = new Trade();
 
         assertNotNull(trade.getClass().getDeclaredField("tradeId").getAnnotation(SerializedName.class));
@@ -374,7 +374,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_date_fields_parsed_and_stored_correctly() {
+    public void testTradeModelDateFieldsParsedAndStoredCorrectly() {
         Trade trade = new Trade();
         Date fillTimestamp = new Date();
         Date exchangeTimestamp = new Date();
@@ -387,7 +387,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_trade_object_created_with_null_values() {
+    public void testTradeModelCreatedWithNullValues() {
         Trade trade = new Trade();
 
         assertNull(trade.tradeId);
@@ -405,7 +405,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_trade_object_created_with_invalid_date_formats() {
+    public void testTradeModelCreatedWithInvalidDateFormats() {
         Trade trade = new Trade();
         String invalidDateFormat = "2021-13-01";
         try {
@@ -418,7 +418,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_fieldAccess() {
+    public void testOrderModelWithAllFields() {
         Order order = new Order();
         order.disclosedQuantity = "10";
         order.duration = "DAY";
@@ -492,16 +492,6 @@ public class ModelTests {
     }
 
     @Test
-    void TestSSS34() {
-        SmartConnect smartConnect = new SmartConnect();
-        smartConnect.setApiKey("R2WSHRE9");
-        User user = smartConnect.generateSession("user", "pass", "502216");
-
-        System.out.println(smartConnect.getProfile());
-
-    }
-
-    @Test
     public void testGttModelWithAllFields() {
         Gtt gtt = new Gtt();
         gtt.id = 123;
@@ -531,7 +521,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_empty_string() {
+    public void testConstantsFields() {
         assertFalse(Constants.PRODUCT_DELIVERY.isEmpty());
         assertFalse(Constants.PRODUCT_INTRADAY.isEmpty());
         assertFalse(Constants.PRODUCT_MARGIN.isEmpty());
@@ -563,11 +553,11 @@ public class ModelTests {
     }
 
     @Test
-    public void test_valid_values_for_all_fields() {
+    public void testOrderParamsWithAllFields() {
         OrderParams orderParams = new OrderParams();
         orderParams.orderid = "12345";
         orderParams.exchange = "NSE";
-        orderParams.symbolToken = "123";
+        orderParams.symboltoken = "123";
         orderParams.transactiontype = "BUY";
         orderParams.quantity = 100;
         orderParams.price = 100.0;
@@ -583,7 +573,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_fields_set_when_creating_new_instance() {
+    public void testGttParamsWithNullValues() {
         GttParams gttParams = new GttParams();
         assertNotNull(gttParams);
         assertNull(gttParams.id);
@@ -600,7 +590,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_create_instance_with_values() {
+    public void testSearchScripResponse() {
         SearchScripResponseDTO responseDTO = new SearchScripResponseDTO();
         responseDTO.setTradingSymbol("ABC");
         responseDTO.setExchange("NYSE");
@@ -612,7 +602,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_returns_all_fields() {
+    public void testOrderModelResponse() {
         Order order = new Order();
         order.disclosedQuantity = "10";
         order.duration = "DAY";
@@ -655,7 +645,7 @@ public class ModelTests {
     }
 
     @Test
-    public void test_create_instance_with_valid_values() {
+    public void testBESTTwentyData() {
         BestTwentyData data = new BestTwentyData(10, 20, (short) 5);
         assertEquals(10, data.getQuantity());
         assertEquals(20, data.getPrice());
