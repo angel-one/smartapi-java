@@ -1,8 +1,10 @@
-package com.angelbroking.smartapi;
+package com.angelbroking.smartapi.http;
 
+import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -210,6 +212,46 @@ public class SmartApiRequestHandlerTest {
         assertEquals(apiheader.getString("accept"), request.header("Accept"));
         assertEquals(apiheader.getString("userType"), request.header("X-UserType"));
         assertEquals(apiheader.getString("sourceID"), request.header("X-SourceID"));
+    }
+
+    @Test
+    public void testApiHeadersWithValidValues() {
+        SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
+        JSONObject headers = handler.apiHeaders();
+
+        assertNotNull(headers);
+        assertEquals("127.0.1.1", headers.getString("clientLocalIP")); // chnage according to each machine
+        assertEquals("103.59.212.254", headers.getString("clientPublicIP")); // chnage according to each machine
+        assertEquals("02-42-54-06-EC-5D", headers.getString("macAddress")); // chnage according to each machine
+        assertEquals("application/json", headers.getString("accept"));
+        assertEquals("USER", headers.getString("userType"));
+        assertEquals("WEB", headers.getString("sourceID"));
+    }
+
+    @Test
+    public void test_createDeleteRequest_withUrlAndParams() {
+        SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
+        String url = "https://example.com/api";
+        Map<String, Object> params = new HashMap<>();
+        params.put("param1", "value1");
+        params.put("param2", "value2");
+        String apiKey = "API_KEY";
+        String accessToken = "ACCESS_TOKEN";
+
+        Request request = handler.createDeleteRequest(url, params, apiKey, accessToken);
+
+        assertNotNull(request);
+        assertEquals("DELETE", request.method());
+        assertEquals(url+"?param1=value1&param2=value2", request.url().toString());
+        assertEquals(USER_AGENT, request.header("User-Agent"));
+        assertEquals("3", request.header("X-SmartAPI-Version"));
+        assertEquals("token " + apiKey + ":" + accessToken, request.header("Authorization"));
+
+        HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            httpBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
+        }
+        assertEquals(httpBuilder.build(), request.url());
     }
 }
 

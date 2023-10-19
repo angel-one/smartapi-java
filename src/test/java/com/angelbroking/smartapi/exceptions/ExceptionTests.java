@@ -1,6 +1,7 @@
-package com.angelbroking.smartapi;
+package com.angelbroking.smartapi.exceptions;
 
 import com.angelbroking.smartapi.http.exceptions.*;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -69,5 +70,13 @@ public class ExceptionTests {
         ApiKeyException exception = new ApiKeyException(message, code);
         assertEquals(message, exception.message);
         assertEquals(code, exception.code);
+    }
+
+    @Test
+    public void testSmartStreamError() {
+        Throwable exception = new Throwable("Test Exception");
+        SmartStreamError smartStreamError = new SmartStreamError();
+        smartStreamError.setException(exception);
+        assertEquals(exception, smartStreamError.getException());
     }
 }

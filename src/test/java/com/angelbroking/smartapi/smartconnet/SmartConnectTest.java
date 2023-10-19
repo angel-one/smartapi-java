@@ -1,5 +1,7 @@
-package com.angelbroking.smartapi;
+package com.angelbroking.smartapi.smartconnet;
 
+import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;

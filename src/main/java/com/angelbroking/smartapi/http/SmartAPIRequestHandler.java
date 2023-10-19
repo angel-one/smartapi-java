@@ -431,7 +431,7 @@ public class SmartAPIRequestHandler {
 		}
 
 		Request request = new Request.Builder().url(httpBuilder.build()).delete().header("User-Agent", USER_AGENT)
-				.header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
+				.header("X-SmartAPI-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
 				.build();
 		return request;
 	}

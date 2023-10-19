@@ -1,4 +1,4 @@
-package com.angelbroking.smartapi;
+package com.angelbroking.smartapi.models;
 
 import com.angelbroking.smartapi.models.*;
 import com.angelbroking.smartapi.smartstream.models.BestTwentyData;
@@ -652,4 +652,21 @@ public class ModelTests {
         assertEquals(5, data.getNumberOfOrders());
     }
 
+    @Test
+    public void testGettersAndSettersMethodOfBestTwentyDataModel() {
+        BestTwentyData data = new BestTwentyData();
+        data.setQuantity(10);
+        data.setPrice(20);
+        data.setNumberOfOrders((short) 5);
+        assertEquals(10, data.getQuantity());
+        assertEquals(20, data.getPrice());
+        assertEquals(5, data.getNumberOfOrders());
+    }
+
+    @Test
+    public void testToStringMethodOfBestTwentyData() {
+        BestTwentyData data = new BestTwentyData(10, 20, (short) 5);
+        String expected = "BestTwentyData(quantity=10, price=20, numberOfOrders=5)";
+        assertEquals(expected, data.toString());
+    }
 }
