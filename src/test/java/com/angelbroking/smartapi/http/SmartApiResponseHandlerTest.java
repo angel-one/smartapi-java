@@ -21,6 +21,7 @@ public class SmartApiResponseHandlerTest {
 
     @Test
     public void testSmartApiResponseHandlerResponse() {
+
         Response response = mock(Response.class);
         when(response.header("Content-Type")).thenReturn("application/json");
 
@@ -41,6 +42,7 @@ public class SmartApiResponseHandlerTest {
 
     @Test
     public void testHandlerForOkStatusCode() throws SmartAPIException, IOException {
+
         // Arrange
         Response response = mock(Response.class);
         when(response.code()).thenReturn(200);
@@ -57,6 +59,7 @@ public class SmartApiResponseHandlerTest {
 
     @Test
     public void testHandlerMethodForBadRequestStatusResponse() throws SmartAPIException, IOException {
+
         // Arrange
         Response response = mock(Response.class);
         when(response.code()).thenReturn(400);
@@ -72,6 +75,7 @@ public class SmartApiResponseHandlerTest {
 
     @Test
     public void testHandlerMethodForIllegalArgumentException() {
+
         // Arrange
         Response response = mock(Response.class);
         when(response.code()).thenReturn(500);
@@ -82,5 +86,6 @@ public class SmartApiResponseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             handler.handler(response, "");
         });
+
     }
 }

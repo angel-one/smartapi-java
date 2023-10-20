@@ -7,6 +7,7 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -157,4 +158,13 @@ public class SmartWebSocketTest {
         verify(onConnectedListenerMock, times(1)).onConnected();
     }
 
+    @Test
+    public void test_decompressMethod() throws IOException {
+        byte[] compressedTxt = {120, -100, 75, 44, 73, 45, 46, 1, 0, 0, -1, -1};
+        byte[] expected = {97, 116, 101, 115, 116};
+
+        byte[] result = SmartWebsocket.decompress(compressedTxt);
+
+        assertArrayEquals(expected, result);
+    }
 }

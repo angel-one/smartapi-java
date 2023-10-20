@@ -32,6 +32,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testSmartApiRequestHandlerWithNotNullProxy() {
+
         Proxy proxy = Proxy.NO_PROXY;
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(10000, TimeUnit.MILLISECONDS);
@@ -52,6 +53,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testSmartApiRequestHandlerWithNullProxy() {
+
         assertThrows(SmartAPIException.class, () -> {
             Proxy proxy = null;
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -71,6 +73,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testApiHeaders() {
+
         SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
         JSONObject headers = handler.apiHeaders();
 
@@ -85,6 +88,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testCreateRequestWithAllParameters() {
+
         // Arrange
         String apiKey = "validApiKey";
         String url = "https://example.com/";
@@ -114,6 +118,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testCreateRequestWithApiKeyNull() {
+
         // Arrange
         String apiKey = null;
         String url = "https://example.com";
@@ -130,6 +135,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testCreateRequestWithUrlNull() {
+
         // Arrange
         String apiKey = "validApiKey";
         String url = null;
@@ -152,8 +158,6 @@ public class SmartApiRequestHandlerTest {
         JSONObject params = null;
 
         SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
-        JSONObject apiheader = handler.apiHeaders();
-
         // Act
         Request request = handler.createPostRequest(apiKey, url, params);
 
@@ -189,11 +193,13 @@ public class SmartApiRequestHandlerTest {
         assertEquals(apiheader.getString("accept"), request.header("Accept"));
         assertEquals(apiheader.getString("userType"), request.header("X-UserType"));
         assertEquals(apiheader.getString("sourceID"), request.header("X-SourceID"));
+
     }
 
 
     @Test
     public void test_valid_apiKey_url_accessToken() throws IOException {
+
         String apiKey = "validApiKey";
         String url = "https://example.com/api";
         String accessToken = "validAccessToken";
@@ -216,6 +222,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void testApiHeadersWithValidValues() {
+
         SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
         JSONObject headers = handler.apiHeaders();
 
@@ -230,6 +237,7 @@ public class SmartApiRequestHandlerTest {
 
     @Test
     public void test_createDeleteRequest_withUrlAndParams() {
+
         SmartAPIRequestHandler handler = new SmartAPIRequestHandler(null);
         String url = "https://example.com/api";
         Map<String, Object> params = new HashMap<>();

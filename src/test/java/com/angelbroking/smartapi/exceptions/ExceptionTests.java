@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 public class ExceptionTests {
     @Test
     public void testDataException() {
+
         String message = "Test Message";
         String code = "Test Code";
         DataException exception = new DataException(message, code);
@@ -18,6 +19,7 @@ public class ExceptionTests {
 
     @Test
     public void testGeneralException() {
+
         String message = "Test Message";
         String code = "123";
         GeneralException exception = new GeneralException(message, code);
@@ -28,6 +30,7 @@ public class ExceptionTests {
 
     @Test
     public void testInputException() {
+
         InputException exception = new InputException("Test message", "Test code");
         assertEquals("Test message", exception.message);
         assertEquals("Test code", exception.code);
@@ -35,6 +38,7 @@ public class ExceptionTests {
 
     @Test
     public void testNetworkException() {
+
         NetworkException exception = new NetworkException("Test message", "Test code");
         assertEquals("Test message", exception.message);
         assertEquals("Test code", exception.code);
@@ -42,6 +46,7 @@ public class ExceptionTests {
 
     @Test
     public void testOrderException() {
+
         OrderException exception = new OrderException("Test message", "Test code");
         assertEquals("Test message", exception.message);
         assertEquals("Test code", exception.code);
@@ -49,6 +54,7 @@ public class ExceptionTests {
 
     @Test
     public void testPermissionException() {
+
         PermissionException exception = new PermissionException("Test message", "Test code");
         assertEquals("Test message", exception.message);
         assertEquals("Test code", exception.code);
@@ -56,6 +62,7 @@ public class ExceptionTests {
 
     @Test
     public void testTokenException() {
+
         String message = "Test message";
         String code = "123";
         TokenException tokenException = new TokenException(message, code);
@@ -65,6 +72,7 @@ public class ExceptionTests {
 
     @Test
     public void testApiKeyException() {
+
         String message = "Invalid API Key";
         String code = "123";
         ApiKeyException exception = new ApiKeyException(message, code);
@@ -74,6 +82,7 @@ public class ExceptionTests {
 
     @Test
     public void testSmartStreamError() {
+
         Throwable exception = new Throwable("Test Exception");
         SmartStreamError smartStreamError = new SmartStreamError();
         smartStreamError.setException(exception);

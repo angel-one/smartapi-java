@@ -321,6 +321,7 @@ public class SmartConnectTest {
     }
 
     private JSONObject getMarketDataRequest(String mode) {
+
         JSONObject payload = new JSONObject();
         payload.put("mode", mode);
         JSONObject exchangeTokens = new JSONObject();
@@ -334,12 +335,14 @@ public class SmartConnectTest {
 
     @Test
     public void testSmartConnectObjectWithApiKey() {
+
         SmartConnect smartConnect = new SmartConnect("API_KEY");
         assertNotNull(smartConnect);
     }
 
     @Test
     public void testSmartConnectObjectWithApiKeyAccessTokenRefreshToken() {
+
         SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
         assertNotNull(smartConnect);
         assertEquals("apiKey", smartConnect.getApiKey());
@@ -348,6 +351,7 @@ public class SmartConnectTest {
     }
     @Test
     public void testSetApiKeyOfSmartConnect() {
+
         SmartConnect smartConnect = new SmartConnect();
         smartConnect.setApiKey("apiKey");
         smartConnect.setAccessToken("accessToken");
@@ -359,6 +363,7 @@ public class SmartConnectTest {
 
     @Test
     public void testSmartConnectWithNullValues() {
+
         SmartConnect smartConnect = new SmartConnect();
         smartConnect.setApiKey(null);
         smartConnect.setAccessToken(null);
@@ -371,12 +376,14 @@ public class SmartConnectTest {
 
     @Test
     public void testGenerateSession() {
+
         SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
         assertNull(smartConnect.generateSession("invalidClientCode", "password", "totp"));
     }
 
     @Test
     public void testReturnApiKeyIfNotNull() {
+
         SmartConnect smartConnect = new SmartConnect("apiKey");
         String result = smartConnect.getApiKey();
         assertEquals("apiKey", result);
@@ -384,6 +391,7 @@ public class SmartConnectTest {
 
     @Test
     public void testThrowsNullPointerExceptionIfApiKeyIsNull() {
+
         SmartConnect smartConnect = new SmartConnect();
         assertThrows(NullPointerException.class, () -> {
             smartConnect.getApiKey();

@@ -25,6 +25,7 @@ public class ModelTests {
     /* ---------------- Profile Model Tests------------------------- */
     @Test
     public void testProfileModelWithAllValues() {
+
         Profile profile = new Profile();
         profile.setEmail("test@example.com");
         profile.setUserName("John Doe");
@@ -41,6 +42,7 @@ public class ModelTests {
 
     @Test
     public void testGetEmailForProfileModel() {
+
         Profile profile = new Profile();
         profile.setEmail("test@example.com");
 
@@ -49,6 +51,7 @@ public class ModelTests {
 
     @Test
     public void testGetUserNameForProfileModel() {
+
         Profile profile = new Profile();
         profile.setUserName("John Doe");
 
@@ -57,6 +60,7 @@ public class ModelTests {
 
     @Test
     public void testCreateProfileWithEmptyArrays() {
+
         Profile profile = new Profile();
         profile.setEmail("test@example.com");
         profile.setUserName("John Doe");
@@ -73,6 +77,7 @@ public class ModelTests {
 
     @Test
     public void testCreateProfileWithNullArrays() {
+
         Profile profile = new Profile();
         profile.setEmail("test@example.com");
         profile.setUserName("John Doe");
@@ -89,6 +94,7 @@ public class ModelTests {
 
     @Test
     public void testSetEmailToNull() {
+
         Profile profile = new Profile();
         profile.setEmail("test@example.com");
         profile.setUserName("John Doe");
@@ -101,6 +107,7 @@ public class ModelTests {
 
     @Test
     public void testGetBroker() {
+
         Profile profile = new Profile();
         profile.setBroker("ABC Broker");
 
@@ -109,6 +116,7 @@ public class ModelTests {
 
     @Test
     public void testGetExchanges() {
+
         Profile profile = new Profile();
         profile.setExchanges(new String[]{"Exchange1", "Exchange2"});
 
@@ -117,6 +125,7 @@ public class ModelTests {
 
     @Test
     public void testGetProducts() {
+
         Profile profile = new Profile();
         profile.setProducts(new String[]{"Product1", "Product2"});
 
@@ -128,6 +137,7 @@ public class ModelTests {
 
     @Test
     public void testTokenSetModelWithAllValues() {
+
         TokenSet tokenSet = new TokenSet();
         tokenSet.setUserId("12345");
         assertEquals("12345", tokenSet.getUserId());
@@ -135,6 +145,7 @@ public class ModelTests {
 
     @Test
     public void testGetAccessTokenForTokenSetModel() {
+
         TokenSet tokenSet = new TokenSet();
         tokenSet.setAccessToken("abc123");
         assertEquals("abc123", tokenSet.getAccessToken());
@@ -142,6 +153,7 @@ public class ModelTests {
 
     @Test
     public void testGetRefreshTokenForTokenSetModel() {
+
         TokenSet tokenSet = new TokenSet();
         tokenSet.setRefreshToken("xyz789");
         assertEquals("xyz789", tokenSet.getRefreshToken());
@@ -149,24 +161,28 @@ public class ModelTests {
 
     @Test
     public void testNullUserIdForTokenSetModel() {
+
         TokenSet tokenSet = new TokenSet();
         assertNull(tokenSet.getUserId());
     }
 
     @Test
     public void testNullAccessToken() {
+
         TokenSet tokenSet = new TokenSet();
         assertNull(tokenSet.getAccessToken());
     }
 
     @Test
     public void testNullRefreshToken() {
+
         TokenSet tokenSet = new TokenSet();
         assertNull(tokenSet.getRefreshToken());
     }
 
     @Test
     public void testUserModelWithAllValues() {
+
         User user = new User();
         user.setUserName("John Doe");
         user.setUserId("123456");
@@ -198,6 +214,7 @@ public class ModelTests {
 
     @Test
     public void testUserModelParseResponse() throws JSONException, ParseException {
+
         JSONObject response = new JSONObject();
         JSONObject data = new JSONObject();
         data.put("name", "John Doe");
@@ -240,6 +257,7 @@ public class ModelTests {
 
     @Test
     public void testUserModelSetters() {
+
         User user = new User();
         user.setUserName("John Doe");
         user.setUserId("123456");
@@ -299,6 +317,7 @@ public class ModelTests {
 
     @Test
     public void testUserWithNullResponse() throws JSONException {
+
         JSONObject response = null;
         JSONObject finalResponse = response;
 
@@ -326,6 +345,7 @@ public class ModelTests {
 
     @Test
     public void testTradeModelWithAllFields() {
+
         Trade trade = new Trade();
         trade.tradeId = "123";
         trade.orderId = "456";
@@ -357,6 +377,7 @@ public class ModelTests {
 
     @Test
     public void testTradeModelSerializedNameAnnotationsMappedCorrectly() throws NoSuchFieldException {
+
         Trade trade = new Trade();
 
         assertNotNull(trade.getClass().getDeclaredField("tradeId").getAnnotation(SerializedName.class));
@@ -375,6 +396,7 @@ public class ModelTests {
 
     @Test
     public void testTradeModelDateFieldsParsedAndStoredCorrectly() {
+
         Trade trade = new Trade();
         Date fillTimestamp = new Date();
         Date exchangeTimestamp = new Date();
@@ -388,6 +410,7 @@ public class ModelTests {
 
     @Test
     public void testTradeModelCreatedWithNullValues() {
+
         Trade trade = new Trade();
 
         assertNull(trade.tradeId);
@@ -406,6 +429,7 @@ public class ModelTests {
 
     @Test
     public void testTradeModelCreatedWithInvalidDateFormats() {
+
         Trade trade = new Trade();
         String invalidDateFormat = "2021-13-01";
         try {
@@ -419,6 +443,7 @@ public class ModelTests {
 
     @Test
     public void testOrderModelWithAllFields() {
+
         Order order = new Order();
         order.disclosedQuantity = "10";
         order.duration = "DAY";
@@ -493,6 +518,7 @@ public class ModelTests {
 
     @Test
     public void testGttModelWithAllFields() {
+
         Gtt gtt = new Gtt();
         gtt.id = 123;
         gtt.tradingSymbol = "AAPL";
@@ -522,6 +548,7 @@ public class ModelTests {
 
     @Test
     public void testConstantsFields() {
+
         assertFalse(Constants.PRODUCT_DELIVERY.isEmpty());
         assertFalse(Constants.PRODUCT_INTRADAY.isEmpty());
         assertFalse(Constants.PRODUCT_MARGIN.isEmpty());
@@ -554,6 +581,7 @@ public class ModelTests {
 
     @Test
     public void testOrderParamsWithAllFields() {
+
         OrderParams orderParams = new OrderParams();
         orderParams.orderid = "12345";
         orderParams.exchange = "NSE";
@@ -574,6 +602,7 @@ public class ModelTests {
 
     @Test
     public void testGttParamsWithNullValues() {
+
         GttParams gttParams = new GttParams();
         assertNotNull(gttParams);
         assertNull(gttParams.id);
@@ -591,6 +620,7 @@ public class ModelTests {
 
     @Test
     public void testSearchScripResponse() {
+
         SearchScripResponseDTO responseDTO = new SearchScripResponseDTO();
         responseDTO.setTradingSymbol("ABC");
         responseDTO.setExchange("NYSE");
@@ -603,6 +633,7 @@ public class ModelTests {
 
     @Test
     public void testOrderModelResponse() {
+
         Order order = new Order();
         order.disclosedQuantity = "10";
         order.duration = "DAY";
@@ -646,6 +677,7 @@ public class ModelTests {
 
     @Test
     public void testBESTTwentyData() {
+
         BestTwentyData data = new BestTwentyData(10, 20, (short) 5);
         assertEquals(10, data.getQuantity());
         assertEquals(20, data.getPrice());
@@ -654,6 +686,7 @@ public class ModelTests {
 
     @Test
     public void testGettersAndSettersMethodOfBestTwentyDataModel() {
+
         BestTwentyData data = new BestTwentyData();
         data.setQuantity(10);
         data.setPrice(20);
@@ -665,6 +698,7 @@ public class ModelTests {
 
     @Test
     public void testToStringMethodOfBestTwentyData() {
+
         BestTwentyData data = new BestTwentyData(10, 20, (short) 5);
         String expected = "BestTwentyData(quantity=10, price=20, numberOfOrders=5)";
         assertEquals(expected, data.toString());

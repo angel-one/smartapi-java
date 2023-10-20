@@ -19,6 +19,7 @@ public class SmartApiTickerTest {
 
     @Test
     public void testSmartApiTickerWithAllFields() {
+
         // Arrange
         String clientId = "client_id";
         String feedToken = "feed_token";
@@ -34,6 +35,7 @@ public class SmartApiTickerTest {
 
     @Test
     public void testSetListenerOfSmartAPITicker() {
+
         // Arrange
         String clientId = "client_id";
         String feedToken = "feed_token";
@@ -64,6 +66,7 @@ public class SmartApiTickerTest {
 
     @Test
     public void testUnableToCloseWebSocketConnectionOfSmartAPITicker() {
+
         // Arrange
         String clientId = "client_id";
         String feedToken = "feed_token";
@@ -82,6 +85,7 @@ public class SmartApiTickerTest {
 
     @Test
     public void testBestTwentyDataMethod() {
+
         ByteBuffer buffer = ByteBuffer.allocate(100000); // for testing
         for (int i = 0; i < NUM_PACKETS_FOR_DEPTH; i++) {
             int offset = BEST_TWENTY_BUY_DATA_POSITION + (i * PACKET_SIZE_FOR_DEPTH20);
@@ -102,6 +106,7 @@ public class SmartApiTickerTest {
 
     @Test
     public void testBestTwentyDataWithNoValues() {
+
         ByteBuffer buffer = ByteBuffer.allocate(10000);
 
         BestTwentyData[] result = ByteUtils.getBestTwentyBuyData(buffer);
