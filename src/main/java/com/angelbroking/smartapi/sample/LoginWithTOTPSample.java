@@ -4,7 +4,7 @@ import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.models.User;
 
 public class LoginWithTOTPSample {
-	
+
 	public static void main(String[] args) {
 		String clientID = System.getProperty("clientID");
 		String clientPass = System.getProperty("clientPass");

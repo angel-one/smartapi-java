@@ -1,8 +1,16 @@
-package com.angelbroking.smartapi;
+package com.angelbroking.smartapi.smartconnet;
 
+import com.angelbroking.smartapi.Routes;
+import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.DataException;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.models.Order;
+import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
+import com.angelbroking.smartapi.utils.Constants;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +36,10 @@ import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_ERROR_MSG
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +47,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.Silent.class)
 @Slf4j
 public class SmartConnectTest {
+
     @Mock
     private SmartAPIRequestHandler smartAPIRequestHandler;
 
@@ -309,6 +321,7 @@ public class SmartConnectTest {
     }
 
     private JSONObject getMarketDataRequest(String mode) {
+
         JSONObject payload = new JSONObject();
         payload.put("mode", mode);
         JSONObject exchangeTokens = new JSONObject();
@@ -319,5 +332,72 @@ public class SmartConnectTest {
         return payload;
     }
 
+
+    @Test
+    public void testSmartConnectObjectWithApiKey() {
+
+        SmartConnect smartConnect = new SmartConnect("API_KEY");
+        assertNotNull(smartConnect);
+    }
+
+    @Test
+    public void testSmartConnectObjectWithApiKeyAccessTokenRefreshToken() {
+
+        SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
+        assertNotNull(smartConnect);
+        assertEquals("apiKey", smartConnect.getApiKey());
+        assertEquals("accessToken", smartConnect.getAccessToken());
+        assertEquals("refreshToken", smartConnect.getPublicToken());
+    }
+    @Test
+    public void testSetApiKeyOfSmartConnect() {
+
+        SmartConnect smartConnect = new SmartConnect();
+        smartConnect.setApiKey("apiKey");
+        smartConnect.setAccessToken("accessToken");
+        smartConnect.setRefreshToken("refreshToken");
+        assertEquals("apiKey", smartConnect.getApiKey());
+        assertEquals("accessToken", smartConnect.getAccessToken());
+        assertEquals("refreshToken", smartConnect.getPublicToken());
+    }
+
+    @Test
+    public void testSmartConnectWithNullValues() {
+
+        SmartConnect smartConnect = new SmartConnect();
+        smartConnect.setApiKey(null);
+        smartConnect.setAccessToken(null);
+        smartConnect.setRefreshToken(null);
+        assertThrows(NullPointerException.class, () -> smartConnect.getApiKey());
+        assertThrows(NullPointerException.class, () -> smartConnect.getAccessToken());
+        assertThrows(NullPointerException.class, () -> smartConnect.getUserId());
+        assertThrows(NullPointerException.class, () -> smartConnect.getPublicToken());
+    }
+
+    @Test
+    public void testGenerateSession() {
+
+        SmartConnect smartConnect = new SmartConnect("apiKey", "accessToken", "refreshToken");
+        assertNull(smartConnect.generateSession("invalidClientCode", "password", "totp"));
+    }
+
+    @Test
+    public void testReturnApiKeyIfNotNull() {
+
+        SmartConnect smartConnect = new SmartConnect("apiKey");
+        String result = smartConnect.getApiKey();
+        assertEquals("apiKey", result);
+    }
+
+    @Test
+    public void testThrowsNullPointerExceptionIfApiKeyIsNull() {
+
+        SmartConnect smartConnect = new SmartConnect();
+        assertThrows(NullPointerException.class, () -> {
+            smartConnect.getApiKey();
+        });
+    }
+
 }
+
 
