@@ -10,11 +10,10 @@ SmartAPI is a set of REST-like APIs that expose many capabilities required to bu
 ## Usage
 - [Download SmartAPI jar file](https://github.com/angel-one/smartapi-java/blob/main/dist/) and include it in your build path.
 
-- Include com.angelbroking.smartapi into build path from maven. Use version 2.2.0
 
 ## API usage
 ```java
-	// Initialize SamartAPI using Client code, Password, and TOTP.
+	// Initialize SmartAPI using Client ID, Password( or PIN ), and TOTP.
 	SmartConnect smartConnect = new SmartConnect();
 	
 	// Provide your API key here
