@@ -6,16 +6,19 @@ import com.angelbroking.smartapi.orderupdate.OrderUpdateListner;
 import com.angelbroking.smartapi.orderupdate.OrderUpdateWebsocket;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import com.neovisionaries.ws.client.WebSocketException;
-import com.warrenstrange.googleauth.GoogleAuthenticator;
+// Removed unused and unresolved import statement
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class OrderUpdateTest {
+    private static final Logger log = LoggerFactory.getLogger(SmartConnect.class);
+
     private static String clientID;
     private static String clientPass;
     private static String apiKey;

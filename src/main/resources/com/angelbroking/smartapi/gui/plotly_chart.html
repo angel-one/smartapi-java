@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Plotly Chart</title>
+    <!-- Include the Plotly.js library from a CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        #plotly-chart-container { width: 100%; height: 100%; }
+        /* Add a simple status div if you want to display text messages from Java */
+        #status-div { position: absolute; top: 10px; left: 10px; background-color: rgba(255,255,255,0.8); padding: 5px; border-radius: 3px; font-family: Arial, sans-serif; font-size: 12px; z-index: 1000; }
+    </style>
+</head>
+<body>
+    <div id="plotly-chart-container"></div>
+    <div id="status-div">Loading Chart...</div> <!-- Status display -->
+    <script>
+        const chartContainer = document.getElementById('plotly-chart-container');
+        let chartInitialized = false;
+        let currentTheme = 'light'; // Keep track of the current theme
+
+        // Initialize variables to store live chart data
+        let liveChartData = {
+            x: [],
+            open: [],
+            high: [],
+            low: [],
+            close: []
+        };
+        let lastTick = null;
+        let currentMinute = null;
+
+        // Function to initialize a new live chart
+        function clearLiveChart() {
+            liveChartData = {
+                x: [],
+                open: [],
+                high: [],
+                low: [],
+                close: []
+            };
+            lastTick = null;
+            currentMinute = null;
+        }
+
+        // Function to update chart with a new tick
+        function updateLiveTick(tick) {
+            const time = tick.time;
+            const price = tick.price;
+            
+            // Get minute from timestamp for aggregating into candles
+            const tickMinute = time.substring(0, 16); // "YYYY-MM-DDTHH:MM"
+            
+            if (currentMinute === null) {
+                // First tick received
+                currentMinute = tickMinute;
+                lastTick = {
+                    time: time,
+                    open: price,
+                    high: price,
+                    low: price,
+                    close: price
+                };
+            } else if (tickMinute !== currentMinute) {
+                // New minute - complete the previous candle and start a new one
+                liveChartData.x.push(lastTick.time);
+                liveChartData.open.push(lastTick.open);
+                liveChartData.high.push(lastTick.high);
+                liveChartData.low.push(lastTick.low);
+                liveChartData.close.push(lastTick.close);
+                
+                // Start new candle
+                currentMinute = tickMinute;
+                lastTick = {
+                    time: time,
+                    open: price,
+                    high: price,
+                    low: price,
+                    close: price
+                };
+                
+                // Update the chart
+                updateLiveChart();
+            } else {
+                // Same minute - update the current candle
+                lastTick.high = Math.max(lastTick.high, price);
+                lastTick.low = Math.min(lastTick.low, price);
+                lastTick.close = price;
+            }
+        }
+
+        // Update the chart with current data
+        function updateLiveChart() {
+            const displayData = {
+                x: [...liveChartData.x],
+                open: [...liveChartData.open],
+                high: [...liveChartData.high],
+                low: [...liveChartData.low],
+                close: [...liveChartData.close]
+            };
+            
+            // Add the current in-progress candle if we have one
+            if (lastTick) {
+                displayData.x.push(lastTick.time);
+                displayData.open.push(lastTick.open);
+                displayData.high.push(lastTick.high);
+                displayData.low.push(lastTick.low);
+                displayData.close.push(lastTick.close);
+            }
+            
+            if (chartContainer.data && chartContainer.data.length > 0) {
+                // Update existing chart
+                Plotly.update(chartContainer, {
+                    x: [displayData.x],
+                    open: [displayData.open],
+                    high: [displayData.high],
+                    low: [displayData.low],
+                    close: [displayData.close]
+                });
+            } else {
+                // Create new chart
+                Plotly.newPlot(chartContainer, [{
+                    x: displayData.x,
+                    open: displayData.open,
+                    high: displayData.high,
+                    low: displayData.low,
+                    close: displayData.close,
+                    type: 'candlestick',
+                    name: 'Live Data'
+                }], {
+                    title: 'Live Market Data',
+                    xaxis: { rangeslider: { visible: false } }
+                });
+            }
+        }
+
+        // Function to be called from Java to set historical data
+        function setHistoricalData(data, symbol, interval) {
+            // data should be an object like { x: [...], open: [...], high: [...], low: [...], close: [...] }
+            // and optionally { volume: [...] }
+            // where x is an array of timestamps (or date strings)
+
+            if (!chartInitialized) {
+                initializeChart();
+            }
+
+            const traces = [];
+
+            const candleTrace = {
+                x: data.x,
+                open: data.open,
+                high: data.high,
+                low: data.low,
+                close: data.close,
+                type: 'candlestick',
+                name: symbol + ' (' + interval + ')',
+                increasing: {line: {color: 'rgba(38,166,154, 1)'}}, // Green
+                decreasing: {line: {color: 'rgba(239,83,80, 1)'}}, // Red
+                xaxis: 'x',
+                yaxis: 'y'
+            };
+            traces.push(candleTrace);
+
+            if (data.volume && data.volume.length > 0) {
+                const volumeTrace = {
+                    x: data.x,
+                    y: data.volume,
+                    type: 'bar',
+                    name: 'Volume',
+                    marker: {color: 'rgba(100,100,100,0.5)'},
+                    yaxis: 'y2' // Assign to a secondary y-axis for volume
+                };
+                traces.push(volumeTrace);
+            }
+
+            document.getElementById('status-div').innerText = `Symbol: ${symbol} | Interval: ${interval}`;
+
+            const layout = {
+                title: symbol + ' Candlestick (' + interval + ')',
+                xaxis: {
+                    rangeslider: { visible: false },
+                    type: 'date', // Or 'linear' if using timestamps
+                    title: 'Time'
+                },
+                yaxis: {
+                     title: 'Price'
+                },
+                yaxis2: { // For Volume
+                    title: 'Volume',
+                    overlaying: 'y',
+                    side: 'right',
+                    showgrid: false,
+                    visible: (data.volume && data.volume.length > 0) // Only show if volume data exists
+                },
+                // yaxis3 will be for equity curve, defined when plotEquityCurve is called
+                annotations: [], // Initialize annotations array for trade markers
+                dragmode: 'zoom', // Enable zoom by default
+                showlegend: true,
+                hovermode: 'x unified', // Show tooltip for all traces at a point
+                margin: { t: 40, b: 40, l: 40, r: 40 },
+                // Apply theme colors
+                plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333'
+                }
+            };
+
+            Plotly.react(chartContainer, traces, layout);
+        }
+
+        // Function to be called from Java to update for live feed mode or status messages
+        function setLiveFeedMode(message) {
+             if (!chartInitialized) {
+                initializeChart();
+            }
+            document.getElementById('status-div').innerText = message;
+            // Clear the chart and display a message
+            Plotly.react(chartContainer, [], {
+                 title: message,
+                 xaxis: { visible: false },
+                 yaxis: { visible: false },
+                 plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333'
+                }
+            });
+        }
+
+        // Function to plot equity curve on a secondary y-axis
+        function plotEquityCurve(timestamps, equityValues) {
+            if (!timestamps || timestamps.length === 0 || !equityValues || equityValues.length === 0) {
+                console.log("No equity data to plot.");
+                // If there's an existing equity curve trace, remove it or hide it
+                // For simplicity, we'll just not add it if data is empty.
+                // To remove existing: Plotly.deleteTraces('chartDiv', indexOfEquityTrace);
+                return;
+            }
+
+            var equityTrace = {
+                x: timestamps, // Expecting date strings or JS Date objects
+                y: equityValues,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Equity',
+                yaxis: 'y3', // Use a new y-axis for equity
+                line: {color: 'orange'}
+            };
+
+            var layoutUpdate = {
+                yaxis3: {
+                    title: 'Portfolio Value',
+                    autorange: true,
+                    type: 'linear',
+                    overlaying: 'y',
+                    side: 'right', 
+                    position: 0.15, // Adjust this value (0 to 1) to position the axis. 0.15 might be good for a second right axis.
+                    showgrid: false,
+                    zeroline: false,
+                    visible: true,
+                    titlefont: {color: 'orange'},
+                    tickfont: {color: 'orange'}
+                }
+            };
+            Plotly.addTraces(chartContainer, [equityTrace]);
+            Plotly.relayout(chartContainer, layoutUpdate); // Update layout with new y-axis
+        }
+
+        // Function to add trade markers to the chart
+        function addTradeMarkers(trades) { // trades is an array of {time, type: 'BUY'/'SELL'/'SQUAREOFF_END', price}
+            let newAnnotations = [];
+            if (!trades || trades.length === 0) {
+                Plotly.relayout(chartContainer, {'annotations': []}); // Clear existing annotations on chart
+                return;
+            }
+
+            trades.forEach(function(trade) {
+                newAnnotations.push({
+                    x: trade.time, // Expecting date string or JS Date object
+                    y: trade.price,
+                    xref: 'x',
+                    yref: 'y', // Assumes trades are on the main price y-axis
+                    text: trade.type.substring(0,1), // B, S, S
+                    showarrow: true,
+                    arrowhead: trade.type === 'BUY' ? 2 : (trade.type === 'SELL' ? 6 : 4), // Different arrowheads
+                    ax: 0,
+                    ay: trade.type === 'BUY' ? -30 : 30, // Position arrow above/below point
+                    bgcolor: trade.type === 'BUY' ? 'rgba(0,200,0,0.7)' : (trade.type === 'SELL' ? 'rgba(200,0,0,0.7)' : 'rgba(100,100,200,0.7)'),
+                    font: {color: 'white', size: 10}
+                });
+            });
+            Plotly.relayout(chartContainer, {'annotations': newAnnotations});
+        }
+
+        // Initial chart setup (can be empty)
+        function initializeChart() {
+             Plotly.newPlot(chartContainer, [], {
+                 title: 'Loading Chart...',
+                 xaxis: { visible: false },
+                 yaxis: { visible: false },
+                 plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333'
+                }
+             }, { responsive: true }); // Make chart responsive
+             document.getElementById('status-div').innerText = 'Chart Initialized. Ready for data.';
+             chartInitialized = true;
+        }
+
+        // Initialize the chart when the HTML is loaded
+        initializeChart();
+
+        // Handle window resize (Plotly's responsive: true helps, but manual resize can ensure it)
+        // This might be less necessary with responsive: true, but good practice with WebView
+        window.addEventListener('resize', () => {
+             if (chartInitialized) {
+                 Plotly.relayout(chartContainer, {
+                     width: chartContainer.clientWidth,
+                     height: chartContainer.clientHeight
+                 });
+             }
+        });
+
+    </script>
+</body>
+</html>

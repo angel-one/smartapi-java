@@ -1,0 +1,87 @@
+/* src/main/resources/com/angelbroking/smartapi/gui/styles/light-mode.css */
+.root {
+    -fx-base: #ECEFF1; /* A light grey base color */
+    -fx-background: white;
+    -fx-control-inner-background: white;
+    -fx-text-fill: black;
+}
+
+.button {
+    -fx-text-fill: black;
+}
+
+.label {
+    -fx-text-fill: black;
+}
+
+.text-area .content {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #ECEFF1;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #CFD8DC;
+    -fx-text-fill: black;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+}
+
+.login-pane {
+    -fx-background-color: #f4f4f9; /* Slightly off-white background for the pane */
+}
+
+.login-title {
+    -fx-fill: #333333;
+}
+
+.login-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+.login-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.login-action-target.error { -fx-fill: #D32F2F; }
+.login-action-target.success { -fx-fill: #388E3C; }
+.login-action-target { -fx-fill: #555555; } /* Default message color */
+ 
+.nav-pane {
+    -fx-background-color: #e0e0e0; /* Light grey for nav pane */
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8px 12px;
+    -fx-border-width: 0 0 0 3px; /* Left border for selection indication */
+    -fx-border-color: transparent;
+}
+.nav-button:hover {
+    -fx-background-color: #d0d0d0;
+}
+.nav-button:selected { /* Using a pseudo-class for selected state */
+    -fx-background-color: #c0c0c0;
+    -fx-border-color: #007bff; /* Blue left border when selected */
+}
+
+.welcome-text {
+    -fx-fill: #212121; /* Dark text for light mode */
+}
+
+.historical-data-area {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: black;
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}

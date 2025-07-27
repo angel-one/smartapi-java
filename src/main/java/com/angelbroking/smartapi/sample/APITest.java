@@ -3,10 +3,13 @@ package com.angelbroking.smartapi.sample;
 import com.angelbroking.smartapi.SmartConnect;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.User;
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j; // Removed Lombok import
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
+// @Slf4j // Removed Lombok annotation
 public class APITest {
+	private static final Logger log = LoggerFactory.getLogger(APITest.class);
 
 	public static void main(String[] args) throws SmartAPIException {
 		try {

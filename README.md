@@ -1,16 +1,97 @@
-# SmartAPI 2.2.0 Java client
+# SmartAPI 2.2.6 Java client
 The official Java client for communicating with [SmartAPI Connect API](https://smartapi.angelbroking.com).
 
 SmartAPI is a set of REST-like APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real-time, manage user portfolios, stream live market data (WebSockets), and more, with the simple HTTP API collection.
 
+This project also includes a comprehensive **JavaFX GUI application** that provides a visual interface for most API features, including charting and strategy backtesting.
+
 ## Documentation
-- [SmartAPI - HTTP API documentation] (https://smartapi.angelbroking.com/docs)
+- [SmartAPI - HTTP API documentation](https://smartapi.angelbroking.com/docs)
 - [Java library documentation](https://smartapi.angelbroking.com/docs)
 
-## Usage
+## Usage of the Core Library
 - [Download SmartAPI jar file](https://github.com/angel-one/smartapi-java/blob/main/dist/) and include it in your build path.
 
-- Include com.angelbroking.smartapi into build path from maven. Use version 2.2.0
+- Include com.angelbroking.smartapi into build path from maven. Use version 2.2.6
+
+---
+
+## SmartAPI Java GUI
+
+This repository includes a powerful, feature-rich desktop application built with JavaFX. It provides a user-friendly interface to interact with the SmartAPI, visualize data, and backtest trading strategies.
+
+### Features
+- **Secure Login:** Authenticate using your Angel One credentials and TOTP.
+- **Dashboard:** View real-time funds, positions, and holdings.
+- **Live Order Book:** See all your open, executed, and rejected orders with options to modify or cancel.
+- **Interactive Charting:**
+    - View live and historical candlestick charts for any instrument.
+    - Detach charts into separate windows for multi-monitor setups.
+- **Strategy Backtesting:**
+    - Test trading strategies (e.g., RSI, MACD) against historical data.
+    - View detailed performance reports and equity curves.
+    - Visualize trade entry/exit points directly on the chart.
+- **Place & Modify Orders:** A simple interface to place new orders or modify existing ones.
+- **Light & Dark Themes:** Switch between themes for comfortable viewing.
+
+### Screenshots
+
+
+
+**Login Window**
+
+![Screenshot 2025-06-18 001113](https://github.com/user-attachments/assets/0def4c50-30fc-4c3e-8ca1-2511f64f61f0)
+
+
+**Dashboard**
+![Screenshot 2025-06-18 001852](https://github.com/user-attachments/assets/bb822727-957a-4a12-9d2a-ac03aff4bf92)
+
+
+### How to Run the GUI
+
+#### Option 1: Run from Source (Recommended for Developers)
+This is the quickest way to run the application directly from the source code using Maven, without needing to package it first.
+
+1.  Ensure you have JDK 11 or newer and Maven installed.
+2.  Open a terminal in the project's root directory and run:
+    ```bash
+    mvn javafx:run
+    ```
+    The application will compile and launch automatically.
+
+#### Option 2: Running the Executable JAR
+After building the project with Maven, you can run the application directly from the command line.
+
+1.  Build the project to create a "fat JAR":
+    ```bash
+    mvn clean package
+    ```
+2.  Run the JAR file (ensure you are using JDK 11 or newer):
+    ```bash
+    java -jar target/smartapi-java-2.2.6.jar
+    ```
+
+#### Option 3: Building a Native Windows Executable (.exe)
+You can create a standalone `.exe` file that bundles the Java runtime, so users don't need to have Java installed.
+
+1.  Ensure you have JDK 14 or newer and that it's added to your system's PATH.
+2.  Build the fat JAR using Maven:
+    ```bash
+    mvn clean package
+    ```
+3.  Run `jpackage` to create the executable. Open a new terminal and run:
+    ```powershell
+    jpackage --type exe `
+      --input target/ `
+      --name "Smart API GUI" `
+      --main-jar smartapi-java-2.2.6.jar `
+      --main-class com.angelbroking.smartapi.gui.SmartApiGui `
+      --dest dist `
+      --win-console
+    ```
+4.  The final application will be located in the `dist/Smart API GUI` folder. You can zip this folder and distribute it.
+
+---
 
 ## API usage
 ```java
@@ -510,8 +591,7 @@ For more details, take a look at Examples.java in the sample directory.
         
         log.info("order update data {} ",data);
             
-     }});
-            
+     }});            
     }
 
 ```

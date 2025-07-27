@@ -61,12 +61,22 @@ public class Routes {
 				put("api.nseIntraday", "/rest/secure/angelbroking/marketData/v1/nseIntraday");
 				put("api.bseIntraday", "/rest/secure/angelbroking/marketData/v1/bseIntraday");
 				put("api.oIBuildup", "/rest/secure/angelbroking/marketData/v1/OIBuildup");
+				// Add WebSocket connect key, but its value will be fetched differently
 			}
 		};
 	}
 
 	public String get(String key) {
 		return _rootUrl + routes.get(key);
+	}
+
+	// New method to get WebSocket URLs directly
+	public String getWsUrl(String key) {
+		if ("ws.connect".equals(key)) {
+			return _smartStreamWSURI; // Or _swsuri, or _wsuri depending on which one is current
+		}
+		// Add other WebSocket URL keys here if needed
+		return null;
 	}
 
 	public String getLoginUrl() {

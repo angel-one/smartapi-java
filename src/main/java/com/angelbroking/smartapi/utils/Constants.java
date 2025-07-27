@@ -6,11 +6,12 @@ package com.angelbroking.smartapi.utils;
 public class Constants {
 
     /** Product types. */
-	public static String PRODUCT_DELIVERY = "DELIVERY";
-	public static String PRODUCT_INTRADAY = "INTRADAY";
-	public static String PRODUCT_MARGIN = "MARGIN";
-	public static String PRODUCT_BO = "BO";
-	public static String PRODUCT_CARRYFORWARD = "CARRYFORWARD";
+	public static final String PRODUCT_DELIVERY = "DELIVERY";
+	public static final String PRODUCT_INTRADAY = "INTRADAY";
+	public static final String PRODUCT_MARGIN = "MARGIN";
+	public static final String PRODUCT_BO = "BO";
+	public static final String PRODUCT_CO = "CO";
+	public static final String PRODUCT_CARRYFORWARD = "CARRYFORWARD";
 
     /** Order types. */
     public static String ORDER_TYPE_MARKET = "MARKET";

@@ -4,17 +4,24 @@ import com.angelbroking.smartapi.http.SessionExpiryHook;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.Proxy;
+import java.net.http.HttpClient;
+import java.net.http.WebSocket;
+import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 import javax.net.ssl.HttpsURLConnection;
 
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_ERROR_MSG;
@@ -24,8 +31,10 @@ import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
 
-@Slf4j
 public class SmartConnect {
+	
+	private static final Logger log = LoggerFactory.getLogger(SmartConnect.class);
+	
 	public static SessionExpiryHook sessionExpiryHook = null;
 	public static boolean ENABLE_LOGGING = false;
 	private Proxy proxy = null;
@@ -33,8 +42,21 @@ public class SmartConnect {
 	private String accessToken;
 	private String refreshToken;
 	private Routes routes = new Routes();
+	private String feedToken; // Added for WebSocket
 	private String userId;
 	private SmartAPIRequestHandler smartAPIRequestHandler = new SmartAPIRequestHandler(proxy);
+
+	// WebSocket related fields
+	private HttpClient wsHttpClient;
+	private WebSocket webSocketClient;
+	private OnStreamListener streamListener;
+
+	public interface OnStreamListener {
+		void onConnected();
+		void onDisconnected(int statusCode, String reason);
+		void onError(Throwable error);
+		void onData(ByteBuffer data); // Listener to handle raw binary data
+	}
 
 	public SmartConnect() {
 		//setting up TLS min and max version
@@ -179,16 +201,29 @@ public class SmartConnect {
 			JSONObject loginResultObject = smartAPIRequestHandler.postRequest(this.apiKey, routes.getLoginUrl(),
 					params);
 			log.info("login result: {}",loginResultObject);
-			String jwtToken = loginResultObject.getJSONObject("data").getString("jwtToken");
-			String refreshToken = loginResultObject.getJSONObject("data").getString("refreshToken");
-			String feedToken = loginResultObject.getJSONObject("data").getString("feedToken");
-			String url = routes.get("api.user.profile");
-			User user = new User().parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, jwtToken));
-			user.setAccessToken(jwtToken);
-			user.setRefreshToken(refreshToken);
-			user.setFeedToken(feedToken);
 
-			return user;
+			if (loginResultObject != null && loginResultObject.optBoolean("status", false) && loginResultObject.has("data") && !loginResultObject.isNull("data")) {
+				JSONObject dataObject = loginResultObject.getJSONObject("data");
+				String jwtToken = dataObject.getString("jwtToken");
+				String refreshToken = dataObject.getString("refreshToken");
+				String feedToken = dataObject.getString("feedToken");
+				this.feedToken = feedToken; // Store feedToken for WebSocket
+				
+				String url = routes.get("api.user.profile");
+				User user = new User().parseResponse(smartAPIRequestHandler.getRequest(this.apiKey, url, jwtToken));
+				user.setAccessToken(jwtToken);
+				// Store tokens and user ID in the SmartConnect instance
+				this.setAccessToken(jwtToken);
+				this.setRefreshToken(refreshToken);
+				this.setUserId(user.getUserId()); 
+
+				user.setRefreshToken(refreshToken);
+				user.setFeedToken(feedToken);
+				return user;
+			} else {
+				log.error("Login failed or data object is missing/null in response: {}", loginResultObject != null ? loginResultObject.toString() : "Null response");
+				return null; // Indicate login failure
+			}
 		} catch (Exception | SmartAPIException e) {
 			log.error(e.getMessage());
 			return null;
@@ -215,13 +250,17 @@ public class SmartConnect {
 			String url = routes.get("api.refresh");
 			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 
-			accessToken = response.getJSONObject("data").getString("jwtToken");
-			refreshToken = response.getJSONObject("data").getString("refreshToken");
+			String newAccessToken = response.getJSONObject("data").getString("jwtToken");
+			String newRefreshToken = response.getJSONObject("data").getString("refreshToken");
+
+			// Update instance tokens
+			this.setAccessToken(newAccessToken);
+			this.setRefreshToken(newRefreshToken);
 
 			TokenSet tokenSet = new TokenSet();
 			tokenSet.setUserId(userId);
-			tokenSet.setAccessToken(accessToken);
-			tokenSet.setRefreshToken(refreshToken);
+			tokenSet.setAccessToken(newAccessToken);
+			tokenSet.setRefreshToken(newRefreshToken);
 
 			return tokenSet;
 		} catch (Exception | SmartAPIException e) {
@@ -723,15 +762,25 @@ public class SmartConnect {
 	 * @param params is historic data params.
 	 * @return returns the details of historic data.
 	 */
-	public JSONArray candleData(JSONObject params) {
+	public JSONArray candleData(JSONObject params) throws SmartAPIException, IOException, JSONException {
 		try {
 			String url = routes.get("api.candle.data");
 			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
-			log.info("response : {}",response);
-			return response.getJSONArray("data");
-		} catch (Exception | SmartAPIException e) {
-			log.error(e.getMessage());
-			return null;
+			//log.info("Candle data API response : {}",response);//
+			if (response != null && response.optBoolean("status", false) && response.has("data") && !response.isNull("data")) {
+				return response.getJSONArray("data");
+			} else {
+				String message = response != null ? response.optString("message", "Unknown error from API") : "Null response from API";
+				String errorCode = response != null ? response.optString("errorcode", "N/A") : "N/A";
+				log.error("Error fetching candle data from API: {}", message);
+				throw new SmartAPIException(message, errorCode); // Throw exception with API error details
+			}
+		} catch (SmartAPIException e) {
+			log.error("SmartAPIException in candleData: {}", e.getMessage());
+			throw e;
+		} catch (IOException | JSONException e) { // Catch and re-throw IO and JSON exceptions
+			log.error("Exception in candleData: {}", e.getMessage());
+			throw e;
 		}
 	}
 
@@ -808,6 +857,12 @@ public class SmartConnect {
 			JSONObject params = new JSONObject();
 			params.put("clientcode", this.userId);
 			JSONObject response = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
+			// Clear local session details upon successful logout from API
+			if (response != null && response.optBoolean("status", false)) {
+				this.accessToken = null;
+				this.refreshToken = null;
+				// this.userId = null; // Optional: clear userId or keep for re-login
+			}
 			return response;
 		} catch (Exception | SmartAPIException e) {
 			log.error(e.getMessage());
@@ -1071,6 +1126,190 @@ public class SmartConnect {
 		}
 	}
 
+	/**
+	 * Connects to the WebSocket stream for live market data.
+	 *
+	 * @param listener The listener to handle WebSocket events and data.
+	 */
+	public void connectStream(OnStreamListener listener) {
+		if (this.feedToken == null || this.apiKey == null || this.userId == null) {
+			String errorMessage = "Feed token, API key, or User ID is not available. Please login first.";
+			log.error(errorMessage);
+			if (listener != null) {
+				listener.onError(new SmartAPIException(errorMessage));
+			}
+			return;
+		}
+
+		this.streamListener = listener;
+		try {
+			String wsUrl = routes.getWsUrl("ws.connect"); // Use the new method for WebSocket URLs
+			if (wsUrl == null) {
+				// Fallback or error if not in Routes, for example:
+				wsUrl = "wss://smartapisocket.angelone.in/smart-stream"; // Fallback to a likely correct one
+				log.warn("WebSocket URL not found in Routes, using default: {}", wsUrl);
+			}
+
+			wsHttpClient = HttpClient.newBuilder()
+					.proxy(proxy != null ? HttpClient.Builder.NO_PROXY : HttpClient.Builder.NO_PROXY) // Configure proxy if needed
+					.build();
+
+			WebSocketClientListener wsListener = new WebSocketClientListener();
+
+			log.info("Connecting to WebSocket: {}", wsUrl);
+			wsHttpClient.newWebSocketBuilder()
+					// Add authentication headers for the initial handshake
+					.header("Authorization", "Bearer " + this.accessToken) // Assuming feedToken is the primary auth for WS, but accessToken might be needed for handshake
+					.header("x-api-key", this.apiKey)
+					.header("x-client-code", this.userId) // Or "client-code" - check API docs
+					.header("x-feed-token", this.feedToken) // Send feedToken as a header as well
+					.buildAsync(URI.create(wsUrl), wsListener)
+					.thenAccept(ws -> {
+						webSocketClient = ws;
+						log.info("WebSocket connection initiated.");
+						// Authentication will be handled in onOpen
+					}).exceptionally(e -> {
+						log.error("WebSocket connection failed: {}", e.getMessage(), e);
+						if (streamListener != null) {
+							streamListener.onError(e);
+						}
+						return null;
+					});
+
+		} catch (Exception e) {
+			log.error("Exception while connecting to WebSocket: {}", e.getMessage(), e);
+			if (streamListener != null) {
+				streamListener.onError(e);
+			}
+		}
+	}
+
+	private class WebSocketClientListener implements WebSocket.Listener {
+		private StringBuilder textMessageBuilder = new StringBuilder();
+
+		@Override
+		public void onOpen(WebSocket webSocket) {
+			log.info("WebSocket connected.");
+			webSocket.request(1); // Request the next message
+			if (streamListener != null) {
+				streamListener.onConnected();
+			}
+			// Send authentication message
+			authenticateStream();
+		}
+
+		@Override
+		public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
+			textMessageBuilder.append(data);
+			webSocket.request(1);
+			if (last) {
+				String message = textMessageBuilder.toString();
+				log.info("WebSocket Text Message Received: {}", message);
+				// Handle text messages (e.g., responses to auth/subscribe, errors)
+				// For AngelBroking, most data ticks are binary.
+				textMessageBuilder.setLength(0); // Reset for next message
+			}
+			return null;
+		}
+
+		@Override
+		public CompletionStage<?> onBinary(WebSocket webSocket, ByteBuffer data, boolean last) {
+			// log.debug("WebSocket Binary Message Received, size: {}", data.remaining());
+			webSocket.request(1);
+			if (streamListener != null) {
+				// Pass the raw ByteBuffer. The listener is responsible for parsing.
+				// Note: data ByteBuffer might be reused by the WebSocket client, so copy if needed for async processing.
+				ByteBuffer dataCopy = ByteBuffer.allocate(data.remaining());
+				dataCopy.put(data);
+				dataCopy.flip();
+				streamListener.onData(dataCopy);
+			}
+			return null;
+		}
+
+		@Override
+		public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
+			log.info("WebSocket closed. Status: {}, Reason: {}", statusCode, reason);
+			if (streamListener != null) {
+				streamListener.onDisconnected(statusCode, reason);
+			}
+			webSocketClient = null; // Clear the client
+			return null;
+		}
+
+		@Override
+		public void onError(WebSocket webSocket, Throwable error) {
+			log.error("WebSocket error: {}", error.getMessage(), error);
+			if (streamListener != null) {
+				streamListener.onError(error);
+			}
+			// Attempt to close gracefully if an error occurs and connection is still perceived as open
+			if (webSocketClient != null && !webSocketClient.isOutputClosed()) {
+				webSocketClient.sendClose(WebSocket.NORMAL_CLOSURE, "Error occurred");
+			}
+			webSocketClient = null;
+		}
+	}
+
+	private void authenticateStream() {
+		if (webSocketClient != null && !webSocketClient.isInputClosed()) {
+			// It's possible the server authenticates solely via handshake headers.
+			// If an explicit "authorize" message is still required after connection,
+			// keep this. Otherwise, this might be redundant if headers work.
+			// For now, let's assume headers are primary and this is secondary or not needed if 401 is handshake issue.
+			// JSONObject authPayload = new JSONObject();
+			// authPayload.put("action", "authorize"); // Or "auth" or "authenticate" - check docs
+			// JSONObject params = new JSONObject();
+			// params.put("token", this.feedToken); // Parameter name might be just "token" or "feedToken"
+			// // API key and client code might not be needed in this message if sent in headers
+			// authPayload.put("params", params);
+			// String authMsg = authPayload.toString();
+			// log.info("Sending WebSocket Post-Connection Auth Message (if required): {}", authMsg);
+			// webSocketClient.sendText(authMsg, true);
+			log.info("WebSocket handshake successful, authentication likely handled by headers. If further auth message needed, it would be sent here.");
+		}
+	}
+
+	public void subscribeStream(String mode, List<String> instrumentTokens) {
+		if (webSocketClient != null && !webSocketClient.isInputClosed()) {
+			JSONObject subPayload = new JSONObject();
+			subPayload.put("action", "subscribe");
+			JSONObject params = new JSONObject();
+			params.put("mode", mode); // e.g., "MODE_LTP", "MODE_QUOTE", "MODE_FULL"
+			params.put("tokens", new JSONArray(instrumentTokens));
+			subPayload.put("params", params);
+			String subMsg = subPayload.toString();
+			log.info("Sending WebSocket Subscription: {}", subMsg);
+			webSocketClient.sendText(subMsg, true);
+		}
+	}
+
+	public void unsubscribeStream(String mode, List<String> instrumentTokens) {
+		if (webSocketClient != null && !webSocketClient.isInputClosed()) {
+			JSONObject unsubPayload = new JSONObject();
+			unsubPayload.put("action", "unsubscribe"); // Changed action to "unsubscribe"
+			JSONObject params = new JSONObject();
+			// Mode might not be strictly necessary for unsubscribe for some brokers,
+			// but including it for consistency or if the API requires it.
+			// If not needed, it can be removed from the params.
+			params.put("mode", mode); 
+			params.put("tokens", new JSONArray(instrumentTokens));
+			unsubPayload.put("params", params);
+			String unsubMsg = unsubPayload.toString();
+			log.info("Sending WebSocket Unsubscription: {}", unsubMsg);
+			webSocketClient.sendText(unsubMsg, true);
+		}
+	}
+	public void disconnectStream() {
+		if (webSocketClient != null) {
+			log.info("Disconnecting WebSocket stream.");
+			webSocketClient.sendClose(WebSocket.NORMAL_CLOSURE, "User initiated disconnect");
+			webSocketClient = null;
+		}
+		if (wsHttpClient != null) {
+			// HttpClient doesn't have a direct close method for general cleanup.
+			// It's designed to be reused. If executor was custom, shut it down.
+		}
+	}
 
 }
-

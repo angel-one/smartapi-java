@@ -1,0 +1,379 @@
+2025-06-16 02:18:59.248 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in GET request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/user/v1/getProfile, Request Headers: User-Agent: javasmartapiconnect/3.0.0
+Authorization: ██
+Content-Type: application/json
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+,Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:18:59.279 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:19:00.779 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/placeOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"duration":"DAY","quantity":1,"triggerprice":"209","variety":"STOPLOSS","price":122.2,"tradingsymbol":"ITC-EQ","exchange":"NSE","transactiontype":"BUY","symboltoken":"1660","producttype":"INTRADAY","ordertype":"STOPLOSS_LIMIT"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:19:00.790 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:19:01.939 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/modifyOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"duration":"DAY","quantity":1,"variety":"NORMAL","orderid":"201216000755110","price":122.2,"tradingsymbol":"ASHOKLEY","exchange":"NSE","symboltoken":"3045","producttype":"DELIVERY","ordertype":"LIMIT"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:19:01.942 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:19:02.905 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/cancelOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"variety":"NORMAL","orderid":"201009000000015"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:19:02.909 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:19:02.912 [main] ERROR c.a.smartapi.sample.APITest - Exception: null
+2025-06-16 02:43:55.639 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in GET request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/user/v1/getProfile, Request Headers: User-Agent: javasmartapiconnect/3.0.0
+Authorization: ██
+Content-Type: application/json
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+,Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:43:55.645 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:43:55.736 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/placeOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"duration":"DAY","quantity":1,"triggerprice":"209","variety":"STOPLOSS","price":122.2,"tradingsymbol":"ITC-EQ","exchange":"NSE","transactiontype":"BUY","symboltoken":"1660","producttype":"INTRADAY","ordertype":"STOPLOSS_LIMIT"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:43:55.750 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:43:55.820 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/modifyOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"duration":"DAY","quantity":1,"variety":"NORMAL","orderid":"201216000755110","price":122.2,"tradingsymbol":"ASHOKLEY","exchange":"NSE","symboltoken":"3045","producttype":"DELIVERY","ordertype":"LIMIT"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:43:55.823 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:43:55.896 [main] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/cancelOrder, Request Headers: Content-Type: application/json
+Authorization: ██
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: <api_key>
+X-UserType: USER
+X-SourceID: WEB
+, Request Body: {"variety":"NORMAL","orderid":"201009000000015"},Response : {"success":false,"message":"Invalid Token","errorCode":"AG8001","data":""}
+2025-06-16 02:43:55.898 [main] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 02:43:55.900 [main] ERROR c.a.smartapi.sample.APITest - Exception: null
+2025-06-16 03:12:47.332 [Thread-4] ERROR c.angelbroking.smartapi.SmartConnect - JSONObject["data"] is not a JSONObject (class org.json.JSONObject$Null : null).
+2025-06-16 03:50:55.926 [Thread-3] ERROR c.angelbroking.smartapi.SmartConnect - JSONObject["data"] is not a JSONObject (class org.json.JSONObject$Null : null).
+2025-06-16 05:12:35.160 [Thread-16] ERROR c.a.s.http.SmartAPIRequestHandler - Error in POST request. Request URL: https://apiconnect.angelone.in/rest/secure/angelbroking/portfolio/v1/getAllHolding, Request Headers: User-Agent: javasmartapiconnect/3.0.0
+Authorization: ██
+Content-Type: application/json
+X-ClientLocalIP: 192.168.31.22
+X-ClientPublicIP: 27.59.111.24
+X-MACAddress: 2C-58-B9-F0-92-90
+Accept: application/json
+X-PrivateKey: HFnOUXEQ
+X-UserType: USER
+X-SourceID: WEB
+,Response : Unrecognized token 'Access': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')
+ at [Source: (String)"Access denied because of exceeding access rate"; line: 1, column: 7]
+2025-06-16 05:12:35.161 [Thread-16] ERROR c.angelbroking.smartapi.SmartConnect - IOException occurred  while getting all holdings Unrecognized token 'Access': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')
+ at [Source: (String)"Access denied because of exceeding access rate"; line: 1, column: 7]
+2025-06-16 05:22:51.436 [Thread-5] ERROR c.angelbroking.smartapi.SmartConnect - JSONObject["data"] is not a JSONArray (class org.json.JSONObject$Null : null).
+2025-06-16 05:26:54.385 [Thread-5] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: {"data":null,"message":"Something Went Wrong, Please Try After Sometime","errorcode":"AB1004","status":false}
+2025-06-16 05:33:52.575 [Thread-5] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 05:33:52.577 [Thread-5] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 05:33:53.454 [Thread-6] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 05:33:53.456 [Thread-6] ERROR c.angelbroking.smartapi.SmartConnect - null
+2025-06-16 05:45:35.671 [Thread-3] ERROR c.angelbroking.smartapi.SmartConnect - JSONObject["data"] is not a JSONObject (class org.json.JSONObject$Null : null).
+2025-06-16 14:48:53.717 [Thread-15] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 14:48:53.718 [Thread-15] ERROR c.angelbroking.smartapi.SmartConnect - SmartAPIException in candleData: null
+2025-06-16 14:48:57.814 [Thread-16] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 14:48:57.814 [Thread-16] ERROR c.angelbroking.smartapi.SmartConnect - SmartAPIException in candleData: null
+2025-06-16 15:34:21.304 [JavaFX Application Thread] ERROR c.angelbroking.smartapi.SmartConnect - WebSocket connection failed: java.lang.IllegalArgumentException: invalid URI scheme: https
+java.util.concurrent.CompletionException: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:325)
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:378)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptNow(CompletableFuture.java:793)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptStage(CompletableFuture.java:781)
+	at java.base/java.util.concurrent.CompletableFuture.thenAccept(CompletableFuture.java:2266)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1162)
+	at com.angelbroking.smartapi.gui.SmartApiGui.startLiveFeed(SmartApiGui.java:1519)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$80(SmartApiGui.java:1341)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:86)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:49)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Node.fireEvent(Node.java:8875)
+	at javafx.controls@21/javafx.scene.control.CheckBox.fire(CheckBox.java:240)
+	at javafx.controls@21/com.sun.javafx.scene.control.behavior.ButtonBehavior.mouseReleased(ButtonBehavior.java:207)
+	at javafx.controls@21/com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:247)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Scene$MouseHandler.process(Scene.java:3984)
+	at javafx.graphics@21/javafx.scene.Scene.processMouseEvent(Scene.java:1890)
+	at javafx.graphics@21/javafx.scene.Scene$ScenePeerListener.mouseEvent(Scene.java:2708)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:411)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:301)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleMouseEvent$2(GlassViewEventHandler.java:450)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:424)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.handleMouseEvent(GlassViewEventHandler.java:449)
+	at javafx.graphics@21/com.sun.glass.ui.View.handleMouseEvent(View.java:551)
+	at javafx.graphics@21/com.sun.glass.ui.View.notifyMouse(View.java:937)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.illegal(OpeningHandshake.java:346)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.checkURI(OpeningHandshake.java:337)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.<init>(OpeningHandshake.java:107)
+	at java.net.http/jdk.internal.net.http.websocket.WebSocketImpl.newInstanceAsync(WebSocketImpl.java:139)
+	at java.net.http/jdk.internal.net.http.websocket.BuilderImpl.buildAsync(BuilderImpl.java:120)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1161)
+	... 47 common frames omitted
+2025-06-16 15:34:35.253 [JavaFX Application Thread] ERROR c.angelbroking.smartapi.SmartConnect - WebSocket connection failed: java.lang.IllegalArgumentException: invalid URI scheme: https
+java.util.concurrent.CompletionException: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:325)
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:378)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptNow(CompletableFuture.java:793)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptStage(CompletableFuture.java:781)
+	at java.base/java.util.concurrent.CompletableFuture.thenAccept(CompletableFuture.java:2266)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1162)
+	at com.angelbroking.smartapi.gui.SmartApiGui.startLiveFeed(SmartApiGui.java:1519)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$80(SmartApiGui.java:1341)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:86)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:49)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Node.fireEvent(Node.java:8875)
+	at javafx.controls@21/javafx.scene.control.CheckBox.fire(CheckBox.java:240)
+	at javafx.controls@21/com.sun.javafx.scene.control.behavior.ButtonBehavior.mouseReleased(ButtonBehavior.java:207)
+	at javafx.controls@21/com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:247)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Scene$MouseHandler.process(Scene.java:3984)
+	at javafx.graphics@21/javafx.scene.Scene.processMouseEvent(Scene.java:1890)
+	at javafx.graphics@21/javafx.scene.Scene$ScenePeerListener.mouseEvent(Scene.java:2708)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:411)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:301)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleMouseEvent$2(GlassViewEventHandler.java:450)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:424)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.handleMouseEvent(GlassViewEventHandler.java:449)
+	at javafx.graphics@21/com.sun.glass.ui.View.handleMouseEvent(View.java:551)
+	at javafx.graphics@21/com.sun.glass.ui.View.notifyMouse(View.java:937)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.illegal(OpeningHandshake.java:346)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.checkURI(OpeningHandshake.java:337)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.<init>(OpeningHandshake.java:107)
+	at java.net.http/jdk.internal.net.http.websocket.WebSocketImpl.newInstanceAsync(WebSocketImpl.java:139)
+	at java.net.http/jdk.internal.net.http.websocket.BuilderImpl.buildAsync(BuilderImpl.java:120)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1161)
+	... 47 common frames omitted
+2025-06-16 15:35:55.249 [JavaFX Application Thread] ERROR c.angelbroking.smartapi.SmartConnect - WebSocket connection failed: java.lang.IllegalArgumentException: invalid URI scheme: https
+java.util.concurrent.CompletionException: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:325)
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:378)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptNow(CompletableFuture.java:793)
+	at java.base/java.util.concurrent.CompletableFuture.uniAcceptStage(CompletableFuture.java:781)
+	at java.base/java.util.concurrent.CompletableFuture.thenAccept(CompletableFuture.java:2266)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1162)
+	at com.angelbroking.smartapi.gui.SmartApiGui.startLiveFeed(SmartApiGui.java:1519)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$80(SmartApiGui.java:1341)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:86)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:49)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Node.fireEvent(Node.java:8875)
+	at javafx.controls@21/javafx.scene.control.CheckBox.fire(CheckBox.java:240)
+	at javafx.controls@21/com.sun.javafx.scene.control.behavior.ButtonBehavior.mouseReleased(ButtonBehavior.java:207)
+	at javafx.controls@21/com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:247)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232)
+	at javafx.base@21/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189)
+	at javafx.base@21/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at javafx.base@21/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at javafx.base@21/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.base@21/javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.graphics@21/javafx.scene.Scene$MouseHandler.process(Scene.java:3984)
+	at javafx.graphics@21/javafx.scene.Scene.processMouseEvent(Scene.java:1890)
+	at javafx.graphics@21/javafx.scene.Scene$ScenePeerListener.mouseEvent(Scene.java:2708)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:411)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:301)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleMouseEvent$2(GlassViewEventHandler.java:450)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:424)
+	at javafx.graphics@21/com.sun.javafx.tk.quantum.GlassViewEventHandler.handleMouseEvent(GlassViewEventHandler.java:449)
+	at javafx.graphics@21/com.sun.glass.ui.View.handleMouseEvent(View.java:551)
+	at javafx.graphics@21/com.sun.glass.ui.View.notifyMouse(View.java:937)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.lang.IllegalArgumentException: invalid URI scheme: https
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.illegal(OpeningHandshake.java:346)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.checkURI(OpeningHandshake.java:337)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.<init>(OpeningHandshake.java:107)
+	at java.net.http/jdk.internal.net.http.websocket.WebSocketImpl.newInstanceAsync(WebSocketImpl.java:139)
+	at java.net.http/jdk.internal.net.http.websocket.BuilderImpl.buildAsync(BuilderImpl.java:120)
+	at com.angelbroking.smartapi.SmartConnect.connectStream(SmartConnect.java:1161)
+	... 47 common frames omitted
+2025-06-16 15:42:21.960 [ForkJoinPool.commonPool-worker-1] ERROR c.angelbroking.smartapi.SmartConnect - WebSocket connection failed: java.net.http.WebSocketHandshakeException
+java.util.concurrent.CompletionException: java.net.http.WebSocketHandshakeException
+	at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:325)
+	at java.base/java.util.concurrent.CompletableFuture.encodeRelay(CompletableFuture.java:414)
+	at java.base/java.util.concurrent.CompletableFuture.completeRelay(CompletableFuture.java:423)
+	at java.base/java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:1198)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:556)
+	at java.base/java.util.concurrent.CompletableFuture.postFire(CompletableFuture.java:660)
+	at java.base/java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:890)
+	at java.base/java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:529)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:507)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1394)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1970)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
+Caused by: java.net.http.WebSocketHandshakeException: null
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.resultFrom(OpeningHandshake.java:214)
+	at java.base/java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:1196)
+	... 8 common frames omitted
+Caused by: jdk.internal.net.http.websocket.CheckFailedException: Unexpected HTTP response status code 401
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.checkFailed(OpeningHandshake.java:331)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.handleResponse(OpeningHandshake.java:240)
+	at java.net.http/jdk.internal.net.http.websocket.OpeningHandshake.resultFrom(OpeningHandshake.java:210)
+	... 9 common frames omitted
+2025-06-16 20:21:32.749 [JavaFX Application Thread] WARN  c.a.smartapi.gui.SmartApiGui - chartWebEngine is null. Cannot send data to chart.
+2025-06-16 22:32:25.492 [Thread-43] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 22:32:25.492 [Thread-43] ERROR c.angelbroking.smartapi.SmartConnect - SmartAPIException in candleData: null
+2025-06-16 22:32:25.497 [Thread-43] ERROR c.a.smartapi.gui.SmartApiGui - Backtest API/IO/JSON error
+com.angelbroking.smartapi.http.exceptions.SmartAPIException: null
+	at com.angelbroking.smartapi.SmartConnect.candleData(SmartConnect.java:776)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$100(SmartApiGui.java:1704)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-06-16 22:32:31.082 [Thread-45] ERROR c.angelbroking.smartapi.SmartConnect - Error fetching candle data from API: Something Went Wrong, Please Try After Sometime
+2025-06-16 22:32:31.083 [Thread-45] ERROR c.angelbroking.smartapi.SmartConnect - SmartAPIException in candleData: null
+2025-06-16 22:32:31.083 [Thread-45] ERROR c.a.smartapi.gui.SmartApiGui - Backtest API/IO/JSON error
+com.angelbroking.smartapi.http.exceptions.SmartAPIException: null
+	at com.angelbroking.smartapi.SmartConnect.candleData(SmartConnect.java:776)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$100(SmartApiGui.java:1704)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-06-17 20:26:11.799 [JavaFX Application Thread] ERROR c.a.smartapi.gui.SmartApiGui - Error sending comprehensive backtest data to chart
+netscape.javascript.JSException: ReferenceError: Can't find variable: plotBacktestData
+	at javafx.web@21/com.sun.webkit.dom.JSObject.fwkMakeException(JSObject.java:160)
+	at javafx.web@21/com.sun.webkit.WebPage.twkExecuteScript(Native Method)
+	at javafx.web@21/com.sun.webkit.WebPage.executeScript(WebPage.java:1576)
+	at javafx.web@21/javafx.scene.web.WebEngine.executeScript(WebEngine.java:985)
+	at com.angelbroking.smartapi.gui.SmartApiGui.sendBacktestDataToChart(SmartApiGui.java:2092)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$createBacktestingTab$9(SmartApiGui.java:1880)
+	at javafx.graphics@21/com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics@21/com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at javafx.graphics@21/com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-06-17 20:26:28.169 [JavaFX Application Thread] ERROR c.a.smartapi.gui.SmartApiGui - Error sending comprehensive backtest data to chart
+netscape.javascript.JSException: ReferenceError: Can't find variable: Plotly
+	at javafx.web@21/com.sun.webkit.dom.JSObject.fwkMakeException(JSObject.java:160)
+	at javafx.web@21/com.sun.webkit.WebPage.twkExecuteScript(Native Method)
+	at javafx.web@21/com.sun.webkit.WebPage.executeScript(WebPage.java:1576)
+	at javafx.web@21/javafx.scene.web.WebEngine.executeScript(WebEngine.java:985)
+	at com.angelbroking.smartapi.gui.SmartApiGui.sendBacktestDataToChart(SmartApiGui.java:2092)
+	at com.angelbroking.smartapi.gui.SmartApiGui.lambda$createBacktestingTab$9(SmartApiGui.java:1880)
+	at javafx.graphics@21/com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics@21/com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at javafx.graphics@21/com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics@21/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-06-17 20:43:39.795 [Thread-5] WARN  c.a.s.algos.AngelOneChargeCalculator - Unknown product type for charge calculation: SQUAREOFF
+2025-06-17 20:45:57.324 [Thread-20] WARN  c.a.s.algos.AngelOneChargeCalculator - Unknown product type for charge calculation: SQUAREOFF
+2025-06-17 20:46:59.007 [Thread-31] WARN  c.a.s.algos.AngelOneChargeCalculator - Unknown product type for charge calculation: SQUAREOFF

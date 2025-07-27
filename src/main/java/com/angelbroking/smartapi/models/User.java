@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ public class User {
 	public String[] products;
 	public String[] exchanges;
 
+	public String[] orderTypes; // Add this field
 	@SerializedName("feedToken")
 	public String feedToken;
 
@@ -101,11 +103,15 @@ public class User {
 			user.exchanges[j] = exchangesArray.getString(j);
 		}
 
-//		JSONArray orderTypeArray = response.getJSONArray("order_types");
-//		user.orderTypes = new String[orderTypeArray.length()];
-//		for (int k = 0; k < orderTypeArray.length(); k++) {
-//			user.orderTypes[k] = orderTypeArray.getString(k);
-//		}
+		JSONArray orderTypeArray = response.optJSONArray("order_types"); // Use optJSONArray for safety
+		if (orderTypeArray != null) {
+			user.orderTypes = new String[orderTypeArray.length()];
+			for (int k = 0; k < orderTypeArray.length(); k++) {
+				user.orderTypes[k] = orderTypeArray.getString(k);
+			}
+		} else {
+			user.orderTypes = new String[0]; // Initialize to empty array if not present
+		}
 
 		return user;
 	}
@@ -196,6 +202,14 @@ public class User {
 
 	public void setFeedToken(String feedToken) {
 		this.feedToken = feedToken;
+	}
+
+	// Add the getOrderTypes method
+	public List<String> getOrderTypes() {
+		if (this.orderTypes != null) {
+			return Arrays.asList(this.orderTypes);
+		}
+		return Arrays.asList(); // Return empty list if not populated
 	}
 
 	@Override

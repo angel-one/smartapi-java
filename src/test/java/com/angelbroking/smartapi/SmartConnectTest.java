@@ -1,47 +1,52 @@
 package com.angelbroking.smartapi;
 
-import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
-import com.angelbroking.smartapi.http.exceptions.DataException;
-import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
-import com.angelbroking.smartapi.models.*;
-import com.angelbroking.smartapi.utils.Constants;
-import com.github.tomakehurst.wiremock.common.Json;
-import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.runner.RunWith;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
+import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
+import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.models.EstimateChargesParams;
+import com.angelbroking.smartapi.models.Gtt;
+import com.angelbroking.smartapi.models.GttParams;
+import com.angelbroking.smartapi.models.Order;
+import com.angelbroking.smartapi.models.OrderParams;
+import com.angelbroking.smartapi.models.User;
+import com.angelbroking.smartapi.utils.Constants;
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.JSON_EXCEPTION_OCCURRED;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.SMART_API_EXCEPTION_OCCURRED;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 @Slf4j
+
 public class SmartConnectTest {
+
+    private static final Logger log = LoggerFactory.getLogger(SmartConnectTest.class);
+
     @Mock
     private SmartAPIRequestHandler smartAPIRequestHandler;
 
@@ -56,7 +61,7 @@ public class SmartConnectTest {
 
     @Before
     public void setup() {
-        apiKey = "api_key_test";
+        apiKey = "HFnOUXEQ";
         accessToken = "dwkdwodmi";
     }
 
@@ -70,26 +75,38 @@ public class SmartConnectTest {
         return  errorResponse;
     }
 
+    private String getTotpFromUser() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter the current TOTP: ");
+        String totp = scanner.nextLine();
+        // We don't close the scanner for System.in as it can cause issues
+        // if other parts of the application or other tests expect System.in to be open.
+        return totp;
+    }
+
     @Test
     public void generateSession() throws SmartAPIException, IOException {
         User user = new User();
         user.setAccessToken("dummyToken");
         user.setRefreshToken("dummyRefreshToken");
         user.setFeedToken("dummyfeedtoken");
-        user.setUserId("user001");
-        when(smartConnect.generateSession("user001","1100","123321")).thenReturn(user);
+        user.setUserId("AAAL440762");
 
-        User userData = smartConnect.generateSession("user001","1100","123321");
+        String totp = getTotpFromUser();
+        when(smartConnect.generateSession("AAAL440762","9572", totp)).thenReturn(user);
+
+        User userData = smartConnect.generateSession("AAAL440762","9572", totp);
         assertNotNull(userData);
     }
 
     @Test(expected = SmartAPIException.class)
     public void generate_session_exception() throws SmartAPIException, IOException {
-        String url = routes.getLoginUrl();
+        String url = routes.getLoginUrl(); // Assuming routes.getLoginUrl() is stubbed in your actual test setup
+        String totp = getTotpFromUser();
         JSONObject params = new JSONObject();
-        params.put("clientcode", "user001");
-        params.put("password", "1100");
-        params.put("totp", "123321");
+        params.put("clientcode", "AAAL440762");
+        params.put("password", "9572");
+        params.put("totp", totp);
         when(smartAPIRequestHandler.postRequest(this.apiKey, url, params))
                 .thenThrow(new SmartAPIException("Generate Session API request failed"));
         try {
@@ -103,7 +120,7 @@ public class SmartConnectTest {
     @Test
     public void getProfile() throws SmartAPIException, IOException {
         User user = new User();
-        user.setUserId("user001");
+        user.setUserId("AAAL440762");
         user.setUserName("user_name");
         user.setEmail("usermail@mail.com");
         user.setMobileNo("987176688");
@@ -115,7 +132,7 @@ public class SmartConnectTest {
 
     @Test(expected = SmartAPIException.class)
     public void get_profile_exception() throws SmartAPIException, IOException {
-        String url = routes.get("api.user.profile");
+        String url = routes.get("api.user.profile"); // Assuming routes.get() is stubbed
         when(smartAPIRequestHandler.getRequest(this.apiKey, url, accessToken))
                 .thenThrow(new SmartAPIException("Get Profile API Request Failed"));
         try {
@@ -153,7 +170,7 @@ public class SmartConnectTest {
 
     @Test(expected = SmartAPIException.class)
     public void place_order_exception() throws SmartAPIException, IOException {
-        String url = routes.get("api.order.place");
+        String url = routes.get("api.order.place"); // Assuming routes.get() is stubbed
         OrderParams orderParams = new OrderParams();
         orderParams.variety = Constants.VARIETY_STOPLOSS;
         orderParams.quantity = 1;
@@ -245,9 +262,9 @@ public class SmartConnectTest {
         response.put("status",true);
         response.put("message","success");
 
-        when(smartConnect.getOrderHistory("user001")).thenReturn(response);
+        when(smartConnect.getOrderHistory("AAAL440762")).thenReturn(response);
 
-        JSONObject orderHistory = smartConnect.getOrderHistory("user001");
+        JSONObject orderHistory = smartConnect.getOrderHistory("AAAL440762");
         assertNotNull(orderHistory);
         Boolean status = orderHistory.getBoolean("status");
         if(!status){
@@ -990,7 +1007,7 @@ public class SmartConnectTest {
             JSONObject response = smartAPIRequestHandler.postRequest(apiKey, url, params, accessToken);
             response.getJSONObject("data");
         } catch (SmartAPIException ex) {
-            log.error("{} while placing order {}", SMART_API_EXCEPTION_OCCURRED, ex.toString());
+            // Logging can be removed if this exception is expected and the test is designed to pass.
             throw new SmartAPIException(String.format("%s in placing order %s", SMART_API_EXCEPTION_ERROR_MSG, ex));
         } catch (IOException ex) {
             log.error("{} while placing order {}", IO_EXCEPTION_OCCURRED, ex.getMessage());

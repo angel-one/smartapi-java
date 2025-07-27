@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Plotly Chart</title>
+    <!-- Include the Plotly.js library from a CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        #plotly-chart-container { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="plotly-chart-container"></div>
+    <script>
+        const chartContainer = document.getElementById('plotly-chart-container');
+        let chartInitialized = false;
+        let currentTheme = 'light'; // Keep track of the current theme
+
+        // Function to be called from Java to set historical data
+        function setHistoricalData(data, symbol, interval) {
+            // data should be an object like { x: [...], open: [...], high: [...], low: [...], close: [...] }
+            // where x is an array of timestamps (or date strings)
+
+            if (!chartInitialized) {
+                initializeChart();
+            }
+
+            const trace = {
+                x: data.x,
+                open: data.open,
+                high: data.high,
+                low: data.low,
+                close: data.close,
+                type: 'candlestick',
+                name: symbol + ' (' + interval + ')',
+                increasing: {line: {color: 'rgba(38,166,154, 1)'}}, // Green
+                decreasing: {line: {color: 'rgba(239,83,80, 1)'}}, // Red
+                xaxis: 'x',
+                yaxis: 'y'
+            };
+            const traces = [trace];
+            const layout = {
+                title: symbol + ' Candlestick (' + interval + ')',
+                xaxis: {
+                    rangeslider: { visible: false },
+                    type: 'date', // Or 'linear' if using timestamps
+                    title: 'Time'
+                },
+                yaxis: {
+                     title: 'Price'
+                },
+                dragmode: 'zoom', // Enable zoom by default
+                showlegend: true, // Show legend for traces
+                hovermode: 'x unified', // Show tooltip for all traces at a point
+                margin: { t: 40, b: 40, l: 40, r: 40 },
+                // Apply theme colors
+                plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333',
+                    family: 'Segoe UI, system-ui, sans-serif',
+                    size: 12
+                }
+            };
+
+            Plotly.react(chartContainer, [trace], layout); // Use Plotly.react for updates
+        }
+
+        // Function to be called from Java to update for live feed mode or status messages
+        function setLiveFeedMode(message) {
+             if (!chartInitialized) {
+                initializeChart();
+            }
+            // Clear the chart and display a message
+            Plotly.react(chartContainer, [], {
+                 title: message,
+                 xaxis: { visible: false },
+                 yaxis: { visible: false },
+                 plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333',
+                    family: 'Segoe UI, system-ui, sans-serif',
+                    size: 12
+                }
+            });
+        }
+
+        // Function to update chart theme (called from Java)
+        function applyTheme(theme) { // theme can be 'light' or 'dark'
+            currentTheme = theme;
+            // Re-apply layout options to update colors
+            if (chartInitialized) {
+                 const currentLayout = chartContainer.layout;
+                 if (currentLayout) {
+                     currentLayout.plot_bgcolor = currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF';
+                     currentLayout.paper_bgcolor = currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF';
+                     currentLayout.font = {
+                         color: currentTheme === 'dark' ? '#e0e0e0' : '#333333',
+                         family: 'Segoe UI, system-ui, sans-serif',
+                         size: 12
+                     };
+                     Plotly.relayout(chartContainer, currentLayout);
+                 }
+            }
+        }
+
+        // Initial chart setup (can be empty)
+        function initializeChart() {
+             Plotly.newPlot(chartContainer, [], {
+                 title: 'Loading Chart...',
+                 xaxis: { visible: false },
+                 yaxis: { visible: false },
+                 plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                 font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333',
+                    family: 'Segoe UI, system-ui, sans-serif',
+                    size: 12
+                }
+             }, { responsive: true }); // Make chart responsive
+             chartInitialized = true;
+        }
+
+        // Initialize the chart when the HTML is loaded
+        initializeChart();
+
+        // Handle window resize (Plotly's responsive: true helps, but manual resize can ensure it)
+        // This might be less necessary with responsive: true, but good practice with WebView
+        window.addEventListener('resize', () => {
+             if (chartInitialized) {
+                 Plotly.relayout(chartContainer, {
+                     width: chartContainer.clientWidth,
+                     height: chartContainer.clientHeight
+                 });
+             }
+        });
+
+        // Function to be called from Java to plot backtest results
+        // Includes candles, indicators, trades, and equity curve
+        function plotBacktestData(candleData, indicatorData, tradeData, equityData) {
+            // candleData: { x: [...], open: [...], high: [...], low: [...], close: [...] }
+            // indicatorData: [{ name: 'SMA10', x: [...], y: [...] }, { name: 'SMA30', x: [...], y: [...] }, ...]
+            // tradeData: [{ time: '...', price: ..., action: 'Buy'|'Sell' }, ...]
+            // equityData: { x: [...], y: [...] }
+
+            if (!chartInitialized) {
+                initializeChart(); // Ensure chart is initialized
+            }
+
+            const traces = [];
+
+            // Add Candlestick trace (Primary Y-axis)
+            const candleTrace = {
+                x: candleData.x,
+                open: candleData.open,
+                high: candleData.high,
+                low: candleData.low,
+                close: candleData.close,
+                type: 'candlestick',
+                name: 'Price',
+                increasing: {line: {color: 'rgba(38,166,154, 1)'}}, // Green
+                decreasing: {line: {color: 'rgba(239,83,80, 1)'}}, // Red
+                xaxis: 'x',
+                yaxis: 'y' // Primary Y-axis
+            };
+            traces.push(candleTrace);
+
+            // Add Indicator traces (Primary Y-axis)
+            if (indicatorData && indicatorData.length > 0) {
+                indicatorData.forEach(indicator => {
+                    traces.push({
+                        x: indicator.x,
+                        y: indicator.y,
+                        mode: 'lines',
+                        name: indicator.name,
+                        line: { 
+                            color: indicator.color || getIndicatorColor(traces.length -1), // Use a predefined or better random color
+                            dash: indicator.dash || 'solid',
+                            width: 1.5 // Slightly thicker lines for indicators
+                        },
+                        xaxis: 'x',
+                        yaxis: indicator.yaxis || 'y' // Assign to specified y-axis, default to 'y'
+                    });
+                });
+            }
+
+            // Add Equity Curve trace (Secondary Y-axis)
+            if (equityData && equityData.x && equityData.y) {
+                 traces.push({
+                     x: equityData.x,
+                     y: equityData.y,
+                     mode: 'lines',
+                     name: 'Equity Curve',
+                     line: { color: '#FFD700', width: 2 }, // Gold color for equity, slightly thicker
+                     xaxis: 'x',
+                     yaxis: 'y2' // Secondary Y-axis
+                 });
+            }
+
+
+            // Add trade annotations
+            const annotations = [];
+            if (tradeData && tradeData.length > 0) {
+                tradeData.forEach(trade => {
+                    annotations.push({
+                        x: trade.time,
+                        y: trade.price,
+                        xref: 'x',
+                        yref: 'y', // Annotate on the primary Y-axis (price)
+                        text: trade.action.toUpperCase() === 'BUY' ? '▲' : '▼', // Simpler markers
+                        showarrow: true,
+                        arrowhead: trade.action.toUpperCase() === 'BUY' ? 6 : 7, // Different arrowheads
+                        ax: 0,
+                        ay: trade.action.toUpperCase() === 'BUY' ? -30 : 30, // Adjusted arrow offset
+                        font: {
+                            color: trade.action.toUpperCase() === 'BUY' ? (currentTheme === 'dark' ? '#4CAF50' : '#2E7D32') : (currentTheme === 'dark' ? '#F44336' : '#C62828'),
+                            size: 14 // Slightly larger marker text
+                        },
+                        bgcolor: currentTheme === 'dark' ? 'rgba(40,40,40,0.7)' : 'rgba(250,250,250,0.7)',
+                        bordercolor: trade.action.toUpperCase() === 'BUY' ? (currentTheme === 'dark' ? '#4CAF50' : '#2E7D32') : (currentTheme === 'dark' ? '#F44336' : '#C62828'),
+                        borderwidth: 0.5,
+                        borderpad: 4,
+                        opacity: 0.8
+                    });
+                });
+            }
+
+            const layout = {
+                title: 'Backtest Results', // Title will be set by Java or can be dynamic
+                xaxis: {
+                    rangeslider: { visible: false },
+                    type: 'date', // Ensure this matches your data format
+                    title: 'Time',
+                    gridcolor: currentTheme === 'dark' ? '#333' : '#ddd', // Subtle grid lines
+                    zerolinecolor: currentTheme === 'dark' ? '#444' : '#ccc',
+                    linecolor: currentTheme === 'dark' ? '#555' : '#bbb'
+                },
+                yaxis: { // Top panel for Price and Indicators
+                    domain: [0.65, 1.0], // Price/Indicators take more space
+                    title: 'Price / Indicators',
+                    side: 'left',
+                    showgrid: true,
+                    gridcolor: currentTheme === 'dark' ? '#333' : '#eee', // Subtle grid lines
+                    zerolinecolor: currentTheme === 'dark' ? '#444' : '#ccc',
+                    linecolor: currentTheme === 'dark' ? '#555' : '#bbb'
+                },
+                yaxis2: { // Bottom panel for Equity Curve
+                    domain: [0.32, 0.60],  // Equity curve in the middle
+                    title: 'Equity Value',
+                    side: 'left', 
+                    showgrid: true,
+                    gridcolor: currentTheme === 'dark' ? '#333' : '#eee',
+                    zerolinecolor: currentTheme === 'dark' ? '#444' : '#ccc',
+                    linecolor: currentTheme === 'dark' ? '#555' : '#bbb',
+                    anchor: 'x' 
+                },
+                yaxis3: { // Bottom panel for RSI
+                    domain: [0, 0.27],  // RSI at the bottom
+                    title: 'RSI',
+                    side: 'left',
+                    showgrid: true,
+                    gridcolor: currentTheme === 'dark' ? '#333' : '#eee',
+                    zerolinecolor: currentTheme === 'dark' ? '#444' : '#ccc',
+                    linecolor: currentTheme === 'dark' ? '#555' : '#bbb',
+                    anchor: 'x',
+                    range: [0, 100] // Explicitly set RSI range
+                },
+                dragmode: 'zoom',
+                showlegend: true,
+                legend: {
+                    orientation: "h", // Horizontal legend
+                    yanchor: "bottom", y: 1.02, // Position above the chart
+                    xanchor: "right", x: 1
+                },
+                hovermode: 'x unified',
+                margin: { t: 50, b: 50, l: 60, r: 40 }, // Adjusted margins for potentially more labels
+                plot_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                paper_bgcolor: currentTheme === 'dark' ? '#1e1e1e' : '#FFFFFF',
+                font: {
+                    color: currentTheme === 'dark' ? '#e0e0e0' : '#333333',
+                    family: 'Segoe UI, system-ui, sans-serif',
+                    size: 12
+                },
+                annotations: annotations
+            };
+
+            Plotly.react(chartContainer, traces, layout);
+        }
+
+        // Helper to get a predefined or slightly better random color for indicators
+        const indicatorColors = [
+            '#1f77b4',  // Muted blue
+            '#ff7f0e',  // Safety orange
+            '#2ca02c',  // Cooked asparagus green
+            '#d62728',  // Brick red
+            '#9467bd',  // Muted purple
+            '#8c564b',  // Chestnut brown
+            '#e377c2',  // Raspberry yogurt pink
+            '#7f7f7f',  // Middle gray
+            '#bcbd22',  // Curry yellow-green
+            '#17becf'   // Muted cyan
+        ];
+        function getIndicatorColor(index) {
+            return indicatorColors[index % indicatorColors.length];
+        }
+
+        // Remove old live data functions (assuming they were for Lightweight Charts)
+        /*
+        function clearLiveData() { ... }
+        function addCandleData(candleData) { ... }
+        function updateCurrentCandle(candleData) { ... }
+        */
+        // The provided plotly_chart.html doesn't have these, so no change needed there.
+        // The Java code calls these, so we'll need to update the Java live feed logic in Part 4.
+
+    </script>
+</body>
+</html>

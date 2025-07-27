@@ -8,12 +8,12 @@ import java.util.Arrays;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.smartstream.models.*;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SmartStreamListenerImpl implements SmartStreamListener {
-	
+	private static final Logger log = LoggerFactory.getLogger(SmartStreamListenerImpl.class);
 	public static final ZoneId TZ_UTC = ZoneId.of("UTC");
 	public static final ZoneId TZ_IST = ZoneId.of("Asia/Kolkata");
 

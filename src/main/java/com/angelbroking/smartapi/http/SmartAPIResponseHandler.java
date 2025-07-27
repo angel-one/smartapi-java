@@ -7,7 +7,9 @@ import com.angelbroking.smartapi.http.exceptions.ApiKeyException;
 import com.angelbroking.smartapi.models.SearchScripResponseDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j; // Removed
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +32,9 @@ import static com.angelbroking.smartapi.utils.Constants.TOKEN_EXCEPTION_MESSAGE;
 /**
  * Response handler for handling all the responses.
  */
-@Slf4j
+// @Slf4j // Removed
 public class SmartAPIResponseHandler {
+	private static final Logger log = LoggerFactory.getLogger(SmartAPIResponseHandler.class);
 
 	public JSONObject handle(Response response, String body) throws IOException, SmartAPIException, JSONException {
 		log.info("***************************");

@@ -1,0 +1,129 @@
+package com.angelbroking.smartapi.algos.strategies;
+
+import com.angelbroking.smartapi.algos.Strategy;
+import com.angelbroking.smartapi.models.Candle;
+import com.angelbroking.smartapi.utils.Constants; // Assuming Constants.TRADE_ACTION_BUY etc. exist
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+/**
+ * ExampleCustomStrategy provides a template for creating your own trading strategies.
+ * To use this:
+ * 1. Implement your strategy logic within the {@code generateSignal} method.
+ * 2. You can use the {@code init} method to process any parameters passed from the GUI.
+ * 3. Ensure this class has a public default constructor.
+ * 4. When running a backtest in the SmartAPI GUI, select "Custom Strategy" and
+ *    enter "ExampleCustomStrategy" (or the name of your class if you rename it)
+ *    in the "Custom Strategy Class" field. If your class is in a different package
+ *    than {@code com.angelbroking.smartapi.algos.strategies}, provide the fully qualified name.
+ */
+public class ExampleCustomStrategy implements Strategy {
+
+    private static final Logger log = LoggerFactory.getLogger(ExampleCustomStrategy.class);
+
+    private boolean initialized = false;
+    private int quantityPerTrade = 1; // Default, can be overridden by params
+
+    /**
+     * Default constructor is required for dynamic instantiation by the GUI.
+     */
+    public ExampleCustomStrategy() {
+        // Initialization that doesn't depend on external params can go here.
+        log.info("ExampleCustomStrategy instantiated.");
+    }
+
+    /**
+     * Initializes the strategy with parameters provided from the backtesting UI.
+     *
+     * @param params A JSONObject containing parameters such as "quantity", "symbolToken", etc.
+     *               These are typically passed from the GUI's backtesting setup.
+     */
+    // @Override // Removed because the compiler indicates that the 'Strategy' interface
+    //            // does not define an 'init(JSONObject params)' method.
+    //            // If the Strategy interface is intended to have this method,
+    //            // the interface itself should be updated.
+    public void init(JSONObject params) {
+        log.info("Initializing ExampleCustomStrategy with params: {}", params.toString());
+        // Example: Extracting quantity per trade from parameters
+        if (params.has("quantity")) {
+            this.quantityPerTrade = params.getInt("quantity");
+        }
+        // Add any other parameter extraction and initialization logic here.
+        this.initialized = true;
+        log.info("ExampleCustomStrategy initialized. Quantity per trade: {}", this.quantityPerTrade);
+    }
+
+    /**
+     * Generates a trading signal based on the current candle and historical data.
+     * This is where you implement your core trading logic.
+     *
+     * @param currentCandle     The most recent candle data.
+     * @param historicalCandles A list of historical candles. The exact content (e.g., whether
+     *                          it includes currentCandle) depends on the Backtester implementation.
+     * @param strategyParams    Additional parameters or context for signal generation. This might
+     *                          be the same as or derived from the params passed to {@code init}.
+     * @return A string representing the signal:
+     *         - {@link Constants#TRADE_ACTION_BUY} ("BUY") to enter a long position.
+     *         - {@link Constants#TRADE_ACTION_SELL} ("SELL") to enter a short position or exit a long.
+     *         - "HOLD" or null/empty string for no action.
+     *         (Note: The exact signal strings "BUY", "SELL", "HOLD" might be defined in your Constants class
+     *         or expected by your Backtester.)
+     */
+    @Override
+    public String generateSignal(Candle currentCandle, List<Candle> historicalCandles, JSONObject strategyParams) {
+        if (!initialized) {
+            log.warn("Strategy not initialized. Call init() first.");
+            return null; // Or "HOLD"
+        }
+
+        // Implement your custom trading logic here.
+        // This is a placeholder example: Buy on the very first candle available, then hold.
+        if (historicalCandles == null || historicalCandles.isEmpty() || historicalCandles.size() < 2) { // Need at least one previous candle for some logic
+            log.info("First signal opportunity for {}: BUYING at {}", strategyParams.optString("tradingSymbol", "N/A"), currentCandle.getClose());
+            return Constants.TRADE_ACTION_BUY; // Or "BUY"
+        }
+
+        // Example: log current price
+        // log.debug("Processing candle for {}: Time: {}, Close: {}",
+        //        strategyParams.optString("tradingSymbol", "N/A"),
+        //        currentCandle.getTimestamp(),
+        //        currentCandle.getClose());
+
+        return null; // Or "HOLD" - no action for subsequent candles in this simple example
+    }
+
+    /**
+     * Generates trading signals based on historical candle data and strategy parameters.
+     *
+     * This method is intended for batch processing of historical data, potentially
+     * as an alternative or complement to the `generateSignal` method. The exact
+     * usage depends on the backtesting framework's design.
+     *
+     * @param historicalCandles A list of historical candles.
+     * @param strategyParams    Additional parameters for signal generation.
+     * @return A list of signals, where each signal could be a trade action or related
+     *         data.  The specific format of signals (e.g., Strings, custom objects)
+     *         depends on the backtesting framework. Return an empty list if no signals
+     *         are generated.
+     */
+    @Override
+    public List<String> generateSignals(List<Candle> historicalCandles, JSONObject strategyParams) {
+        // Placeholder: This method needs a proper implementation.  Consider
+        // iterating through the `historicalCandles` and applying your strategy
+        // logic to determine buy/sell signals.
+        log.warn("generateSignals() method is not yet fully implemented.");
+        return List.of(); // Return an empty list for now
+    }
+
+    @Override
+    public JSONObject getIndicatorData(List<Candle> historicalCandles, JSONObject strategyParams) {
+        // This method needs to return indicator values calculated from the
+        // historical data, which can be used for charting or further analysis
+        log.warn("getIndicatorData() method is not yet implemented, returning empty JSON");
+        //Example return, modify as per your needs.
+        return new JSONObject();
+    }
+}

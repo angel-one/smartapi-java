@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Lightweight Chart</title>
+    <!-- Include the Lightweight Charts library -->
+    <script type="text/javascript" src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        #chart-container { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="chart-container"></div>
+    <script>
+        const chartContainer = document.getElementById('chart-container');
+        const chart = LightweightCharts.createChart(chartContainer, {
+            width: chartContainer.clientWidth,
+            height: chartContainer.clientHeight,
+            layout: {
+                background: { type: 'solid', color: '#FFFFFF' }, // Default white, can be changed
+                textColor: 'rgba(33, 56, 77, 1)',
+            },
+            grid: {
+                vertLines: {
+                    color: 'rgba(197, 203, 206, 0.5)',
+                },
+                horzLines: {
+                    color: 'rgba(197, 203, 206, 0.5)',
+                },
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+            },
+            priceScale: {
+                borderColor: 'rgba(197, 203, 206, 0.8)',
+            },
+            timeScale: {
+                borderColor: 'rgba(197, 203, 206, 0.8)',
+                timeVisible: true, // Show time on the time scale
+                secondsVisible: false, // Hide seconds if interval is minute or higher
+            },
+        });
+
+        let candleSeries = null;
+
+        // Function to be called from Java to set historical data
+        function setHistoricalData(data, symbol, interval) {
+            if (candleSeries) {
+                chart.removeSeries(candleSeries);
+            }
+            candleSeries = chart.addCandlestickSeries({
+                upColor: 'rgba(38,166,154, 1)', // Green
+                downColor: 'rgba(239,83,80, 1)', // Red
+                borderDownColor: 'rgba(239,83,80, 1)',
+                borderUpColor: 'rgba(38,166,154, 1)',
+                wickDownColor: 'rgba(239,83,80, 1)',
+                wickUpColor: 'rgba(38,166,154, 1)',
+            });
+            candleSeries.setData(data); // data should be an array of {time, open, high, low, close}
+            // chart.timeScale().fitContent(); // Fit chart to data
+            // You might want to set a title or legend if the library supports it easily here
+        }
+
+        // Function to be called from Java to update for live feed mode
+        function setLiveFeedMode(message) {
+            if (candleSeries) {
+                chart.removeSeries(candleSeries);
+                candleSeries = null;
+            }
+            // You could display the message on the chart if the library allows,
+            // or simply clear it. For now, we just clear.
+            // The title of the chart in JavaFX will show the mode.
+        }
+
+        // Function to be called from Java to add a live tick (for candlestick aggregation)
+        // This is a simplified example; real aggregation is more complex.
+        function addLiveCandleData(candle) {
+            if (candleSeries) {
+                candleSeries.update(candle); // candle: {time, open, high, low, close}
+            }
+        }
+        
+        // Function to update chart theme (called from Java)
+        function applyTheme(theme) { // theme can be 'light' or 'dark'
+            let backgroundColor = '#FFFFFF';
+            let textColor = 'rgba(33, 56, 77, 1)';
+            let lineColor = 'rgba(197, 203, 206, 0.5)';
+
+            if (theme === 'dark') {
+                backgroundColor = '#1e1e1e'; // Example dark background
+                textColor = 'rgba(220, 220, 220, 1)';
+                lineColor = 'rgba(60, 60, 60, 0.5)';
+            }
+            chart.applyOptions({
+                layout: {
+                    background: { type: 'solid', color: backgroundColor },
+                    textColor: textColor,
+                },
+                grid: {
+                    vertLines: { color: lineColor },
+                    horzLines: { color: lineColor },
+                }
+            });
+        }
+
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+        });
+        
+        // Initial size
+         chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+    </script>
+</body>
+</html>

@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j; // Removed Lombok import
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +20,9 @@ import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
 import com.angelbroking.smartapi.smartstream.ticker.SmartStreamTicker;
 import com.neovisionaries.ws.client.WebSocketException;
-@Slf4j
+// @Slf4j // Removed Lombok annotation
 public class SmartStreamTickerTest {
+	private static final Logger log = LoggerFactory.getLogger(SmartStreamTickerTest.class);
 
 	private static String clientID;
 	private static String clientPass;

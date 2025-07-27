@@ -70,3 +70,26 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+
+##############################
+## Build output
+##############################
+/target/
+/build/
+/dist/
+/out/
+
+##############################
+## Log files
+##############################
+*.log
+logs/
+
+##############################
+## User-specific configuration
+##############################
+*.properties
+*.yml
+*.yaml
+.env
+credentials.*

@@ -11,12 +11,6 @@ public class OrderParams {
 	public String exchange;
 
 	/**
-	 * symboltoken of the instrument.
-	 */
-
-	public String symbolToken;
-
-	/**
 	 * Transaction type (BUY or SELL).
 	 */
 

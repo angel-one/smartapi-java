@@ -4,8 +4,9 @@ import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
 import com.angelbroking.smartapi.utils.Utils;
 import com.neovisionaries.ws.client.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,8 +15,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Slf4j
 public class OrderUpdateWebsocket {
+    private static final Logger log = LoggerFactory.getLogger(OrderUpdateWebsocket.class);
     private static final int pingIntervalInMilliSeconds = 10000; // 10 seconds
     private static final String headerAuthorization = "Authorization";
     private static final Integer delayInMilliSeconds = 5000;

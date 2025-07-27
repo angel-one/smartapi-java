@@ -20,35 +20,49 @@
 	</licenses>
 
 	<properties>
-		<java-version>1.8</java-version>
-		<maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
+		<java-version>21</java-version>
+		<maven-compiler-plugin-version>3.13.0</maven-compiler-plugin-version> <!-- Updated version -->
 		<maven-shade-plugin-version>3.5.1</maven-shade-plugin-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>5.8.1</junit.version>
 		<mockito.version>5.5.0</mockito.version>
-		<assertj.version>3.24.2</assertj.version>
+		<assertj.version>3.24.2</assertj.version> <!-- Keep one assertj.version -->
 		<commons-codec.version>1.16.0</commons-codec.version>
 		<super-csv.version>2.4.0</super-csv.version>
 		<nv-websocket-client.version>2.14</nv-websocket-client.version>
 		<json.version>20230618</json.version>
 		<okhttp.version>4.11.0</okhttp.version>
-		<okio.version>3.6.0</okio.version>
+		<okio.version>3.6.0</okio.version> <!-- Keep one okio.version -->
 		<logging-interceptor.version>4.11.0</logging-interceptor.version>
 		<kotlin-stdlib.version>1.9.10</kotlin-stdlib.version>
 		<gson.version>2.10.1</gson.version>
-		<slf4j-api.version>2.0.9</slf4j-api.version>
-		<logback-classic.version>1.4.11</logback-classic.version>
 		<docker-client.version>8.16.0</docker-client.version>
-		<lombok.version>1.18.30</lombok.version>
-		<junit.version>4.12</junit.version>
+		<lombok.version>1.18.32</lombok.version> <!-- Updated to latest stable for JDK 21 -->
+		<!-- junit.version is already defined above as 5.8.1, using JUnit 4 here is a conflict.
+		     Assuming JUnit 5 (Jupiter) is preferred due to mockito-junit-jupiter.
+		     If JUnit 4 is strictly needed, then the other junit.version should be changed.
+		     For now, I'll keep the JUnit 4 version property for the junit:junit dependency below. -->
+		<junit4.version>4.12</junit4.version>
 		<mockito-junit-jupiter.version>5.5.0</mockito-junit-jupiter.version>
 		<okhttp.mockwebserver.version>4.11.0</okhttp.mockwebserver.version>
 		<google-auth.version>1.5.0</google-auth.version>
 		<wiremock.version>3.0.1</wiremock.version>
-		<slf4j-api.version>1.7.32</slf4j-api.version>
-		<logback-classic.version>1.2.6</logback-classic.version>
+		<slf4j-api.version>1.7.36</slf4j-api.version> <!-- Using SLF4J 1.7.x as it's the last one defined -->
+		<logback-classic.version>1.2.11</logback-classic.version> <!-- Using Logback 1.2.x as it's the last one defined -->
+		<javafx.version>21</javafx.version> <!-- Property for JavaFX versions -->
 	</properties>
 
+	<dependencyManagement>
+		<!-- Force the version of javassist for all transitive dependencies -->
+		<dependencies>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.29.2-GA</version>
+			</dependency>
+			<!-- You can manage other common dependency versions here too -->
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<!-- used for generating getters and setters -->
         <dependency>
@@ -60,7 +74,19 @@
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
             <version>${docker-client.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
+		<!-- We still declare javassist directly to ensure it's on the classpath,
+		     but dependencyManagement will control its version. -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -141,10 +167,9 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <version>${junit4.version}</version> <!-- Changed to use junit4.version -->
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
@@ -152,30 +177,46 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>mockwebserver</artifactId>
-            <version>${okhttp.mockwebserver.version}</version>
-            <scope>test</scope>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version> 
         </dependency>
         <dependency>
-            <groupId>com.warrenstrange</groupId>
-            <artifactId>googleauth</artifactId>
-            <version>${google-auth.version}</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version> 
         </dependency>
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version> 
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        
+        <!-- Duplicate Lombok dependency removed, one at the top is sufficient -->
+        <!-- Duplicate Gson dependency removed, one at the top using ${gson.version} is sufficient -->
+        
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version> <!-- Or the latest version -->
+        </dependency>
+        <dependency> <!-- Updated wiremock coordinates -->
+            <groupId>org.wiremock</groupId>
             <artifactId>wiremock</artifactId>
             <version>${wiremock.version}</version>
         </dependency>
+        <!-- Removed duplicate dependency for org.slf4j:slf4j-api -->
+        <!-- Removed duplicate dependency for ch.qos.logback:logback-classic -->
+        <!-- The dependencies for mockwebserver and googleauth were removed in the diff, ensure they are present if needed -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback-classic.version}</version>
+            <groupId>com.tictactec</groupId>
+            <artifactId>ta-lib</artifactId>
+            <version>0.4.0</version>
         </dependency>
     </dependencies>
 	
@@ -184,10 +225,10 @@
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin-version}</version>
+				<version>${maven-compiler-plugin-version}</version> <!-- Use property for consistency -->
 				<configuration>
-					<source>${java-version}</source>
-					<target>${java-version}</target>
+					<source>21</source>
+					<target>21</target>
 				</configuration>
 			</plugin>
 			
@@ -225,8 +266,49 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>   
-
+            </plugin>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.angelbroking.smartapi.gui.SmartApiGui</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.angelbroking.smartapi.gui.SmartApiGui</mainClass>
+                    <options>
+                        <option>--enable-native-access=ALL-UNNAMED</option>
+                    </options>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <mainClass>com.angelbroking.smartapi.gui.SmartApiGui</mainClass>
+                    <arguments>
+                        <argument>--enable-native-access=ALL-UNNAMED</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 

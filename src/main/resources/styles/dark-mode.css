@@ -1,0 +1,114 @@
+/* src/main/resources/com/angelbroking/smartapi/gui/styles/dark-mode.css */
+.root {
+    -fx-font-family: "Segoe UI", System, sans-serif; /* Consistent font */
+    -fx-base: #1e1e1e; /* Darker base color */
+    -fx-background: #2d2d2d; /* Darker background */
+    -fx-control-inner-background: #3c3c3c; /* Darker control inner background */
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-background-color: #4a4a4a; /* Darker button */
+    -fx-text-fill: white;
+    -fx-background-radius: 3;
+}
+.button:hover {
+    -fx-background-color: #5a5a5a; /* Slightly lighter on hover */
+}
+
+.label {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-text-fill: white;
+}
+
+.text-field {
+    -fx-text-fill: black; /* Keep text in text fields readable */
+     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+.password-field {
+    -fx-text-fill: black;
+     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+.text-area .content {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: white;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #1e1e1e; /* Darker tab header */
+}
+
+.tab-pane .tab {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: white;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #4a4a4a; /* Darker selected tab */
+}
+
+/* Style for the login pane itself */
+.login-pane {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-background-color: #212121; /* Darker background for the pane */
+}
+
+.login-title {
+    -fx-fill: #e0e0e0; /* Light grey for title */
+}
+
+.login-button {
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-background-color: #009688; /* A teal color for dark mode button */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+.login-button:hover {
+    -fx-background-color: #00796B;
+}
+
+/* Style for the actiontarget Text node in login screen */
+.login-action-target.error { -fx-fill: #EF9A9A; } /* Lighter red for dark mode */
+.login-action-target.success { -fx-fill: #A5D6A7; } /* Lighter green for dark mode */
+.login-action-target { -fx-fill: #BDBDBD; } /* Default message color for dark mode */
+
+.profile-value-text {
+    -fx-fill: #e0e0e0; /* Light grey text for profile values in dark mode */
+}
+ 
+.nav-pane {
+    -fx-background-color: #2a2a2a; /* Darker grey for nav pane */
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8px 12px;
+    -fx-border-width: 0 0 0 3px; /* Left border for selection indication */
+    -fx-border-color: transparent;
+}
+.nav-button:hover {
+    -fx-background-color: #383838;
+}
+.nav-button:selected { /* Using a pseudo-class for selected state */
+    -fx-background-color: #484848;
+    -fx-border-color: #009688; /* Teal left border when selected */
+}
+
+.welcome-text {
+    -fx-fill: #e0e0e0; /* Light grey text for dark mode */
+}
+
+.historical-data-area {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}
