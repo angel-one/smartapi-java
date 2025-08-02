@@ -4,6 +4,7 @@ import com.angelbroking.smartapi.http.SessionExpiryHook;
 import com.angelbroking.smartapi.http.SmartAPIRequestHandler;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
 import com.angelbroking.smartapi.models.*;
+import com.angelbroking.smartapi.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
@@ -15,7 +16,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.Proxy;
 import java.util.List;
-import javax.net.ssl.HttpsURLConnection;
 
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_ERROR_MSG;
 import static com.angelbroking.smartapi.utils.Constants.IO_EXCEPTION_OCCURRED;
@@ -308,8 +308,16 @@ public class SmartConnect {
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 			Order order = new Order();
+
+			if(jsonObject.getJSONObject("data") == null) {
+				log.error("Order placement failed: {}", jsonObject.getString("message"));
+				order.apiErrorMessage = jsonObject.getString("message") + " - " + jsonObject.getString("errorcode");
+				order.status= Constants.ORDER_API_CALL_ERROR;
+				return order;
+			}
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
 			order.uniqueOrderId = jsonObject.getJSONObject("data").getString("uniqueorderid");
+			order.status = Constants.ORDER_API_CALL_SUCCESS;
 			log.info("order : {}",order);
 			return order;
 		} catch (Exception | SmartAPIException e) {
@@ -356,7 +364,14 @@ public class SmartConnect {
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 			Order order = new Order();
+			if(jsonObject.getJSONObject("data") == null) {
+				log.error("Order modification failed: {}", jsonObject.getString("message"));
+				order.apiErrorMessage = jsonObject.getString("message") + " - " + jsonObject.getString("errorcode");
+				order.status= Constants.ORDER_API_CALL_ERROR;
+				return order;
+			}
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
+			order.status = Constants.ORDER_API_CALL_SUCCESS;
 			return order;
 		} catch (Exception | SmartAPIException e) {
 			log.error(e.getMessage());
@@ -382,7 +397,16 @@ public class SmartConnect {
 
 			JSONObject jsonObject = smartAPIRequestHandler.postRequest(this.apiKey, url, params, accessToken);
 			Order order = new Order();
+			if(jsonObject.getJSONObject("data") == null) {
+				log.error("Order cancellation failed: {}", jsonObject.getString("message"));
+				order.apiErrorMessage = jsonObject.getString("message") + " - " + jsonObject.getString("errorcode");
+				order.status= Constants.ORDER_API_CALL_ERROR;
+				return order;
+			}
+
 			order.orderId = jsonObject.getJSONObject("data").getString("orderid");
+			order.status= Constants.ORDER_API_CALL_SUCCESS;
+
 			return order;
 		} catch (Exception | SmartAPIException e) {
 			log.error(e.getMessage());

@@ -39,7 +39,10 @@ public class Constants {
     public static String EXCHANGE_CDS = "CDS";
     public static String EXCHANGE_NCDEX = "NCDEX";
     public static String EXCHANGE_MCX = "MCX";
-    
+
+    public static  String ORDER_API_CALL_SUCCESS = "APICallSuccess";
+    public static  String ORDER_API_CALL_ERROR = "APICallError";
+
     /**
      * LTP QUOTE SNAPQUOTE Constants
      */

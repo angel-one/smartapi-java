@@ -149,6 +149,7 @@ public class SmartConnectTest {
 
         Order placeOrder = smartConnect.placeOrder(orderParams,"STOPLOSS");
         assertNotNull(placeOrder);
+        assertEquals(Constants.ORDER_API_CALL_SUCCESS, placeOrder.status);
     }
 
     @Test(expected = SmartAPIException.class)
@@ -224,6 +225,7 @@ public class SmartConnectTest {
 
         Order modifyOrder = smartConnect.modifyOrder(orderResponse.orderId,orderParams, orderParams.variety);
         assertNotNull(modifyOrder);
+        assertEquals(Constants.ORDER_API_CALL_SUCCESS, modifyOrder.status);
     }
 
     @Test
@@ -236,6 +238,7 @@ public class SmartConnectTest {
 
         Order cancelOrder = smartConnect.cancelOrder(orderResponse.orderId,Constants.VARIETY_NORMAL);
         assertNotNull(cancelOrder);
+        assertEquals(Constants.ORDER_API_CALL_SUCCESS, cancelOrder.status);
     }
 
     @Test
